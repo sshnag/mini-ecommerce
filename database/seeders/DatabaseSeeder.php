@@ -10,14 +10,12 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
-     */
-    public function run(): void
-    {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+     */public function run()
+{
+    $users = User::orderBy('id')->get();
+    foreach ($users as $user) {
+        $user->custom_id = 'USER-' . str_pad($user->id, 6, '0', STR_PAD_LEFT);
+        $user->save();
     }
+}
 }
