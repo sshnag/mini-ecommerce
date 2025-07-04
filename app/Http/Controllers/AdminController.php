@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Catgory;
-use App\Http\Requests\StoreCatgoryRequest;
-use App\Http\Requests\UpdateCatgoryRequest;
+use Illuminate\Http\Request;
 
-class CatgoryController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +25,7 @@ class CatgoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCatgoryRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -35,7 +33,7 @@ class CatgoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Catgory $catgory)
+    public function show(string $id)
     {
         //
     }
@@ -43,7 +41,7 @@ class CatgoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Catgory $catgory)
+    public function edit(string $id)
     {
         //
     }
@@ -51,7 +49,7 @@ class CatgoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCatgoryRequest $request, Catgory $catgory)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -59,7 +57,7 @@ class CatgoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Catgory $catgory)
+    public function destroy(string $id)
     {
         //
     }
