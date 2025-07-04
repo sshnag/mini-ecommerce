@@ -9,4 +9,10 @@ class Category extends Model
 {
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
+    public static function getSizePresets(){
+        return[
+            'ring'=>['4','4.5','5','5.5','6','6.5','7','7.5','8'],
+            'bracelet'=>['Small','Medium','Large','XL']
+        ];
+    }
 }

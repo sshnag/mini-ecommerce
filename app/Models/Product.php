@@ -11,7 +11,7 @@ use App\Models\Catgory;
 class Product extends Model
 {
     use SoftDeletes,HasFactory;
-
+     
     public function categories(){
         return $this->belongsTo(Category::class);
     }
