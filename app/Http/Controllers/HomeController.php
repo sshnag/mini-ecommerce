@@ -22,10 +22,10 @@ class HomeController extends Controller
      *@author=SSA
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request)
+    public function index(Request $request,Product $product)
     {
         $latestjewel=Product::latest('created_at');
 
-        return view('home',compact('products'));
+        return view('home',compact('product'));
     }
 }

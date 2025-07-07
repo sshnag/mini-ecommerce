@@ -2,99 +2,88 @@
 
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\AddressController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
+use App\Models\Supplier;
 
-/*
-|--------------------------------------------------------------------------
-| Public view
-|--------------------------------------------------------------------------
-*/
+// Guest Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 
-Auth::routes();
-
-/*
-|--------------------------------------------------------------------------
-| User role
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'userDashboard'])->name('dashboard');
+// Authenticated User Routes
+Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
 
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 
-    // Checkout & Orders
-    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [OrderController::class, 'placeOrder'])->name('checkout.place');
-    Route::get('/orders', [OrderController::class, 'userOrders'])->name('orders.index');
-
-    // Reviews
-    Route::post('/reviews/{product}', [ReviewController::class, 'store'])->name('reviews.store');
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
     // Addresses
-    Route::resource('addresses', AddressController::class);
+    Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
+    Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
+
+    // Reviews
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Supplier role
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'supplierDashboard'])->name('dashboard');
-
-    // Supplier's products
-    Route::get('/products/data', [ProductController::class, 'supplierData'])->name('products.data');
-    Route::resource('products', ProductController::class)->except(['show']);
-
-    // View orders that include their products
-    Route::get('/orders', [OrderController::class, 'supplierOrders'])->name('orders.index');
-});
-
-/*
-|--------------------------------------------------------------------------
-| Admin role
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:admin|superadmin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'adminDashboard'])->name('dashboard');
-
-    // Managing Products
-    Route::resource('products', ProductController::class)->except(['show']);
-
-    //Orders
-    Route::get('/orders', [OrderController::class, 'adminOrders'])->name('orders.index');
-    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+// Admin Routes
+Route::prefix('admin')
+    ->middleware(['auth', 'role:admin|superadmin'])
+    ->name('admin.')
+    ->group(function () {
 
     // Categories
-    Route::get('/categories/data', [CategoryController::class, 'getData'])->name('categories.data');
-    Route::resource('categories', CategoryController::class);
+    Route::resource('categories', CategoryController::class)->except(['show']);
+
+    // View suppliers/admins
+    Route::get('users', [AdminController::class, 'index'])->name('users.index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Superadmin role
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'superadminDashboard'])->name('dashboard');
+// Supplier Routes
+Route::prefix('supplier')
+    ->middleware(['auth', 'role:supplier'])
+    ->name('supplier.')
+    ->group(function () {
 
-    // managing users
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users/{user}/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
+    // Manage own products
+    Route::get('products', [SupplierProductController::class, 'index'])->name('products.index');
+    Route::get('products/create', [SupplierProductController::class, 'create'])->name('products.create');
+    Route::post('products', [SupplierProductController::class, 'store'])->name('products.store');
+    Route::get('products/{product}/edit', [SupplierProductController::class, 'edit'])->name('products.edit');
+    Route::put('products/{product}', [SupplierProductController::class, 'update'])->name('products.update');
+    Route::delete('products/{product}', [SupplierProductController::class, 'destroy'])->name('products.destroy');
+
+});
+
+// Superadmin Routes
+Route::prefix('superadmin')
+    ->middleware(['auth', 'role:superadmin'])
+    ->name('superadmin.')
+    ->group(function () {
+
+    // Manage all users by superadmin
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
 });

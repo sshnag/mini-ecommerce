@@ -3,89 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCartRequest;
+use App\Services\CartService;
 use Illuminate\Http\Request;
-use App\Models\Cart;
-use Illuminate\Support\Facades\Auth;
+
 class CartController extends Controller
 {
+    protected $cartService;
+
     /**
-     * Summary of index
-     * Displaying the cart
-     * @return \Illuminate\Contracts\View\View
+     * Inject CartService into the controller.
+     */
+    public function __construct(CartService $cartService)
+    {
+        $this->middleware('auth');
+        $this->cartService = $cartService;
+    }
+
+    /**
+     * Show full cart page.
      */
     public function index()
     {
-        //
-        $cartItem=Cart::with('product')->where('user_id',Auth::id())->get();
-        return view('cart.index',compact('cartItem'));
+        $cartItems = $this->cartService->getUserCart();
+        $total = $this->cartService->getTotal();
+        return view('cart.index', compact('cartItems', 'total'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Summary of store
-     * Storing the cart's data
-     * @param \App\Http\Requests\StoreCartRequest $request
-     * @return mixed|\Illuminate\Http\JsonResponse
+     * Add item to cart (for AJAX or regular POST).
      */
     public function store(StoreCartRequest $request)
     {
-        //
-        $validated=$request->validated();
-        $cart=Cart::firstOrCreate(
-            [
-                'user_id'=>Auth::id(),
-                'product_id'=>$validated['product_id']
-            ],
-            ['quantity'=>0]
+        $validated = $request->validated();
+        $this->cartService->addToCart(
+            $validated['product_id'],
+            $validated['quantity'],
+            $request->input('size') // optional
         );
-        $cart->increment('quantity', $validated['quantity']);
-        return response()->json((['message'=>'Item added to the bag.']));
+
+        // Optionally return JSON if it's an AJAX request
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Added to cart successfully.']);
+        }
+
+        return redirect()->back()->with('success', 'Added to cart!');
     }
 
     /**
-     * Display the specified resource.
+     * Remove a cart item.
      */
-    public function show(string $id)
+    public function destroy($id)
     {
-        //
+        $this->cartService->removeFromCart($id);
+        return redirect()->back()->with('success', 'Item removed from cart.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show cart dropdown preview (partial for navbar).
      */
-    public function edit(string $id)
+    public function dropdownPreview()
     {
-        //
+        $data = $this->cartService->getDropdownPreview();
+        return view('components.cart-dropdown', $data);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Clear the entire cart.
      */
-    public function update(Request $request, string $id)
+    public function clear()
     {
-        //
-    }
-
-
-    /**
-     * Summary of destroy
-     * Deleteing the cart's data
-     * @param string $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(string $id)
-    {
-        //
-        $cart=Cart::findOrFail($id);
-        abort_if($cart->user_id !== Auth::id(),403);
-        $cart->delete();
-        return back()->with('success','Removed from the bag');
+        $this->cartService->clearCart();
+        return redirect()->back()->with('success', 'Cart cleared.');
     }
 }

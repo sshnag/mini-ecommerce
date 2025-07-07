@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
