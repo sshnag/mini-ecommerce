@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCategoryRequest extends FormRequest
+class StorePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,16 +16,16 @@ class StoreCategoryRequest extends FormRequest
 
     /**
      * Summary of rules
-     * @return array{default_sizes: string, name: string, size_type: string, slug: string}
+     * @return array{method: string, order_id: string, status: string, transaction_id: string}
      */
     public function rules(): array
     {
         return [
             //
-            'name'=>'required|string|max:255',
-            'slug'=>'required|string|unique:Categories,slug',
-            'size_type'=>'required|in:ring,bracelet,none',
-            'default_sizes'=>'nullable|array',
+            'order_id'=>'required|exists:orders,id',
+            'method'=>'required|in:paypal,card, cod',
+            'status'=>'required|in:paid,,failed, pending',
+            'transaction_id'=>'nullable|string',
         ];
     }
 }

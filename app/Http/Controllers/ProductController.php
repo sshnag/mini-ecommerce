@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use GuzzleHttp\Psr7\Request;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        // $product=Product::query()->when(value: $request->search,fn($q)=>$q->where('name','like',"{$request->search}%"))->when($request->category,fn($q)=>$q->where('category_id',$request->category))->paginate(12);
         return view('admin.products.index');
     }
 
@@ -33,7 +35,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         //
-        
+
     }
 
     /**
@@ -42,6 +44,8 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        $product->load('');
+        return view('');
     }
 
     /**

@@ -16,13 +16,14 @@ class StoreProductRequest extends FormRequest
     }
 
     /**
-     * Validation of ProductController
-     * @return array{description: string, image: string, name: string, price: string, stock: string, user_id: string}
+     * Summary of rules
+     * @return array{category_id: string, description: string, image: string, name: string, price: string, stock: string, user_id: string}
      */
     public function rules(): array
     {
         return [
             //
+            'user_id'=>'required|exists:users,id',
             'name'=>'required|string:255',
             'description'=>'required|text',
             'price'=>'required|numeric|1000,10000.00|decimal:5,2',
