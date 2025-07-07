@@ -3,7 +3,7 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
-class ProductServcie{
+class ProductService{
    /**
      * Creates a new product with a generated custom_id and optional image upload.
      *

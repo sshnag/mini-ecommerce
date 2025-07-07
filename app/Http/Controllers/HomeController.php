@@ -24,7 +24,12 @@ class HomeController extends Controller
      */
     public function index(Request $request,Product $product)
     {
-        $latestjewel=Product::latest('created_at');
+
+    $latestjewel = Product::with(['category'])
+        ->latest('created_at')
+        ->where('stock', '>', 0)
+        ->take(8)
+        ->get();
 
         return view('home',compact('product'));
     }
