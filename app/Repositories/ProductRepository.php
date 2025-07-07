@@ -3,11 +3,22 @@
   use App\Models\Product;
 class ProductRepository{
 
-    public function getAllWithPagination(int $perpage=5){
-        return Product::with(['categories','user'])->latest()->paginate($perpage);
+    public function allPaginated($perPage=8){
+        return Product::with('category')->latest()->paginate($perPage);
     }
-    public function getSupplierProducts(int $supplierId){
-            return Product::where('user_id',$supplierId)->with('categories')->latest()->get();
+    public function forUser($userid){
+        return Product::where('user_id',$userid)->latest()->get();
+
+    }
+    public function search($query){
+        return Product::where('name','like',"%$query%")->orWhere('description','like',"%query%")->get();
+
+    }
+    public function create(array $data){
+        return Product::create($data);
+    }
+    public function update(Product $product,array $data){
+        return $product->update($data);
     }
 }
 
