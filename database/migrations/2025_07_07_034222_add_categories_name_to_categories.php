@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::table('categories', function (Blueprint $table) {
             //
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->enum('size_type',['ring','bracelet','none'])->default('none');
+            $table->json('default_sizes')->nullable()->comment('JSON array of avaiable sizes');
+            $table->softDeletes();
         });
     }
 
@@ -23,11 +28,6 @@ return new class extends Migration
     {
         Schema::table('categories', function (Blueprint $table) {
             //
-               $table->string('name');
-            $table->string('slug')->unique();
-            $table->enum('size_type',['ring','bracelet','none'])->default('none');
-            $table->json('default_sizes')->nullable()->comment('JSON array of avaiable sizes');
-            $table->softDeletes();
         });
     }
 };

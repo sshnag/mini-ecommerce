@@ -11,7 +11,16 @@ use App\Models\Catgory;
 class Product extends Model
 {
     use SoftDeletes,HasFactory;
-     
+
+    protected $casts=[
+        'available_sizes'=>'array'
+    ];
+    public function getSizes(){
+        return $this->available_sizes ?? $this->category->default_sizes;
+    }
+    public function requiredSizes(){
+        return $this->category->size_type != 'none';
+    }
     public function categories(){
         return $this->belongsTo(Category::class);
     }

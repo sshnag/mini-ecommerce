@@ -18,8 +18,8 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
-     *
+     * Show the index home page showcasing the lastest jewels
+     *@author=SSA
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(Request $request)

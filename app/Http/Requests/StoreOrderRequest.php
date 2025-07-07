@@ -23,6 +23,9 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             //
+            'address_id'=>'required|exists:addresses,id',
+            'total_amount'=> 'required|numeric|min:0',
+            'status'=>'required|in:pending,paid,shipped, cancelled',
         ];
     }
 }

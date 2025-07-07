@@ -16,15 +16,20 @@ class StoreProductRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Validation of ProductController
+     * @return array{description: string, image: string, name: string, price: string, stock: string, user_id: string}
      */
     public function rules(): array
     {
         return [
             //
-            'name'=>'required|'
+            'name'=>'required|string:255',
+            'description'=>'required|text',
+            'price'=>'required|numeric|1000,10000.00|decimal:5,2',
+            'stock'=>'required|integer|min:0',
+            'image'=>'required|image|mimes:png,jpg|max:20480',
+            'category_id' => 'required|exists:categories,id',
+
         ];
     }
 }

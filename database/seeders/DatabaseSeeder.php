@@ -17,18 +17,6 @@ class DatabaseSeeder extends Seeder
     ]
 
     );
-    // Seed users
-    $users = User::all();
-    foreach ($users as $user) {
-        $user->custom_id = 'USER-' . str_pad($user->id, 6, '0', STR_PAD_LEFT);
-        $user->save();
-    }
 
-    // Seed products
-    $products = Product::all();
-    foreach ($products as $product) {
-        $product->custom_id = 'PROD-' . str_pad($product->id, 6, '0', STR_PAD_LEFT);
-        $product->save();
-    }
 }
 }

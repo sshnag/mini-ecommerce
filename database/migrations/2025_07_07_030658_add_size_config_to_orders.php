@@ -6,19 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
-
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-         $table->string('name');
-            $table->string('slug')->unique();
-            $table->enum('size_type',['ring','bracelet','none'])->default('none');
-            $table->json('default_sizes')->nullable()->comment('JSON array of avaiable sizes');
+        Schema::table('orders', function (Blueprint $table) {
+            //  $table->id();
+
+            $table->decimal('total_amount',10,2);
+            $table->enum('status',['pending','paid','shipped','cancelled'])->default('pending');
             $table->softDeletes();
         });
     }
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::table('orders', function (Blueprint $table) {
+            //
+        });
     }
 };
