@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAddressRequest;
 use Illuminate\Http\Request;
+use App\Models\Address;
+use Illuminate\Support\Facades\Auth;
 
 
 class AddressController extends Controller
@@ -13,7 +16,8 @@ class AddressController extends Controller
     public function index()
     {
         //
-
+        $addresses=Address::where('user_id'!==Auth::id())->get();
+        return view('profile.addresses',compact('addresses'));
     }
 
     /**
@@ -27,9 +31,13 @@ class AddressController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAddressRequest $request)
     {
         //
+        $data=$request->validated();
+        $data['user_id']=Auth::id();
+        Address::create($data);
+        return back()->with('success','Address saved');
 
     }
 

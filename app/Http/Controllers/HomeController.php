@@ -26,6 +26,6 @@ class HomeController extends Controller
     {
         $latestjewel=Product::latest('created_at');
 
-        return view('home');
+        return view('home',compact('products'));
     }
 }

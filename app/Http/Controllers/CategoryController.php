@@ -14,6 +14,8 @@ class CategoryController extends Controller
     public function index()
     {
         //
+        $categories=Category::paginate(5);
+        return view('admin.categories.index',compact('categories'));
     }
 
     /**
@@ -22,6 +24,7 @@ class CategoryController extends Controller
     public function create()
     {
         //
+        return view('admin.categories.create');
     }
 
     /**
@@ -30,6 +33,9 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         //
+        Category::create($request->validated());
+        return redirect()->route('admin.categories.index')->with('success','Category is added');
+
     }
 
     /**
@@ -46,6 +52,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         //
+        return view('admin.categories.edit',compact('category'));
     }
 
     /**
@@ -54,6 +61,8 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         //
+        $category->delete();
+        return back()->with('Success','category is Updated');
     }
 
     /**
@@ -62,5 +71,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+        $category->delete();
+        return view('admin.categories.index')->with('success','Category is archieved');
     }
 }

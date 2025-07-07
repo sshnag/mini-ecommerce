@@ -13,6 +13,9 @@ class UserController extends Controller
     public function index()
     {
         //
+        $users=User::with('role')->get();
+        return view('superadmin.users.index',compact('users'));
+
     }
 
     /**
@@ -21,6 +24,7 @@ class UserController extends Controller
     public function create()
     {
         //
+        return view('superadmin.users.create');
     }
 
     /**
@@ -29,6 +33,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+        
+
     }
 
     /**

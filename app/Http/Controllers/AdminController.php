@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Database\Eloquent\ComparesCastableAttributes;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -12,6 +14,8 @@ class AdminController extends Controller
     public function index()
     {
         //
+        $admins=User::role(['admin','supplier'])->get();
+        return view('admin.users.index',compact('admins'));
     }
 
     /**
