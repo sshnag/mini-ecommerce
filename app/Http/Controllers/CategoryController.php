@@ -9,7 +9,8 @@ use App\Http\Requests\UpdateCategoryRequest;
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Displaying categories lists (only admin and superadmin view)
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -19,7 +20,9 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Summary of create
+     * Inserting new categories
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -28,7 +31,10 @@ class CategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Summary of store
+     * stroing categories' data
+     * @param \App\Http\Requests\StoreCategoryRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreCategoryRequest $request)
     {
@@ -47,7 +53,10 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Summary of edit
+     * Editing the categories' datas
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(Category $category)
     {
@@ -56,7 +65,11 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Summary of update
+     * updating the categories' data
+     * @param \App\Http\Requests\UpdateCategoryRequest $request
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
@@ -66,7 +79,10 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Summary of destroy
+     * deleting the seleted category's data
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Contracts\View\View
      */
     public function destroy(Category $category)
     {

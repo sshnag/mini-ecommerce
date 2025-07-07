@@ -15,13 +15,11 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         //
-        // $product=Product::query()->when(value: $request->search,fn($q)=>$q->where('name','like',"{$request->search}%"))->when($request->category,fn($q)=>$q->where('category_id',$request->category))->paginate(12);
-        return view('admin.products.index');
+        //  $product=Product::query()->when(value: $request->search,fn($q)=>$q->where('name','like',"{$request->search}%"))->when($request->category,fn($q)=>$q->where('category_id',$request->category))->paginate(12);
+        return view('admin.products.index',compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         //
@@ -39,13 +37,16 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Summary of show
+     * Displaying the products list(such ad product details)
+     * @param \App\Models\Product $product
+     * @return \Illuminate\Contracts\View\View
      */
     public function show(Product $product)
     {
         //
         $product->load('');
-        return view('admin.products.show');
+        return view('products.show',compact('product'));
     }
 
     /**

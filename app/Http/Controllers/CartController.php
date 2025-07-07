@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class CartController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+     * Displaying the cart
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -27,7 +29,10 @@ class CartController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Summary of store
+     * Storing the cart's data
+     * @param \App\Http\Requests\StoreCartRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function store(StoreCartRequest $request)
     {
@@ -68,8 +73,12 @@ class CartController extends Controller
         //
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Summary of destroy
+     * Deleteing the cart's data
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(string $id)
     {

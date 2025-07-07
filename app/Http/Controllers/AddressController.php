@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 class AddressController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+     * Displaying the address data
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -29,7 +31,10 @@ class AddressController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Summary of store
+     * Storing the address data
+     * @param \App\Http\Requests\StoreAddressRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreAddressRequest $request)
     {

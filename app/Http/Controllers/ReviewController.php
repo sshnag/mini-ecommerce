@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    //
+    /**
+     * Summary of store
+     * Storing Reviews' data from customer
+     * @param \App\Http\Requests\StoreReviewRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreReviewRequest $request){
         $data=$request->validated();
         $data['user_id']=Auth::id();

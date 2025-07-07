@@ -9,7 +9,9 @@ use App\Models\User;
 class AdminController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+     * displaying users list admin view
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {

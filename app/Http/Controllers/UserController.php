@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+     * Displaying users ;ists from superadmin site
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -19,7 +22,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Summary of create
+     * Inserting new users from superdamin site only
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -28,13 +33,26 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Summary of store
+     * Storing Users' data from create form
+     * @param \App\Http\Requests\StoreUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         //
-        
+        $data=$request->validated();
+        $user=User::create([
+            'name'=>$data['name'],
+            'email'=>$data['email'],
+            'password'=>bcrypt($data['password']),
+        ]);
+        if (isset($data['role'])) {
+            # code...
+            $user->assignRole($data['role']);
 
+        }
+        return redirect()->route('superadmin.users.index')->with('succeess','New User Added!');
     }
 
     /**
@@ -51,6 +69,7 @@ class UserController extends Controller
     public function edit(Request $request)
     {
         //
+        return view('superadmin.users.edit',compact('user'));
     }
 
     /**

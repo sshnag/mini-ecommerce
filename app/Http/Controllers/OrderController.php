@@ -13,7 +13,9 @@ use App\Models\OrderItem;
 class OrderController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+     * displaying orders's list
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -21,6 +23,12 @@ class OrderController extends Controller
         $orders=Order::with('orderItems.products')->where('user_id',Auth::id())->latest()->get();
         return view('orders.index',compact('orders'));
     }
+    /**
+     * Summary of show
+     * displaying orderitems
+     * @param \App\Models\Order $order
+     * @return \Illuminate\Contracts\View\View
+     */
     public function show(Order $order)
     {
         abort_if($order->user_id !==Auth::id(),403);
@@ -37,7 +45,10 @@ class OrderController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Summary of store
+     * storing orders' data
+     * @param \App\Http\Requests\StoreOrderRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreOrderRequest $request)
     {
@@ -85,5 +96,7 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+        $order->delete();
+        return back()->with('success','Order is archieved');
     }
 }
