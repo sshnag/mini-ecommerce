@@ -70,7 +70,7 @@
         <div class="modal-content">
             <h3 class="text-2xl font-serif mb-6">SELECT SIZE</h3>
             <div class="size-options grid grid-cols-4 gap-3 mb-8">
-                <!-- Dynamically filled with JavaScript -->
+                <!-- Dynamically filled via JavaScript -->
             </div>
             <button class="modal-close">CANCEL</button>
         </div>

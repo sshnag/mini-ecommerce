@@ -1,51 +1,68 @@
-<x-guest-layout>
-    <div class="auth-container">
-        <div class="auth-card">
-            <!-- Brand Header -->
-            <div class="brand-header">
-                <h1 class="brand-title">CARTIER</h1>
-                <p class="brand-tagline">Timeless Elegance</p>
-            </div>
+@extends('layouts.app')
 
-            <!-- Login Form -->
-            <form method="POST" action="{{ route('login') }}" class="auth-form">
+@section('title', 'Sign In')
+
+@push('style')
+<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+@endpush
+
+@section('content')
+<div class="login-wrapper">
+    <div class="login-grid">
+
+        <div class="login-left">
+            <h2 class="login-title">Sign In</h2>
+            <p class="login-subtitle">Please sign in to your Tiffany Account.</p>
+
+            <form method="POST" action="{{ route('login') }}" class="login-form">
                 @csrf
 
-                <!-- Email Field -->
-                <div class="form-field">
-                    <label for="email" class="input-label">Email Address</label>
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
                     <input type="email" name="email" id="email"
-                           class="form-control"
-                           value="{{ old('email') }}"
-                           required autofocus
-                           placeholder="your@email.com">
+                           class="form-input"
+                           value="{{ old('email') }}"  autofocus>
                     @error('email')
-                        <span class="form-error">{{ $message }}</span>
+                        <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <!-- Password Field -->
-                <div class="form-field">
-                    <label for="password" class="input-label">Password</label>
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
                     <input type="password" name="password" id="password"
-                           class="form-control"
-                           required
-                           placeholder="••••••••">
+                           class="form-input" >
                     @error('password')
-                        <span class="form-error">{{ $message }}</span>
+                        <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="auth-button">
-                    Sign In
-                </button>
+                <!-- Submit -->
+                <button type="submit" class="submit-button">Sign In</button>
+
+                <!-- Forgot -->
+                @if (Route::has('password.request'))
+                <div class="forgot-link">
+                    <a href="{{ route('password.request') }}">Forgot your password?</a>
+                </div>
+                @endif
             </form>
         </div>
-    </div>
 
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    @endpush
-</x-guest-layout>
+        <!-- Divider -->
+        <div class="login-divider"></div>
+        <!-- Register -->
+        <div class="login-right">
+            <h2 class="login-title">Create an Account</h2>
+            <p class="login-subtitle">
+                Save time during checkout, view your shopping bag and saved items from any device and access your order history.
+            </p>
+
+            <a href="" class="submit-button create-button">
+                Register
+            </a>
+        </div>
+    </div>
+</div>
+@endsection

@@ -1,4 +1,4 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
+    import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
@@ -14,6 +14,11 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+             colors: {
+        gold: {
+          500: '#C5A45B', // Tiffany-style gold
+        }
+      }
         },
     },
 

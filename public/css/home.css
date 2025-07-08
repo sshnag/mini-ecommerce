@@ -1,4 +1,4 @@
-    @import "tailwindcss";
+/* Luxury Color Palette */
 :root {
     --gold: #CBB682;
     --gold-dark: #B39F6B;
@@ -8,10 +8,20 @@
 }
 
 /* Base Styles */
+body{
+    padding: 0;
+    margin: 0;
+}
 body.luxury-home {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
     font-family: 'Playfair Display', serif;
     color: var(--black);
     line-height: 1.6;
+    margin: 0;
+    padding: 0;
 }
 
 /* Navigation */
@@ -42,7 +52,7 @@ body.luxury-home {
     display: flex;
     align-items: center;
     text-align: center;
-    padding-top: 80px; /* Offset for fixed nav */
+    padding-top: 80px;
 }
 
 /* Product Cards */
@@ -111,7 +121,3 @@ body.luxury-home {
     cursor: pointer;
 }
 
-/* Footer */
-.luxury-footer {
-    border-top: 1px solid rgba(255,255,255,0.1);
-}
