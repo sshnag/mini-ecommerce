@@ -1,0 +1,123 @@
+/* Base Styles */
+:root {
+    --gold: #9A7B4F;
+    --gold-light: #C4A87A;
+    --gold-dark: #7A5C3C;
+    --ivory: #F8F4E9;
+    --charcoal: #333333;
+    --gray-light: #E5E5E5;
+    --gray-medium: #CCCCCC;
+}
+
+body {
+    background-color: var(--ivory);
+    font-family: 'Montserrat', sans-serif;
+    color: var(--charcoal);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container Styles */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    padding: 2.5rem;
+    text-align: center;
+}
+
+/* Brand Header */
+.brand-header {
+    margin-bottom: 2.5rem;
+}
+
+.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    letter-spacing: 1px;
+    margin: 0 0 0.5rem 0;
+}
+
+.brand-tagline {
+    font-size: 0.875rem;
+    color: var(--gold);
+    margin: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Form Styles */
+.auth-form {
+    text-align: left;
+}
+
+.form-field {
+    margin-bottom: 1.75rem;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--charcoal);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 0;
+    border: none;
+    border-bottom: 1px solid var(--gray-medium);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.form-control:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+}
+
+.form-control::placeholder {
+    color: var(--gray-medium);
+}
+
+.form-error {
+    display: block;
+    font-size: 0.8125rem;
+    color: #D32F2F;
+    margin-top: 0.5rem;
+}
+
+/* Auth Button */
+.auth-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--gold);
+    color: white;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2rem;
+}
+
+.auth-button:hover {
+    background-color: var(--gold-dark);
+}

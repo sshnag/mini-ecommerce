@@ -31,7 +31,7 @@
     <!-- Hero Section -->
     <section class="luxury-hero">
         <div class="container mx-auto px-6 py-32 text-center">
-            <h1 class="text-5xl font-serif text-white mb-6">Timeless Elegance</h1>
+            <h1 class="text-5xl font-serif text-black mb-6">Timeless Elegance</h1>
             <p class="text-xl text-white mb-8">Discover our latest collection of handcrafted jewels</p>
             <a href="#featured" class="bg-gold hover:bg-gold-dark text-black px-8 py-3 font-medium transition">View Collection</a>
         </div>
@@ -70,7 +70,7 @@
         <div class="modal-content">
             <h3 class="text-2xl font-serif mb-6">SELECT SIZE</h3>
             <div class="size-options grid grid-cols-4 gap-3 mb-8">
-                <!-- Dynamically filled via JavaScript -->
+                <!-- Dynamically filled with JavaScript -->
             </div>
             <button class="modal-close">CANCEL</button>
         </div>

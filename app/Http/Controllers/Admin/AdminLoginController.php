@@ -15,7 +15,7 @@ class AdminLoginController extends Controller
             $this->middleware('guest:admin')->except('logout');
      }
      public function showLoginForm(){
-        return view('admin.login');
+        return view('auth.admin-login');
      }
      public function login(Request $request){
         $credentials=$request->validate([
