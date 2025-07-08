@@ -13,12 +13,14 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                        serif: ['Playfair Display', 'serif'],
+
             },
-             colors: {
-        gold: {
-          500: '#C5A45B', // Tiffany-style gold
-        }
-      }
+           gold: {
+                    DEFAULT: '#c5a45b',
+                    dark: '#a78a4a',
+                },
+
         },
     },
 
