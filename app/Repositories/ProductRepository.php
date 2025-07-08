@@ -20,5 +20,12 @@ class ProductRepository{
     public function update(Product $product,array $data){
         return $product->update($data);
     }
+    public function getLatestJewels($limit=8){
+       return Product::with(['category'])
+            ->where('stock', '>', 0)
+            ->latest('created_at')
+            ->take($limit)
+            ->get();
+    }
 }
 

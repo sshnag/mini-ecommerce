@@ -1,4 +1,4 @@
-/* Luxury Color Palette */
+    @import "tailwindcss";
 :root {
     --gold: #CBB682;
     --gold-dark: #B39F6B;

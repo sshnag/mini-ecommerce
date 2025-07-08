@@ -1,20 +1,25 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
+        protected $productRepository;
     /**
+     *
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+
+    public function __construct(ProductRepository $productRepository)
     {
         $this->middleware('auth')->except(['index']);
+        $this->productRepository=$productRepository;
     }
 
     /**
@@ -22,15 +27,8 @@ class HomeController extends Controller
      *@author=SSA
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request,Product $product)
+    public function index()
     {
-
-    $latestjewel = Product::with(['category'])
-        ->latest('created_at')
-        ->where('stock', '>', 0)
-        ->take(8)
-        ->get();
-
-        return view('home',compact('product'));
-    }
+        return view('home',['latestjewel'=>$this->productRepository->getLatestJewels(8)]);
+        }
 }

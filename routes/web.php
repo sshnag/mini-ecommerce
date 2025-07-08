@@ -13,15 +13,15 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
 use App\Models\Supplier;
 
-// Guest Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-// Authenticated User Routes
+//  User Routes
 Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
 
     // Cart
@@ -47,11 +47,8 @@ Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(functi
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Admin Routes
-Route::prefix('admin')
-    ->middleware(['auth', 'role:admin|superadmin'])
-    ->name('admin.')
-    ->group(function () {
+// Admin/superadmin Routes
+Route::prefix('admin')->middleware(['auth', 'role:admin|superadmin'])->name('admin.')->group(function () {
 
     // Categories
     Route::resource('categories', CategoryController::class)->except(['show']);
@@ -77,12 +74,9 @@ Route::prefix('supplier')
 });
 
 // Superadmin Routes
-Route::prefix('superadmin')
-    ->middleware(['auth', 'role:superadmin'])
-    ->name('superadmin.')
-    ->group(function () {
+Route::prefix('superadmin')->middleware(['auth', 'role:superadmin'])->name('superadmin.')    ->group(function () {
 
-    // Manage all users by superadmin
+    // Manage all users
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('users', [UserController::class, 'store'])->name('users.store');
