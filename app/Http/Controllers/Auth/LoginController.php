@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
+use App\Models\User;
 class LoginController extends Controller
 {
+    use HasRoles;
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
@@ -15,7 +18,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return view('auth.user-login'); // Regular user login view
+        return view('auth.login'); // Regular user login view
     }
 
     public function login(Request $request)
@@ -30,13 +33,14 @@ class LoginController extends Controller
         }
 
         // Block admin access through this route
-        if (Auth::user()->hasRole(['superadmin', 'admin'])) {
-            Auth::logout();
-            return back()->withErrors(['email' => 'Admin access denied here']);
-        }
+    $user = User::with('roles')->find(Auth::id());
+ if ($user->hasRole(['superadmin', 'admin'])) {
+        Auth::logout();
+        return back()->withErrors(['email' => 'Please use admin login']);
+    }
 
         $request->session()->regenerate();
-        return redirect()->intended(route('user.dashboard'));
+        return redirect()->intended(route('home'));
     }
 
     public function logout(Request $request)

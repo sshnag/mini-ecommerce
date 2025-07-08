@@ -14,9 +14,12 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
 use App\Models\Supplier;
 
+Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
+Route::post('/login',[LoginController::class,'login']);
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
@@ -50,6 +53,8 @@ Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(functi
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['auth', 'role:admin|superadmin'])->name('admin.')->group(function () {
 
+    //Login
+    Route::get('/admin/login',[AdminLoginController::class,'showLoginForm'])->name('login');
     // Categories
     Route::resource('categories', CategoryController::class)->except(['show']);
 
@@ -58,10 +63,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin|superadmin'])->name('adm
 });
 
 // Supplier Routes
-Route::prefix('supplier')
-    ->middleware(['auth', 'role:supplier'])
-    ->name('supplier.')
-    ->group(function () {
+Route::prefix('supplier')->middleware(['auth', 'role:supplier'])->name('supplier.')->group(function () {
 
     // Manage own products
     Route::get('products', [SupplierProductController::class, 'index'])->name('products.index');
