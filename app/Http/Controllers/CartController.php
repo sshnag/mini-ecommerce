@@ -33,25 +33,26 @@ class CartController extends Controller
      * Add item to cart (for AJAX or regular POST).
      */
     public function store(StoreCartRequest $request)
-    {
-        try{
+{
+    try {
         $validated = $request->validated();
         $this->cartService->addToCart(
             $validated['product_id'],
-            $validated['quantity'],
-            $request->input('size') // optional
+            $validated['quantity']
         );
 
-            return response()->json(['success'=>true,'message' => 'Added to cart successfully.']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Added to cart successfully'
+        ]);
 
-} catch (\Exception $e) {
+    } catch (\Exception $e) {
         return response()->json([
             'success' => false,
             'message' => $e->getMessage()
         ], 500);
     }
-    }
-
+}
     /**
      * Remove a cart item.
      */

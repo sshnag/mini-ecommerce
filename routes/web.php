@@ -15,12 +15,17 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
 use App\Models\Supplier;
 
+//login
 Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
 Route::post('/login',[LoginController::class,'login']);
 Route::get('/logout',[LoginController::class,'logout'])->name('logout');
+//register
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
