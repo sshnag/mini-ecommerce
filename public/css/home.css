@@ -8,21 +8,25 @@
 }
 
 /* Base Styles */
-body{
+body {
     padding: 0;
     margin: 0;
-}
-body.luxury-home {
-    display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
     font-family: 'Playfair Display', serif;
     color: var(--black);
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
+.luxury-home{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 
+}
+main{
+   display: flex;
+}
 /* Navigation */
 .luxury-nav {
     background-color: var(--white);
@@ -52,27 +56,21 @@ body.luxury-home {
     align-items: center;
     text-align: center;
     padding-top: 80px;
-}
-.luxury-hero {
-    background-image: url('/images/hero1.jpg');
-    min-height: 80vh;
+    margin-top: 64px; /* Account for fixed navbar */
 }
 
 .h-screen-80 {
     height: 80vh;
 }
 
-.text-gold {
-    color: #c5a45b;
-}
-
 .bg-gold {
-    background-color: #c5a45b;
+    background-color: var(--gold);
 }
 
 .bg-gold-dark {
-    background-color: #a78a4a;
+    background-color: var(--gold-dark);
 }
+
 /* Product Cards */
 .luxury-product-card {
     transition: all 0.3s ease;
@@ -138,16 +136,43 @@ body.luxury-home {
     border: none;
     cursor: pointer;
 }
-.responsive-footer{
-    bottom: 0;
 
+/* Footer */
+.luxury-footer {
+    margin-top: auto;
 }
-@media (max-width: 640px) {
-    .responsive-footer {
-        padding: 0;
-        margin: 0;
-        font-size: 0.9rem;
-        margin-top: 10rem;
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .luxury-hero {
+        height: 60vh;
+        margin-top: 56px; /* Smaller navbar on mobile */
     }
 
+    .luxury-nav {
+        padding: 0.5rem 0;
+    }
+
+    .luxury-footer {
+        padding: 2rem 1rem;
+    }
+
+    .luxury-footer .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .luxury-hero {
+        height: 50vh;
+    }
+
+    .luxury-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .luxury-hero p {
+        font-size: 1rem;
+    }
 }

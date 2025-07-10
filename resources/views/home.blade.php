@@ -1,5 +1,8 @@
 @extends('layouts.app')
-
+@section('title','Home')
+@push('style')
+    <link rel="stylesheet" href="{{asset('css/home.css')}}">
+@endpush
 @section('content')
     <!-- Hero Section -->
     <section class="luxury-hero bg-cover bg-center h-screen-80 flex items-center">

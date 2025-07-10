@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
-use App\Models\Address;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Review>
  */
-class OrderFactory extends Factory
+class ReviewFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,7 +20,10 @@ class OrderFactory extends Factory
         return [
             //
             'user_id'=>User::inRandomOrder()->first()?->id,
-            'address_id'=>
+            'product_id'=>Product::inRandomOrder()->first()?->id,
+            'rating'=>fake()->numberBetween(1,5),
+            'comment'=>fake()->sentence(8),
+
         ];
     }
 }

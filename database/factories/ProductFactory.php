@@ -20,15 +20,16 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
             //
             'id'=>(string)Str::uuid(),
-            'user_id'=>User::role('supplier')->inRandomOrder()->first()->id,
+            'user_id'=>User::whereHas('roles',fn($q)=>$q->where('name','supplier'))->inRandomOrder()->first()?->id,
             'category_id'=>Category::inRandomOrder()->first()->id,
             'name'=>fake()->words(2,true),
             'description'=>fake()->paragraph(),
-            'price'=>fake()->randomFloat(2,50,100),
-            'stock'=>fake()->numberBetween(10,100),
+            'price'=>fake()->randomFloat(2,100,100),
+            'stock'=>fake()->numberBetween(5,50),
             'image'=>'images/products/sample'.rand(1,5) .'.jpg',
 
         ];

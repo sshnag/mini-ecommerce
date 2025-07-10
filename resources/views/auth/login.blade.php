@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Sign In')
+@section('body-class', 'luxury-login')
+@section('main-class', 'login-main')
 
 @push('style')
 <link rel="stylesheet" href="{{ asset('css/login.css') }}">

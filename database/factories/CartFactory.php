@@ -4,11 +4,11 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
-use App\Models\Address;
+use App\Models\Product;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cart>
  */
-class OrderFactory extends Factory
+class CartFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,7 +20,8 @@ class OrderFactory extends Factory
         return [
             //
             'user_id'=>User::inRandomOrder()->first()?->id,
-            'address_id'=>
+            'product_id'=>Product::inRandomOrder()->firsT()?->id,
+            'quamtity'=>fake()->numberBetween(1,3)
         ];
     }
 }

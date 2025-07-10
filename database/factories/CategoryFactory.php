@@ -19,7 +19,7 @@ class CategoryFactory extends Factory
         return [
             //
                 'name' => fake()->unique()->word(),
-
+                'size_type'=>fake()->randomElement(['ring','bracelet','none'])
         ];
     }
 }

@@ -4,11 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
-use App\Models\Address;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Address>
  */
-class OrderFactory extends Factory
+class AddressFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,7 +19,10 @@ class OrderFactory extends Factory
         return [
             //
             'user_id'=>User::inRandomOrder()->first()?->id,
-            'address_id'=>
+            'street'=>fake()->streetAddress(),
+            'city'=>fake()->city(),
+            'postal_code'=>fake()->postcode(),
+            'country'=>fake()->country()
         ];
     }
 }

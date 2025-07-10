@@ -9,14 +9,32 @@ body {
     background-color: var(--white);
     font-family: 'Playfair Display', serif;
     color: var(--black);
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
 }
-
+.luxury-login{
+    background-color: var(--white);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 .login-wrapper {
     display: flex;
     justify-content: center;
     padding: 80px 20px;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
 }
+.login-main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3 rem;
+    flex-grow: 1;
 
+}
 .login-grid {
     display: grid;
     grid-template-columns: 1fr 1px 1fr;
@@ -120,7 +138,5 @@ body {
         padding-right: 0;
         margin-bottom: 2rem;
     }
-.submit-button{
 
-}
 }
