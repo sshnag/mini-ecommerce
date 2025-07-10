@@ -17,11 +17,13 @@ class CartFactory extends Factory
      */
     public function definition(): array
     {
+        $user=User::inRandomOrder()->first();
+        $product = Product::inRandomOrder()->first() ?? Product::factory()->create();
         return [
             //
-            'user_id'=>User::inRandomOrder()->first()?->id,
-            'product_id'=>Product::inRandomOrder()->firsT()?->id,
-            'quamtity'=>fake()->numberBetween(1,3)
+            'user_id'=>$user?->id,
+            'product_id'=>$product?->id,
+            'quantity'=>fake()->numberBetween(1,3)
         ];
     }
 }

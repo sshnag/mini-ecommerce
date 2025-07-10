@@ -1,28 +1,25 @@
 <?php
 
+
+
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Address;
 use App\Models\User;
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Address>
- */
+use Illuminate\Database\Eloquent\Factories\Factory;
+
 class AddressFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Address::class;
+
     public function definition(): array
     {
         return [
-            //
-            'user_id'=>User::inRandomOrder()->first()?->id,
-            'street'=>fake()->streetAddress(),
-            'city'=>fake()->city(),
-            'postal_code'=>fake()->postcode(),
-            'country'=>fake()->country()
+            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
+            'street' => $this->faker->streetAddress,
+            'city' => $this->faker->city,
+            'postal_code' => $this->faker->postcode,
+            'country' => $this->faker->country,
         ];
     }
 }

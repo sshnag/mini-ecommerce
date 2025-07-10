@@ -12,6 +12,22 @@ class Product extends Model
 {
     use SoftDeletes,HasFactory;
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected $fillable = [
+        'id',
+        'custom_id',
+        'user_id',
+        'category_id',
+        'supplier_id',
+        'name',
+        'description',
+        'price',
+        'stock',
+        'image',
+        'available_sizes'
+    ];
     protected $casts=[
         'available_sizes'=>'array'
     ];
@@ -32,8 +48,9 @@ class Product extends Model
         parent::boot();
 
         static::creating(function ($product) {
-            $lastId = Product::withTrashed()->max('id') ?? 0;
-            $product->custom_id = 'PROD-' . str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
+                        $product->id = (string) Str::uuid();
+            $nextNumber=Product::withTrashed()->count()+1;
+            $product->custom_id = 'PROD-' . str_pad($nextNumber , 6, '0', STR_PAD_LEFT);
         });
     }
 }

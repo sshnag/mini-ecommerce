@@ -20,7 +20,9 @@ class OrderFactory extends Factory
         return [
             //
             'user_id'=>User::inRandomOrder()->first()?->id,
-            'address_id'=>
+            'address_id'=>Address::inRandomOrder()->first()?->id,
+            'total_amount'=>fake()->randomFloat(1,100,1000),
+            'status'=>fake()->randomElement(['pending','paid','shipped','cancelled'])
         ];
     }
 }

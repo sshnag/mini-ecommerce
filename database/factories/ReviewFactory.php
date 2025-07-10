@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 /**
@@ -15,8 +16,11 @@ class ReviewFactory extends Factory
      *
      * @return array<string, mixed>
      */
+        protected $model = Review::class;
+
     public function definition(): array
     {
+
         return [
             //
             'user_id'=>User::inRandomOrder()->first()?->id,

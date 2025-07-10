@@ -21,10 +21,12 @@ class ProductFactory extends Factory
     public function definition(): array
     {
 
+        $user = User::role('supplier')->inRandomOrder()->first();
+
         return [
             //
             'id'=>(string)Str::uuid(),
-            'user_id'=>User::whereHas('roles',fn($q)=>$q->where('name','supplier'))->inRandomOrder()->first()?->id,
+            'user_id'=>$user?->id ?? User::factory()->create()->id,
             'category_id'=>Category::inRandomOrder()->first()->id,
             'name'=>fake()->words(2,true),
             'description'=>fake()->paragraph(),

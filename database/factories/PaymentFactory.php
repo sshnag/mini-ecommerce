@@ -19,9 +19,9 @@ class PaymentFactory extends Factory
         return [
             //
             'order_id'=>Order::inRandomOrder()->first()?->id,
-            'method'=>fake()->randomElement(['paypal','card','cash']),
-            'status'=>fake()->randomElement(['paid','pending','failed']),
-            'transaction_id'=>fake()->uuid()
+            'method'=>$this->faker->randomElement(['paypal','card','cod']),
+            'status'=>$this->faker->randomElement(['paid','pending','failed']),
+            'transaction_id'=>$this->faker->uuid,
         ];
     }
 }
