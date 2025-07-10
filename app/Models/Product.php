@@ -5,18 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
-use App\Models\Catgory;
 
 class Product extends Model
 {
-    use SoftDeletes,HasFactory;
-
-    protected $keyType = 'string';
-    public $incrementing = false;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
-        'id',
         'custom_id',
         'user_id',
         'category_id',
@@ -28,29 +22,44 @@ class Product extends Model
         'image',
         'available_sizes'
     ];
-    protected $casts=[
-        'available_sizes'=>'array'
+
+    protected $casts = [
+        'available_sizes' => 'array'
     ];
-    public function getSizes(){
+
+    public function getSizes()
+    {
         return $this->available_sizes ?? $this->category->default_sizes;
     }
-    public function requiredSizes(){
+
+    public function requiredSizes()
+    {
         return $this->category->size_type != 'none';
     }
-    public function categories(){
+
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
-    public function suppliers(){
+
+    public function supplier()
+    {
         return $this->belongsTo(Supplier::class);
     }
+
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($product) {
-                        $product->id = (string) Str::uuid();
-            $nextNumber=Product::withTrashed()->count()+1;
-            $product->custom_id = 'PROD-' . str_pad($nextNumber , 6, '0', STR_PAD_LEFT);
+            $nextNumber = Product::withTrashed()->count() + 1;
+            $product->custom_id = 'PROD-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         });
+    }
+
+    // Use custom_id for route model binding
+    public function getRouteKeyName()
+    {
+        return 'custom_id';
     }
 }

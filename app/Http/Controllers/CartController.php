@@ -34,6 +34,7 @@ class CartController extends Controller
      */
     public function store(StoreCartRequest $request)
     {
+        try{
         $validated = $request->validated();
         $this->cartService->addToCart(
             $validated['product_id'],
@@ -41,12 +42,14 @@ class CartController extends Controller
             $request->input('size') // optional
         );
 
-        // Optionally return JSON if it's an AJAX request
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Added to cart successfully.']);
-        }
+            return response()->json(['success'=>true,'message' => 'Added to cart successfully.']);
 
-        return redirect()->back()->with('success', 'Added to cart!');
+} catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
     }
 
     /**

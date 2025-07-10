@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->uuid('id')->primary();  // Fixed: Added column name and primary()
+            $table->id('id')->primary();  // Fixed: Added column name and primary()
             $table->string('custom_id')->unique();
             $table->foreignId('user_id')->constrained();
             $table->string('name');

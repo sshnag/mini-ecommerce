@@ -58,33 +58,74 @@
 
 @push('scripts')
 <script>
-    // Product card interaction
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to bag functionality
     document.querySelectorAll('.luxury-add-to-bag').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const productId = e.target.dataset.productId;
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const button = this;
 
-            if (e.target.dataset.isJewelry === 'true') {
-                showSizeModal(productId);
-            } else {
-                addToCart(productId);
+            // Show loading state
+            const originalText = button.textContent;
+            button.textContent = 'Adding...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch('{{ route("cart.store") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add to cart');
+                }
+
+                const data = await response.json();
+
+                // Show success notification
+                showNotification('Item added to bag successfully!');
+
+                // Update cart count if element exists
+                const cartCount = document.querySelector('.cart-count');
+                if (cartCount) {
+                    cartCount.textContent = (parseInt(cartCount.textContent) || 0) + 1;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification(error.message, 'error');
+            } finally {
+                // Reset button state
+                button.textContent = originalText;
+                button.disabled = false;
             }
         });
     });
 
-    function showSizeModal(productId) {
-        const modal = document.getElementById('sizeModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
+    // Notification function
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
 
-    function addToCart(productId, size = null) {
-        // AJAX implementation would go here
-        console.log(`Adding product ${productId} with size ${size}`);
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
-
-    // Close modal when clicking cancel
-    document.querySelector('.modal-close').addEventListener('click', () => {
-        document.getElementById('sizeModal').classList.add('hidden');
-    });
+});
 </script>
+
 @endpush

@@ -23,22 +23,13 @@
                 <h3 class="text-gold font-serif mb-4">Customer Service</h3>
                 <ul class="space-y-2">
                     <li><a href="#" class="hover:text-gold transition-colors duration-300">Contact Us</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Shipping & Returns</a></li>
                     <li><a href="#" class="hover:text-gold transition-colors duration-300">Product Care</a></li>
                     <li><a href="#" class="hover:text-gold transition-colors duration-300">FAQ</a></li>
                 </ul>
             </div>
 
-            <!-- About -->
-            <div>
-                <h3 class="text-gold font-serif mb-4">About</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Our Story</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Sustainability</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Careers</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Press</a></li>
-                </ul>
-            </div>
+
+
         </div>
 
         <!-- Bottom Footer -->
