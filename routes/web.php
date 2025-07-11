@@ -16,17 +16,19 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
 use App\Models\Supplier;
 
 //login
 Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
 Route::post('/login',[LoginController::class,'login']);
-Route::get('/logout',[LoginController::class,'logout'])->name('logout');
+Route::post('/logout',[LoginController::class,'logout'])->name('logout');
 //register
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
@@ -56,17 +58,17 @@ Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(functi
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminLoginController::class, 'login']);
+Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
 // Admin/superadmin Routes
-Route::prefix('admin')->middleware(['auth', 'role:admin|superadmin'])->name('admin.')->group(function () {
-
-    //Login
-    Route::get('/admin/login',[AdminLoginController::class,'showLoginForm'])->name('login');
-    // Categories
+Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class)->except(['show']);
-
-    // View suppliers/admins
     Route::get('users', [AdminController::class, 'index'])->name('users.index');
 });
+
 
 // Supplier Routes
 Route::prefix('supplier')->middleware(['auth', 'role:supplier'])->name('supplier.')->group(function () {
@@ -83,6 +85,7 @@ Route::prefix('supplier')->middleware(['auth', 'role:supplier'])->name('supplier
 
 // Superadmin Routes
 Route::prefix('superadmin')->middleware(['auth', 'role:superadmin'])->name('superadmin.')    ->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Manage all users
     Route::get('users', [UserController::class, 'index'])->name('users.index');

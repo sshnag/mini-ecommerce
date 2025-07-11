@@ -34,7 +34,7 @@ class LoginController extends Controller
 
         // Block admin access through this route
     $user = User::with('roles')->find(Auth::id());
- if ($user->hasRole(['superadmin', 'admin'])) {
+ if ($user->hasAnyRole(['superadmin', 'admin'])) {
         Auth::logout();
         return back()->withErrors(['email' => 'Please use admin login']);
     }

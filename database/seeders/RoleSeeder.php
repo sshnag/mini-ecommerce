@@ -57,6 +57,7 @@ class RoleSeeder extends Seeder
                 'name' => 'Super Admin',
                 'password' => Hash::make('supersecret123'),
             ]
+
         );
 
         $superadmin->assignRole('superadmin');

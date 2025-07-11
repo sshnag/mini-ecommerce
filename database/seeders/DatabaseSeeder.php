@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
                 ReviewSeeder::class,
                 OrderSeeder::class,
                 OrderItemSeeder::class,
-                PaymentSeeder::class
+                PaymentSeeder::class,
+                AdminSeeder::class,
     ]
     );
 

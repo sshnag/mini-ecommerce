@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+
 use PhpParser\Node\Stmt\Return_;
 
 class AdminLoginController extends Controller
 {
     //
+
      public function __construct(){
             $this->middleware('guest:admin')->except('logout');
      }
@@ -27,7 +29,7 @@ class AdminLoginController extends Controller
             # code...
             return back()->withErrors(['email'=>'Admin access Denied', 'passsword'=>'Wrong Password'])->withInput();
         }
-        $user=Auth::with('roles')->guard('admin')->user();
+        $user=Auth::with('roles')->user();
         if (!$user->hasanyRoles('superadmin','admin')) {
             # code...
             Auth::guard('admin')->logout();
@@ -36,7 +38,7 @@ class AdminLoginController extends Controller
         $request->session()->regenerate();
         return redirect()->intended(route('admin.dashboard'));
      }
-     public function logput(Request $request){
+     public function logout(Request $request){
             Auth::guard('admin')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
