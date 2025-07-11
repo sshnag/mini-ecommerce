@@ -66,9 +66,12 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class)->except(['show']);
-    Route::get('users', [AdminController::class, 'index'])->name('users.index');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('products',[ProductController::class,'index'])->name('products');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+     Route::post('users/datatable', [UserController::class, 'datatable'])
+        ->name('users.datatable');
+     Route::get('users/edit',[UserController::class,'edit'])->name('users.edit');
 
 });
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Yajra\DataTables\DataTables;
 class UserController extends Controller
 {
     /**
@@ -16,11 +16,35 @@ class UserController extends Controller
     public function index()
     {
         //
-        $users=User::with('role')->get();
-        return view('superadmin.users.index',compact('users'));
+
+//brain ကုန်ပ
+    return view('admin.users.index');
 
     }
 
+    public function datatable()
+    {
+        $users = User::whereDoesntHave('roles', function($query) {
+                $query->where('name', 'superadmin');
+            })
+            ->with('roles')
+            ->select(['id', 'name', 'email', 'created_at']);
+
+        return DataTables::of($users)
+            ->addColumn('role', function($user) {
+                return $user->roles->first()->name ?? 'N/A';
+            })
+            ->addColumn('action', function($user) {
+                return [
+                    'edit' => route('admin.users.edit', $user->id),
+                    'id' => $user->id
+                ];
+            })
+            ->editColumn('created_at', function($user) {
+                return $user->created_at->format('Y-m-d H:i');
+            })
+            ->make(true);
+    }
     /**
      * Summary of create
      * Inserting new users from superdamin site only
@@ -69,7 +93,7 @@ class UserController extends Controller
     public function edit(Request $request)
     {
         //
-        return view('superadmin.users.edit',compact('user'));
+        return view('admin.users.edit');
     }
 
     /**
