@@ -6,8 +6,10 @@ use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Repositories\ProductRepository;
-use App\Services\ProductService; // Fixed typo in class name
+use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -18,6 +20,9 @@ class ProductController extends Controller
     {
         $this->productRepo = $productRepo;
         $this->productService = $productService;
+
+        // Apply superadmin middleware only to destroy method
+        $this->middleware('can:superadmin')->only('destroy');
     }
 
     /**
@@ -45,11 +50,11 @@ class ProductController extends Controller
         try {
             $product = $this->productService->createProduct(
                 $request->validated(),
-                $request
+                $request->file('image') // Pass the image file directly
             );
 
             return redirect()
-                ->route('admin.products.show', $product->id)
+                ->route('admin.products.show', $product->custom_id) // Use custom_id
                 ->with('success', 'Product created successfully');
 
         } catch (\Exception $e) {
@@ -64,8 +69,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('category', 'reviews');
-        return view('products.show', compact('product'));
+        $product->load('category', 'reviews', 'supplier');
+        return view('admin.products.show', compact('product'));
     }
 
     /**
@@ -85,11 +90,11 @@ class ProductController extends Controller
             $this->productService->updateProduct(
                 $product,
                 $request->validated(),
-                $request
+                $request->file('image') // Pass the image file directly
             );
 
             return redirect()
-                ->route('admin.products.show', $product->id)
+                ->route('admin.products.show', $product->custom_id) // Use custom_id
                 ->with('success', 'Product updated successfully');
 
         } catch (\Exception $e) {
@@ -105,7 +110,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         try {
-            $product->delete();
+            // Verify superadmin permission
+            if (!Gate::allows('superadmin')) {
+                abort(403, 'Only superadmins can delete products');
+            }
+
+            // Delete via service
+            $this->productService->deleteProduct($product);
+
             return redirect()
                 ->route('admin.products.index')
                 ->with('success', 'Product deleted successfully');

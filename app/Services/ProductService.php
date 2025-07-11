@@ -1,20 +1,25 @@
 <?php
+
 namespace App\Services;
-use Illuminate\Http\Request;
+
 use App\Models\Product;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-class ProductService{
-   /**
-     * Creates a new product with a generated custom_id and optional image upload.
+
+class ProductService
+{
+    /**
+     * Creates a new product with validation and image handling
      *
-     * @param array $data
-     * @param Request|null $request
+     * @param array $data Validated product data
+     * @param UploadedFile|null $imageFile Uploaded image file
      * @return Product
      */
-    public function createProduct(array $data, ?Request $request = null): Product
+    public function createProduct(array $data, ?UploadedFile $imageFile = null): Product
     {
-        if ($request && $request->hasFile('image')) {
-            $data['image'] = $this->uploadImage($request);
+        // Handle image upload
+        if ($imageFile) {
+            $data['image'] = $this->storeImage($imageFile);
         }
 
         return Product::create($data + [
@@ -23,17 +28,19 @@ class ProductService{
     }
 
     /**
-     * Updates an existing product and handles image replacement.
+     * Updates an existing product with image handling
      *
      * @param Product $product
-     * @param array $data
-     * @param Request|null $request
+     * @param array $data Validated product data
+     * @param UploadedFile|null $imageFile New image file
      * @return Product
      */
-    public function updateProduct(Product $product, array $data, ?Request $request = null): Product
+    public function updateProduct(Product $product, array $data, ?UploadedFile $imageFile = null): Product
     {
-        if ($request && $request->hasFile('image')) {
-            $data['image'] = $this->uploadImage($request, $product->image);
+        // Handle image update
+        if ($imageFile) {
+            $this->deleteImage($product->image);
+            $data['image'] = $this->storeImage($imageFile);
         }
 
         $product->update($data);
@@ -41,29 +48,49 @@ class ProductService{
     }
 
     /**
-     * Uploads image to storage and deletes old one if exists.
+     * Deletes a product and its associated image
      *
-     * @param Request $request
-     * @param string|null $existingImage
-     * @return string
+     * @param Product $product
+     * @return void
      */
-    public function uploadImage(Request $request, ?string $existingImage = null): string
+    public function deleteProduct(Product $product): void
     {
-        if ($existingImage && Storage::exists('public/' . $existingImage)) {
-            Storage::delete('public/' . $existingImage);
-        }
-
-        return $request->file('image')->store('products', 'public');
+        $this->deleteImage($product->image);
+        $product->delete();
     }
 
     /**
-     * Generates a  custom product ID.
+     * Stores product image to disk
+     *
+     * @param UploadedFile $imageFile
+     * @return string Stored image path
+     */
+    protected function storeImage(UploadedFile $imageFile): string
+    {
+        return $imageFile->store('products', 'public');
+    }
+
+    /**
+     * Deletes product image from disk
+     *
+     * @param string|null $imagePath
+     * @return void
+     */
+    protected function deleteImage(?string $imagePath): void
+    {
+        if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+            Storage::disk('public')->delete($imagePath);
+        }
+    }
+
+    /**
+     * Generates custom product ID
      *
      * @return string
      */
-    private function generateProductId(): string
+    protected function generateProductId(): string
     {
-        $lastId = Product::max('id') ?? 0;
-        return 'PROD-' . str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
+        $nextNumber = Product::withTrashed()->count() + 1;
+        return 'PROD-' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
     }
 }

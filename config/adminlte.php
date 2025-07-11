@@ -318,7 +318,7 @@ return [
         [
             'text' => 'Dashboard',
             'url' => 'admin/dashboard',
-            'icon'=> 'fa fas-tachometer-alt',
+            'icon'=> 'fas fa-tachometer-alt',
             // 'can' => 'manage-blog',
             'active'=>['admin/dashboard'],
         ],
@@ -347,6 +347,7 @@ return [
     [
         'text' => 'Orders',
         'url' => 'admin/orders',
+        'active'=>['admin/orders'],
         'icon' => 'fas fa-shopping-cart',
         // 'label' => 'New', // Dynamic labels can be added via controller
         'label_color' => 'success',
@@ -354,24 +355,28 @@ return [
     [
         'text' => 'Customers',
         'url' => 'admin/customers',
+        'active'=>['admin/customers'],
         'icon' => 'fas fa-users',
     ],
       ['header'=>'CONTENT'],
       [
         'text'=>'Pages',
         'url'=>'admin/pages',
+        'active'=>['admin/pages'],
         'icon'=>'fas fa-folder'
       ],
        ['header' => 'ADMINISTRATION'],
     [
         'text' => 'Users',
         'url' => 'admin/users',
+        'active'=>['admin/users'],
         'icon' => 'fas fa-user-shield',
         // 'can' => 'manage-users', // Example of permission check
     ],
         [
         'text'=>'Suppliers',
         'url'=>'admin/suppliers',
+        'active'=>['admin/auppliers'],
         'icon'=>'fas fa-boxes',
 
       ],

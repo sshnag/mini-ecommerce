@@ -67,6 +67,7 @@ Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->nam
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::get('users', [AdminController::class, 'index'])->name('users.index');
+    Route::get('products',[AdminProductController::class,'index'])->name('products');
 });
 
 
