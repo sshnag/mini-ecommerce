@@ -29,7 +29,7 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 //  User Routes
@@ -67,7 +67,9 @@ Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->nam
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::get('users', [AdminController::class, 'index'])->name('users.index');
-    Route::get('products',[AdminProductController::class,'index'])->name('products');
+    Route::get('products',[ProductController::class,'index'])->name('products');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+
 });
 
 
