@@ -14,37 +14,17 @@ class UserController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function index()
-    {
-        //
+{
+    $users = User::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'superadmin');
+        })
+        ->with('roles')
+        ->paginate(10);
 
-//brain ကုန်ပ
-    return view('admin.users.index');
+    return view('admin.users.index', compact('users'));
+}
 
-    }
 
-    public function datatable()
-    {
-        $users = User::whereDoesntHave('roles', function($query) {
-                $query->where('name', 'superadmin');
-            })
-            ->with('roles')
-            ->select(['id', 'name', 'email', 'created_at']);
-
-        return DataTables::of($users)
-            ->addColumn('role', function($user) {
-                return $user->roles->first()->name ?? 'N/A';
-            })
-            ->addColumn('action', function($user) {
-                return [
-                    'edit' => route('admin.users.edit', $user->id),
-                    'id' => $user->id
-                ];
-            })
-            ->editColumn('created_at', function($user) {
-                return $user->created_at->format('Y-m-d H:i');
-            })
-            ->make(true);
-    }
     /**
      * Summary of create
      * Inserting new users from superdamin site only
@@ -53,7 +33,7 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view('superadmin.users.create');
+        return view('admin.users.create');
     }
 
     /**
@@ -76,7 +56,7 @@ class UserController extends Controller
             $user->assignRole($data['role']);
 
         }
-        return redirect()->route('superadmin.users.index')->with('succeess','New User Added!');
+        return redirect()->route('admin.users.index')->with('succeess','New User Added!');
     }
 
     /**

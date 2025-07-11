@@ -69,8 +69,8 @@ Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->nam
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('products',[ProductController::class,'index'])->name('products');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-     Route::post('users/datatable', [UserController::class, 'datatable'])
-        ->name('users.datatable');
+         Route::get('users/create',[UserController::class,'create'])->name('users.create');
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
      Route::get('users/edit',[UserController::class,'edit'])->name('users.edit');
 
 });

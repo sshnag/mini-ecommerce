@@ -1,1 +1,1 @@
-@extends(view: 'adminlte::page')
+@extends(    'adminlte::page')

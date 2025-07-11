@@ -19,9 +19,16 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
-        $orders=Order::with('orderItems.products')->where('user_id',Auth::id())->latest()->get();
-        return view('orders.index',compact('orders'));
+         $status = request()->input('status');
+
+    $orders = Order::with(['user', 'orderItems.product'])
+        ->when($status && $status !== 'all', function($query) use ($status) {
+            return $query->where('status', $status);
+        })
+        ->latest()
+        ->paginate(10);
+
+    return view('admin.orders.index', compact('orders'));
     }
     /**
      * Summary of show
