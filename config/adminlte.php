@@ -116,8 +116,8 @@ return [
             'path' => 'images/letter-t.png',
             'alt' => 'Loading...',
             'effect' => 'animation__pulse',
-            'width' => 50,
-            'height' => 50,
+            'width' => 60,
+            'height' => 60,
         ],
     ],
 
@@ -237,7 +237,7 @@ return [
     */
 
     'right_sidebar' => false,
-    'right_sidebar_icon' => 'fas fa-cogs',
+    'right_sidebar_icon' => 'fas fa-th-large',
     'right_sidebar_theme' => 'dark',
     'right_sidebar_slide' => true,
     'right_sidebar_push' => true,
@@ -319,22 +319,64 @@ return [
             'text' => 'Dashboard',
             'url' => 'admin/dashboard',
             'icon'=> 'fa fas-tachometer-alt',
-            'can' => 'manage-blog',
+            // 'can' => 'manage-blog',
+            'active'=>['admin/dashboard'],
         ],
-                ['header' => 'SETTINGS'],
+                  ['header' => 'PRODUCT MANAGEMENT'],
+    [
+        'text' => 'Products',
+        'url' => 'admin/products',
+        'icon' => 'fas fa-box',
+        'active' => ['admin/products*'],
+        'submenu' => [
+            [
+                'text' => 'All Products',
+                'url' => 'admin/products',
+            ],
+            [
+                'text' => 'Add New',
+                'url' => 'admin/products/create',
+            ],
+            [
+                'text' => 'Categories',
+                'url' => 'admin/categories',
+            ],
+        ],
+    ],
+                       ['header' => 'SALES'],
+    [
+        'text' => 'Orders',
+        'url' => 'admin/orders',
+        'icon' => 'fas fa-shopping-cart',
+        // 'label' => 'New', // Dynamic labels can be added via controller
+        'label_color' => 'success',
+    ],
+    [
+        'text' => 'Customers',
+        'url' => 'admin/customers',
+        'icon' => 'fas fa-users',
+    ],
+      ['header'=>'CONTENT'],
+      [
+        'text'=>'Pages',
+        'url'=>'admin/pages',
+        'icon'=>'fas fa-folder'
+      ],
+       ['header' => 'ADMINISTRATION'],
+    [
+        'text' => 'Users',
+        'url' => 'admin/users',
+        'icon' => 'fas fa-user-shield',
+        // 'can' => 'manage-users', // Example of permission check
+    ],
+        [
+        'text'=>'Suppliers',
+        'url'=>'admin/suppliers',
+        'icon'=>'fas fa-boxes',
 
-        [
-            'text' => 'Products',
-            'url' => 'admin/products',
-            'icon' => 'fas fa-box',
-            // 'label' => 4,
-            // 'label_color' => 'success',
-        ],
-        [
-            'text' => 'profile',
-            'url' => 'admin/profile',
-            'icon' => 'fas fa-user-cog',
-        ],
+      ],
+
+
     //     [
     //         'text' => 'change_password',
     //         'url' => 'admin/settings',
@@ -431,6 +473,36 @@ return [
     */
 
     'plugins' => [
+        'Toastr' => [
+    'active' => true,
+    'files' => [
+        [
+            'type' => 'css',
+            'asset' => true,
+            'location' => 'vendor/toastr/toastr.min.css',
+        ],
+        [
+            'type' => 'js',
+            'asset' => true,
+            'location' => 'vendor/toastr/toastr.min.js',
+        ],
+    ],
+],
+'Summernote' => [
+    'active' => true,
+    'files' => [
+        [
+            'type' => 'css',
+            'asset' => true,
+            'location' => 'vendor/summernote/summernote-bs4.min.css',
+        ],
+        [
+            'type' => 'js',
+            'asset' => true,
+            'location' => 'vendor/summernote/summernote-bs4.min.js',
+        ],
+    ],
+],
         'Datatables' => [
             'active' => false,
             'files' => [

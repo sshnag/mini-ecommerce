@@ -199,4 +199,5 @@ return [
 
         'store' => 'default',
     ],
+    'guards' => ['web', 'admin'], // Add both
 ];
