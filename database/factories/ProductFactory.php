@@ -25,7 +25,6 @@ class ProductFactory extends Factory
 
         return [
             //
-            'id'=>(string)Str::uuid(),
             'user_id'=>$user?->id ?? User::factory()->create()->id,
             'category_id'=>Category::inRandomOrder()->first()->id,
             'name'=>fake()->words(2,true),

@@ -1,0 +1,112 @@
+/* Tiffany inspired palette */
+:root {
+  --gold-accent: #C5A76D;
+   --gold: #C5A76D;
+  --light-gray: #F5F7F8;
+  --dark-gray: #333333;
+  --input-border: #CED4DA;
+}
+
+body {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.checkout-container {
+  min-height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+}
+
+.checkout-card {
+  background-color: #fff;
+  max-width: 450px;
+  width: 100%;
+  padding: 2.5rem 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px var(--gold-accent);
+  border: 1px solid var(--gold);
+  text-align: center;
+}
+
+.checkout-title {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+
+.checkout-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: var(--dark-gray);
+  letter-spacing: 0.02em;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--input-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+}
+
+.form-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 8px (--gold-accent);
+}
+
+.is-invalid {
+  border-color: #e3342f !important;
+  box-shadow: 0 0 6px rgba(227, 52, 52, 0.3) !important;
+}
+
+.invalid-feedback {
+  color: #e3342f;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.btn-submit {
+  width: 100%;
+  background-color: var(--tiffany-blue);
+  border: #333333;
+  color: black;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.9rem 0;
+  border-radius: 12px;
+  cursor: pointer;
+  border-color: #333333;
+  transition: background-color 0.25s ease;
+  box-shadow: 0 4px 15px (--gold);
+  letter-spacing: 0.05em;
+}
+
+.btn-submit:hover,
+.btn-submit:focus {
+  background-color: var(--gold-accent);
+  box-shadow: 0 6px 25px rgba(197, 167, 109, 0.6);
+  outline: none;
+}

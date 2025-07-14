@@ -11,15 +11,22 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CheckoutController;
+
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ShopController;
+
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
 use App\Models\Supplier;
 
+
+Route::get('/products', [ShopController::class, 'index'])->name('products.index');
+Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 //login
 Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
 Route::post('/login',[LoginController::class,'login']);
@@ -30,11 +37,22 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-
+Route::get('/products/{custom_id}', [ProductController::class, 'show'])
+     ->name('products.show');
 //  User Routes
-Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
+    Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
+Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
+    ->name('orders.confirmation');
 
+
+
+    Route::get('/checkout/shipping', [CheckoutController::class,'showShipping'])->name('checkout.shipping');
+    Route::post('/checkout/shipping', [CheckoutController::class,'storeShipping'])->name('checkout.shipping.store');
+    Route::get('/checkout/review', [CheckoutController::class,'showReview'])->name('checkout.review');
+    Route::post('/checkout/place', [CheckoutController::class,'placeOrder'])->name('checkout.place');
+   Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
@@ -63,7 +81,7 @@ Route::post('/admin/login', [AdminLoginController::class, 'login']);
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
 // Admin/superadmin Routes
-Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:admin|superadmin'])->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::get('users', [UserController::class, 'index'])->name('users.index');

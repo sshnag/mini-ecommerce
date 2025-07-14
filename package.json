@@ -24,6 +24,7 @@
     "dependencies": {
         "@tailwindcss/postcss": "^4.1.11",
         "@tailwindcss/typography": "^0.5.16",
+        "animate.css": "^4.1.1",
         "postcss-loader": "^8.1.1",
         "sweetalert2": "^11.22.2"
     }

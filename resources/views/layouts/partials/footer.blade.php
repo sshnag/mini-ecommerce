@@ -1,46 +1,41 @@
-<footer class="luxury-footer bg-black text-white py-12">
-    <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- Brand Column -->
-            <div class="col-span-1">
-                <p class="text-gold text-xl font-serif mb-6">TIFFANY</p>
-                <p class="text-sm">Timeless elegance and exceptional craftsmanship since 1837.</p>
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h3 class="fs-4 mb-3">TIFFANY</h3>
+                <p>Crafting elegance since 2023</p>
             </div>
 
-            <!-- Quick Links -->
-            <div>
-                <h3 class="text-gold font-serif mb-4">Shop</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">New Arrivals</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Rings</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Necklaces</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Bracelets</a></li>
+            <div class="col-md-2 mb-4 mb-md-0">
+                <h4 class="fs-5 mb-3">Shop</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{{ route('categories.show', 'rings') }}" class="text-white-50">Rings</a></li>
+                    <li class="mb-2"><a href="{{ route('categories.show', 'necklaces') }}" class="text-white-50">Necklaces</a></li>
+                    <li><a href="{{ route('categories.show', 'bracelets') }}" class="text-white-50">Bracelets</a></li>
                 </ul>
             </div>
 
-            <!-- Customer Service -->
-            <div>
-                <h3 class="text-gold font-serif mb-4">Customer Service</h3>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Contact Us</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">Product Care</a></li>
-                    <li><a href="#" class="hover:text-gold transition-colors duration-300">FAQ</a></li>
-                </ul>
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h4 class="fs-5 mb-3">Contact</h4>
+                <address>
+                    123 Jewelry Ave<br>
+                    New York, NY 10001<br>
+                    <a href="mailto:info@tiffany.com" class="text-white-50">info@tiffany.com</a>
+                </address>
             </div>
 
-
-
-        </div>
-
-        <!-- Bottom Footer -->
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center md:text-left">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm">© {{ date('Y') }} Tiffany & Co. All Rights Reserved</p>
-                <div class="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-gold transition-colors duration-300">Privacy Policy</a>
-                    <a href="#" class="hover:text-gold transition-colors duration-300">Terms of Use</a>
+            <div class="col-md-3">
+                <h4 class="fs-5 mb-3">Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
+        </div>
+
+        <div class="border-top border-secondary mt-5 pt-4 text-center">
+            <p class="small">&copy; {{ date('Y') }} Tiffany & Co. All rights reserved.</p>
         </div>
     </div>
 </footer>

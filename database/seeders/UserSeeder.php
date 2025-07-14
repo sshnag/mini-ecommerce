@@ -14,12 +14,21 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $supplierRole=Role::firstOrCreate(['name'=>    'supplier']);
-        //
-        User::factory(3)->create()->each(function($user) use($supplierRole){
-            $user->assignRole($supplierRole);
-        });
-            User::factory(10)->create();
-    }
+       $supplierRole = Role::firstOrCreate(['name' => 'supplier']);
 
+    // Create 3 suppliers
+    User::factory(3)->create()->each(function ($user) use ($supplierRole) {
+        $user->assignRole($supplierRole);
+    });
+
+    User::factory(10)->create();
+
+    $testUser = User::create([
+        'name' => 'Test User',
+        'email' => 'testuser@gmail.com',
+        'password' => bcrypt('password123'),
+    ]);
+    $testUser->assignRole('user');
 }
+}
+

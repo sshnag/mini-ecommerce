@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Repositories\ProductRepository;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use App\Models\Product;
 use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
@@ -53,10 +53,12 @@ class ProductController extends Controller
         }
     }
 
-    public function show(Product $product)
-    {
-        $product->load('category', 'reviews', 'supplier');
-        return view('admin.products.show', compact('product'));
+    public function show($custom_id)
+    { $product = Product::with(['category', 'reviews', 'supplier'])
+                ->where('custom_id', $custom_id)
+                ->firstOrFail();
+
+    return view('products.show', compact('product'));
     }
 
     public function edit(Product $product)

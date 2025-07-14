@@ -5,72 +5,127 @@ namespace App\Services;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\DB;
 
 class CartService
 {
     /**
-     * Get the authenticated user's cart items.
+     * Get all cart items for the authenticated user.
      */
     public function getUserCart()
     {
-        return Cart::with('product')->where('user_id', Auth::id())->get();
+        return Cart::with('product')
+            ->where('user_id', Auth::id())
+            ->get();
     }
 
     /**
-     * Add item to cart with optional size check (ring/bracelet).
+     * Add a product to the user's cart.
      */
-    public function addToCart(string $productId, int $quantity = 1, ?string $size = null): void
+    public function addToCart($productId, $quantity)
+{
+    $cartItem = Cart::where('user_id', Auth::id())
+        ->where('product_id', $productId)
+        ->first();
+
+    if ($cartItem) {
+        $cartItem->quantity = $quantity;  // Replace quantity instead of adding
+        $cartItem->save();
+    } else {
+        Cart::create([
+            'user_id' => Auth::id(),
+            'product_id' => $productId,
+            'quantity' => $quantity,
+        ]);
+    }
+}
+
+
+    /**
+     * Remove item from cart by ID.
+     */
+    public function removeFromCart($id)
     {
-        $existing = Cart::where('user_id', Auth::id())
-            ->where('product_id', $productId)
-            ->when($size, fn($q) => $q->where('size', $size))
-            ->first();
-
-        if ($existing) {
-            $existing->increment('quantity', $quantity);
-        } else {
-            Cart::create([
-                'user_id'    => Auth::id(),
-                'product_id' => $productId,
-                'quantity'   => $quantity,
-                'size'       => $size,
-            ]);
-        }
+        Cart::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->delete();
     }
 
     /**
-     * Remove a specific cart item.
+     * Get total price of the cart.
      */
-    public function removeFromCart(int $cartId): void
+    public function getTotal()
     {
-        Cart::where('id', $cartId)->where('user_id', Auth::id())->delete();
+        $cartItems = $this->getUserCart();
+
+        return $cartItems->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
     }
 
     /**
-     * Clear the authenticated user’s cart.
+     * Clear all cart items for the user.
      */
-    public function clearCart(): void
+    public function clearCart()
     {
         Cart::where('user_id', Auth::id())->delete();
     }
 
     /**
-     * Return dropdown preview data (Tiffany style).
+     * Dropdown preview data (cart summary).
      */
-    public function getDropdownPreview(): array
+    public function getDropdownPreview()
     {
-        $items = $this->getUserCart();
-        $total = $items->sum(fn($item) => $item->product->price * $item->quantity);
-        $count = $items->sum('quantity');
+        $cartItems = $this->getUserCart();
+        $total = $this->getTotal();
 
-        return compact('items', 'total', 'count');
+        return [
+            'cartItems' => $cartItems,
+            'total' => $total,
+        ];
     }
-
     /**
-     * Get total price of cart.
+     * Place an order for the user with the selected address.
+     *
+     * @param int $userId
+     * @param int $addressId
+     * @return Order|null
      */
-    public function getTotal(): float
+    public function placeOrder(int $userId, int $addressId)
     {
-        return $this->getUserCart()->sum(fn($item) => $item->product->price * $item->quantity);
+        return DB::transaction(function () use ($userId, $addressId) {
+            $cartItems = Cart::with('product')->where('user_id', $userId)->get();
+
+            if ($cartItems->isEmpty()) {
+                // No cart items, cannot place order
+                return null;
+            }
+
+            $total = $cartItems->sum(function ($item) {
+                return $item->product->price * $item->quantity;
+            });
+
+            $order = Order::create([
+                'user_id' => $userId,
+                'address_id' => $addressId,
+'total_amount' => $total,
+                'status' => 'pending', // customize as needed
+            ]);
+
+            foreach ($cartItems as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'price' => $item->product->price,
+                ]);
+            }
+
+            Cart::where('user_id', $userId)->delete();
+
+            return $order;
+        });
     }
 }

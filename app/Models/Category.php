@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
+    protected $fillable = ['name', 'slug', 'size_type', 'default_sizes'];
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
     public function products()
@@ -14,6 +15,11 @@ class Category extends Model
     return $this->hasMany(Product::class);
 }
 
+
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
     public static function getSizePresets(){
         return[
             'ring'=>['4','4.5','5','5.5','6','6.5','7','7.5','8'],

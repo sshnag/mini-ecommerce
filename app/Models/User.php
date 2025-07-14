@@ -19,9 +19,10 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
      }
      public function addresses()
-     {
-        return $this->hasMany(Address::class);
-     }
+{
+    return $this->hasMany(Address::class);
+}
+
      public function carts(){
         return $this->hasMany(Cart::class);
      }
@@ -74,4 +75,9 @@ class User extends Authenticatable
         $user->custom_id = 'USER-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
     });
 }
+public function isAdmin()
+{
+    return in_array($this->role, ['admin', 'superadmin']);
+}
+
 }

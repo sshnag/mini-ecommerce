@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCartRequest;
 use App\Services\CartService;
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -22,38 +26,31 @@ class CartController extends Controller
     /**
      * Show full cart page.
      */
-    public function index()
-    {
-        $cartItems = $this->cartService->getUserCart();
-        $total = $this->cartService->getTotal();
-        return view('cart.index', compact('cartItems', 'total'));
-    }
+    public function index(CartService $cartService)
+{
+    $cartItems = $cartService->getUserCart();
+    $total = $cartService->getTotal();
+    $recommended = Product::inRandomOrder()->take(4)->get();
+
+    return view('cart.index', compact('cartItems', 'total', 'recommended'));
+}
+
 
     /**
      * Add item to cart (for AJAX or regular POST).
      */
-    public function store(StoreCartRequest $request)
+   public function store(Request $request)
 {
-    try {
-        $validated = $request->validated();
-        $this->cartService->addToCart(
-            $validated['product_id'],
-            $validated['quantity']
-        );
+    $product = Product::findOrFail($request->product_id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Added to cart successfully'
-        ]);
+    Cart::updateOrCreate(
+        ['user_id' => Auth::id(), 'product_id' => $product->id],
+        ['quantity' => DB::raw('quantity + ' . $request->quantity), 'price' => $product->price]
+    );
 
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 500);
-    }
+    return back()->with('success', "{$product->name} has been added to your Bag.");
 }
-    /**
+  /**
      * Remove a cart item.
      */
     public function destroy($id)

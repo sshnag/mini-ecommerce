@@ -1,70 +1,70 @@
 @extends('layouts.app')
 
 @section('title', 'Sign In')
-@section('body-class', 'luxury-login')
-@section('main-class', 'login-main')
 
 @push('style')
 <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 @endpush
 
 @section('content')
-<div class="login-wrapper">
-    <div class="login-grid">
+<div class="container login-container d-flex align-items-center justify-content-center">
+    <div class="row w-100">
+        <div class="col-md-5 login-form pe-md-5 border-end">
+            <h2>Sign In</h2>
+            <p class="mb-4 text-muted">Please sign in to your Tiffany Account.</p>
 
-        <div class="login-left">
-            <h2 class="login-title">Sign In</h2>
-            <p class="login-subtitle">Please sign in to your Tiffany Account.</p>
-
-            <form method="POST" action="{{ route('login') }}" class="login-form">
+            <form method="POST" action="{{ route('login') }}">
                 @csrf
-
-                <!-- Email -->
-                <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" id="email"
-                           class="form-input"
-                           value="{{ old('email') }}"  autofocus>
+                <div class="mb-3">
+                    <label for="email" class="form-label visually-hidden">Email</label>
+                    <input type="email" name="email" id="email" class="form-control login-input @error('email') is-invalid @enderror"  placeholder="Email" value="{{ old('email') }}" autofocus>
                     @error('email')
-                        <span class="error-message">{{ $message }}</span>
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                     @enderror
                 </div>
 
-                <!-- Password -->
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" id="password"
-                           class="form-input" >
-                    @error('password')
-                        <span class="error-message">{{ $message }}</span>
+<div class="mb-4 position-relative password-wrapper">
+                                            <i class="fa-regular fa-eye toggle-password" onclick="togglePassword(this)"></i>
+                    <input type="password" name="password" id="password"  class="form-control login-input @error('password') is-invalid @enderror" placeholder="Password" >
+                     @error('password')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                     @enderror
                 </div>
 
-                <!-- Submit -->
-                <button type="submit" class="submit-button">Sign In</button>
+                <button type="submit" class="btn btn-outline-dark w-100">Sign In</button>
 
-                <!-- Forgot -->
-                @if (Route::has('password.request'))
-                <div class="forgot-link">
-                    <a href="{{ route('password.request') }}">Forgot your password?</a>
+                <div class="mt-3">
+                     @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="text-decoration-none">Forgot Password?</a>
+                    @endif
                 </div>
-                @endif
             </form>
         </div>
 
-        <!-- Divider -->
-        <div class="login-divider"></div>
-        <!-- Register -->
-        <div class="login-right">
-            <h2 class="login-title">Create an Account</h2>
-            <p class="login-subtitle">
+        <div class="col-md-6 ps-md-5 login-register">
+            <h2>Create an Account</h2>
+            <p class="mb-4 text-muted">
                 Save time during checkout, view your shopping bag and saved items from any device and access your order history.
             </p>
-
-            <a href="" class="submit-button create-button">
-                Register
-            </a>
+            <a href="{{ route('register') }}" class="btn btn-outline-dark w-100">Register</a>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function togglePassword(el) {
+        const input = document.getElementById('password');
+        const isVisible = input.type === 'text';
+        input.type = isVisible ? 'password' : 'text';
+        el.classList.toggle('fa-eye');
+        el.classList.toggle('fa-eye-slash');
+    }
+</script>
+@endpush
 @endsection

@@ -29,6 +29,20 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home',['latestjewel'=>$this->productRepository->getLatestJewels(8)]);
-        }
+ $rings = Product::whereHas('category', fn($q) => $q->where('name', 'Rings'))
+                ->latest()
+                ->take(6)
+                ->get();
+
+    $necklaces = Product::whereHas('category', fn($q) => $q->where('name', 'Necklaces'))
+                    ->latest()
+                    ->take(6)
+                    ->get();
+
+    $bracelets = Product::whereHas('category', fn($q) => $q->where('name', 'Bracelets'))
+                    ->latest()
+                    ->take(6)
+                    ->get();
+
+    return view('home', compact('rings', 'necklaces', 'bracelets'));        }
 }

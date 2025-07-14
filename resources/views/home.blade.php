@@ -1,131 +1,101 @@
-    @extends('layouts.app')
-    @section('title','Home')
-    @push('style')
-        <link rel="stylesheet" href="{{asset('css/home.css')}}">
-    @endpush
-    @section('content')
-        <!-- Hero Section -->
-        <section class="luxury-hero bg-cover bg-center h-screen-80 flex items-center">
-            <div class="container mx-auto px-6 text-center">
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-white mb-6">Timeless Elegance</h1>
-                <p class="text-lg sm:text-xl text-white mb-8 max-w-2xl mx-auto">Discover our latest collection of handcrafted jewels</p>
-                <a href="#featured" class="inline-block bg-gold hover:bg-gold-dark text-black px-6 py-3 sm:px-8 sm:py-4 font-medium transition duration-300">
-                    View Collection
-                </a>
-            </div>
-        </section>
+@extends('layouts.app')
 
-        <!-- Featured Products -->
-        <section id="featured" class="py-12 sm:py-20 bg-white">
-            <div class="container mx-auto px-4 sm:px-6">
-                <h2 class="text-2xl sm:text-3xl font-serif text-center mb-12 sm:mb-16">Latest Creations</h2>
+@section('title', 'TIFFANY - Luxury Jewelry')
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
-                    @foreach($latestjewel as $product)
-                        <div class="luxury-product-card group transition duration-300 hover:shadow-lg">
-                            <a href="{{ route('products.show', $product) }}" class="block overflow-hidden mb-4">
-                                <img src="{{ $product->image_url }}"
-                                    alt="{{ $product->name }}"
-                                    class="w-full h-64 sm:h-80 md:h-96 object-cover transition duration-500 group-hover:scale-105">
-                            </a>
-                            <div class="text-center px-4 pb-6">
-                                <h3 class="font-serif text-lg sm:text-xl mb-2">{{ $product->name }}</h3>
-                                <p class="text-gold mb-4">${{ number_format($product->price, 2) }}</p>
-                                <button class="luxury-add-to-bag border border-black px-6 py-2 hover:bg-black hover:text-white transition duration-300"
-                                        data-product-id="{{ $product->id }}">
-                                    ADD TO BAG
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/home.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@endpush
+
+@section('content')
+<!-- Hero Section -->
+<section class="tiffany-hero">
+    <div class="hero-content">
+        <h1 class="hero-title animate__animated animate__fadeIn">TIFFANY</h1>
+        <p class="hero-subtitle animate__animated animate__fadeIn animate__delay-1s">Timeless elegance since 1837</p>
+    </div>
+</section>
+
+<!-- Collections Section -->
+<section class="tiffany-collections">
+    <!-- Rings -->
+    <div class="collection-item">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 order-md-1 order-2">
+                    <div class="collection-content">
+                        <h2 class="animate__animated animate__fadeInLeft">Rings</h2>
+                        <p class="animate__animated animate__fadeInLeft animate__delay-1s">Our diamond rings showcase exceptional craftsmanship with ethically sourced stones. Each piece reflects Tiffany's commitment to quality and timeless design.</p>
+                        <a href="{{ route('categories.show', 'rings') }}" class="btn-collection animate__animated animate__fadeInUp animate__delay-2s">
+                            Explore Collection <i class="fas fa-chevron-right ms-2"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Size Modal -->
-        <div id="sizeModal" class="luxury-size-modal fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-            <div class="modal-content bg-white p-8 max-w-md w-full">
-                <h3 class="text-2xl font-serif mb-6">SELECT SIZE</h3>
-                <div class="size-options grid grid-cols-4 gap-3 mb-8">
-                    <!-- Dynamically filled via JavaScript -->
+                <div class="col-md-6 order-md-2 order-1">
+                    <a href="{{ route('categories.show', 'rings') }}" class="collection-image animate__animated animate__fadeIn">
+                        <img src="{{ asset('images/rings.jpg') }}" alt="Tiffany Rings" class="img-fluid">
+                        <div class="image-overlay"></div>
+                    </a>
                 </div>
-                <button class="modal-close border border-black px-6 py-2 hover:bg-black hover:text-white transition duration-300">
-                    CANCEL
-                </button>
             </div>
         </div>
-    @endsection
+    </div>
 
-    @push('scripts')
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add to bag functionality
-        document.querySelectorAll('.luxury-add-to-bag').forEach(button => {
-            button.addEventListener('click', async function(e) {
-                e.preventDefault();
-                const productId = this.getAttribute('data-product-id');
-                const button = this;
+    <!-- Bracelets -->
+    <div class="collection-item bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <a href="{{ route('categories.show', 'bracelets') }}" class="collection-image animate__animated animate__fadeIn">
+                        <img src="{{ asset('images/bracelets.jpg') }}" alt="Tiffany Bracelets" class="img-fluid">
+                        <div class="image-overlay"></div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <div class="collection-content">
+                        <h2 class="animate__animated animate__fadeInRight">Bracelets</h2>
+                        <p class="animate__animated animate__fadeInRight animate__delay-1s">From delicate chains to bold statement pieces, our bracelets are designed to complement every style and occasion with unparalleled elegance.</p>
+                        <a href="{{ route('categories.show', 'bracelets') }}" class="btn-collection animate__animated animate__fadeInUp animate__delay-2s">
+                            Explore Collection <i class="fas fa-chevron-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                // Show loading state
-                const originalText = button.textContent;
-                button.textContent = 'Adding...';
-                button.disabled = true;
+    <!-- Necklaces -->
+    <div class="collection-item">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 order-md-1 order-2">
+                    <div class="collection-content">
+                        <h2 class="animate__animated animate__fadeInLeft">Necklaces</h2>
+                        <p class="animate__animated animate__fadeInLeft animate__delay-1s">Discover our exquisite necklaces, each crafted to perfection with the finest materials and attention to detail that defines Tiffany craftsmanship.</p>
+                        <a href="{{ route('categories.show', 'necklaces') }}" class="btn-collection animate__animated animate__fadeInUp animate__delay-2s">
+                            Explore Collection <i class="fas fa-chevron-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 order-md-2 order-1">
+                    <a href="{{ route('categories.show', 'necklaces') }}" class="collection-image animate__animated animate__fadeIn">
+                        <img src="{{ asset('images/necklaces.jpg') }}" alt="Tiffany Necklaces" class="img-fluid">
+                        <div class="image-overlay"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-                try {
-                    const response = await fetch('{{ route("cart.store") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            product_id: productId,
-                            quantity: 1
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to add to cart');
-                    }
-
-                    const data = await response.json();
-
-                    // Show success notification
-                    showNotification('Item added to bag successfully!');
-
-                    // Update cart count if element exists
-                    const cartCount = document.querySelector('.cart-count');
-                    if (cartCount) {
-                        cartCount.textContent = (parseInt(cartCount.textContent) || 0) + 1;
-                    }
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    showNotification(error.message, 'error');
-                } finally {
-                    // Reset button state
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }
-            });
-        });
-
-        // Notification function
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 ${
-                type === 'success' ? 'bg-green-500' : 'bg-red-500'
-            } text-white`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-    });
-    </script>
-
-    @endpush
+<!-- CTA Section -->
+<section class="tiffany-cta">
+    <div class="container text-center">
+        <h2 class="animate__animated animate__fadeIn">Experience Perfection</h2>
+        <p class="animate__animated animate__fadeIn animate__delay-1s">Book a private viewing of our collections</p>
+        <a href="" class="btn-cta animate__animated animate__fadeInUp animate__delay-2s">
+            Contact Us <i class="fas fa-chevron-down ms-2"></i>
+        </a>
+    </div>
+</section>
+@endsection

@@ -10,7 +10,7 @@ class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory,SoftDeletes;
-    public function orderitems(){
+    public function orderItems(){
         return $this->hasMany(OrderItem::class);
     }
       public function user()
@@ -22,4 +22,18 @@ class Order extends Model
     {
         return $this->belongsTo(Address::class);
     }
+    // In Order.php model
+public function payment()
+{
+    return $this->hasOne(Payment::class);
+}
+
+    protected $fillable = [
+    'user_id',
+    'address_id',
+    'status',
+    'custom_id',
+    'total_amount',
+
+];
 }

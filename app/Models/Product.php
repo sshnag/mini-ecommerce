@@ -27,6 +27,10 @@ class Product extends Model
         'available_sizes' => 'array'
     ];
 
+    public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
     public function getSizes()
     {
         return $this->available_sizes ?? $this->category->default_sizes;
@@ -62,4 +66,9 @@ class Product extends Model
     {
         return 'custom_id';
     }
+    public function resolveRouteBinding($value, $field = null)
+{
+    return $this->where('custom_id', $value)->firstOrFail();
+}
+
 }

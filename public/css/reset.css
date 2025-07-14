@@ -1,0 +1,20 @@
+:root {
+    --gold: #C5A45B;
+    --gold-light: #E4D6B8;
+    --black: #000000;
+    --white: #FFFFFF;
+    --gray-dark: #222222;
+    --gray-light: #F5F5F5;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--white);
+    color: var(--black);
+    overflow-x: hidden;
+}
