@@ -11,9 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,SoftDeletes;
-    use HasRoles;
+
+    use HasFactory, Notifiable, SoftDeletes, HasRoles;
      public function orders()
      {
         return $this->hasMany(Order::class);
@@ -77,7 +76,7 @@ class User extends Authenticatable
 }
 public function isAdmin()
 {
-    return in_array($this->role, ['admin', 'superadmin']);
+    return $this->roles()->whereIn('name', ['admin', 'superadmin'])->exists();
 }
 
 }

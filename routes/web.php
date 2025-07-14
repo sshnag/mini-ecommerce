@@ -31,9 +31,8 @@ Route::get('/categories/{category}', [CategoryController::class, 'show'])->name(
 Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/logout',[LoginController::class,'logout'])->name('logout');
-//register
-Route::post('/register', [RegisterController::class, 'register'])->name('register');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
@@ -43,9 +42,6 @@ Route::get('/products/{custom_id}', [ProductController::class, 'show'])
     Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
 Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
     ->name('orders.confirmation');
-
-
-
     Route::get('/checkout/shipping', [CheckoutController::class,'showShipping'])->name('checkout.shipping');
     Route::post('/checkout/shipping', [CheckoutController::class,'storeShipping'])->name('checkout.shipping.store');
     Route::get('/checkout/review', [CheckoutController::class,'showReview'])->name('checkout.review');
@@ -81,8 +77,8 @@ Route::post('/admin/login', [AdminLoginController::class, 'login']);
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
 // Admin/superadmin Routes
-Route::prefix('admin')->middleware(['auth', 'role:admin|superadmin'])->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('products',[ProductController::class,'index'])->name('products');

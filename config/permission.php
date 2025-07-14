@@ -199,5 +199,6 @@ return [
 
         'store' => 'default',
     ],
-    'guards' => ['web', 'admin'], // Add both
+    'guard_name' => 'admin',
+    'guards' => ['web', 'admin'],
 ];
