@@ -49,6 +49,17 @@
     color: #fff;
     background-color: #17a2b8;
 }
+.btn-icon {
+    border: none;
+    background: transparent;
+    color: #ccc;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.btn-icon.danger:hover {
+    color: #e74c3c;
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

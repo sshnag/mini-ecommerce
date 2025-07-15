@@ -35,7 +35,8 @@
                     <td>{{ number_format($product->price, 2) }}</td>
                     <td>{{ $product->stock }}</td>
                     <td>
-<a href="{{ route('admin.products.edit', $product->custom_id) }}">Edit</a>
+<a href="{{ route('admin.products.edit', $product->custom_id) }}" class="btn-icon" title="Edit">
+                            <i class="fas fa-edit"></i></a>
 
 @can('delete', $product)
     <form action="{{ route('superadmin.products.destroy', $product->custom_id) }}" method="POST" class="delete-form d-inline">

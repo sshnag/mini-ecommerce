@@ -81,3 +81,51 @@
     margin-top: 20px;
     text-align: right;
 }
+/* Additional styles for icons */
+.btn-icon i {
+    transition: all 0.2s;
+}
+
+.btn-icon:hover i {
+    transform: scale(1.1);
+}
+
+.btn-icon[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+    margin-top: -30px;
+    margin-left: -10px;
+}
+
+/* Ensure all action buttons align properly */
+td > a, td > form {
+    display: inline-block;
+    margin: 0 2px;
+}
+/* Badge styling */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.bg-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Empty state styling */
+td[colspan] {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+}
