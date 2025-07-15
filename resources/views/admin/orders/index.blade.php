@@ -3,7 +3,7 @@
 @section('title', 'Orders')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/admin/admin-style.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/product.css') }}">
 
 <div class="admin-section">
     <h2 class="section-header">Orders</h2>

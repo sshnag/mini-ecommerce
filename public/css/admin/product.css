@@ -129,3 +129,58 @@ td[colspan] {
     padding: 20px;
     color: #777;
 }
+/* Pagination Styles */
+.pagination-wrap {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.pagination li {
+    margin: 0 2px;
+}
+
+.pagination li a,
+.pagination li span {
+    color: #e0e0e0 !important; /* Force override */
+    background-color: #333 !important;
+}
+
+.pagination .active span {
+    color: white !important;
+    background-color: #17a2b8 !important;
+}
+.pagination li a {
+    color: #e0e0e0;
+}
+
+.pagination li a:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+
+
+.pagination .disabled span {
+    background-color: #2a2a2a;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination li a,
+    .pagination li span {
+        padding: 6px 8px;
+        font-size: 14px;
+    }
+}
