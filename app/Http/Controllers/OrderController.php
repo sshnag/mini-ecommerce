@@ -37,6 +37,16 @@ class OrderController extends Controller
 
     return view('admin.orders.index', compact('orders')); // regular user
 }
+public function updateStatus(Request $request, Order $order)
+{
+    $validated = $request->validate([
+        'status' => 'required|in:pending,processing,completed,cancelled'
+    ]);
+
+    $order->update($validated);
+
+    return back()->with('success', 'Order status updated');
+}
     /**
      * Summary of show
      * displaying orderitems
@@ -44,10 +54,10 @@ class OrderController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function show(Order $order)
-    {
-
-        return view('orders.index',compact('order'));
-    }
+{
+    $order->load(['user', 'orderItems.product', 'address']);
+    return view('admin.orders.show', compact('order'));
+}
 
     /**
      * Show the form for creating a new resource.

@@ -1,66 +1,54 @@
 @extends('adminlte::page')
 
-@section('title', 'Users')
+@section('title', 'User Management')
 
 @section('content')
 <div class="admin-section">
     <div class="section-header">
         <h2>User Management</h2>
-        @can('create users')
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add User
-        </a>
-        @endcan
     </div>
 
     <div class="section-body">
         <table class="styled-table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Roles</th>
-                    <th>Actions</th>
+                    <th>Current Roles</th>
+                    <th>Change Roles</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($users as $user)
+                @foreach ($users as $user)
                 <tr>
-                    <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
-                        @foreach($user->roles as $role)
-                            <span class="badge bg-info">{{ ucfirst($role->name) }}</span>
+                        @foreach ($user->roles as $role)
+                            <span class="badge bg-dark">{{ $role->name }}</span>
                         @endforeach
                     </td>
                     <td>
-                        <a href="{{ route('admin.users.edit', $user->id) }}"
-                           class="btn-icon" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </a>
-
-                        @role('superadmin')
-                        <form action="{{ route('admin.users.destroy', $user->id) }}"
-                              method="POST" class="delete-form d-inline">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-icon danger" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <form method="POST" action="{{ route('admin.users.update-roles', $user) }}" class="role-update-form">
+                            @csrf
+                            @method('PATCH')
+                            <select name="roles[]" class="form-select role-select" multiple data-user-name="{{ $user->name }}">
+                                @foreach ($allRoles as $role)
+                                    <option value="{{ $role->name }}"
+                                        {{ $user->roles->contains('name', $role->name) ? 'selected' : '' }}>
+                                        {{ ucfirst($role->name) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-dark btn-sm mt-2">Update</button>
                         </form>
-                        @endrole
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="5">No users found</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
 
-        <div class="pagination-wrap">
+        <div class="pagination-wrap mt-3">
             {{ $users->links() }}
         </div>
     </div>
@@ -74,22 +62,38 @@
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
+    // Handle form submit with confirmation
+    document.querySelectorAll('.role-update-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
+            const userName = this.querySelector('.role-select').dataset.userName;
+
             Swal.fire({
-                title: 'Delete User?',
-                text: "This action cannot be undone!",
-                icon: 'warning',
+                title: `Update roles for ${userName}?`,
+                text: "This will overwrite current roles.",
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#e3342f',
+                confirmButtonColor: '#28a745',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, delete!',
+                confirmButtonText: 'Yes, update',
                 reverseButtons: true
             }).then((result) => {
-                if (result.isConfirmed) form.submit();
+                if (result.isConfirmed) {
+                    this.submit();
+                }
             });
         });
     });
+
+    // Flash success message
+    @if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ session('success') }}',
+        timer: 2000,
+        showConfirmButton: false
+    });
+    @endif
 </script>
 @endsection

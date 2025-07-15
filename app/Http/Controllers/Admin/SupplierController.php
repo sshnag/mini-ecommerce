@@ -10,15 +10,21 @@ use Illuminate\Http\Request;
 class SupplierController extends Controller
 {
     public function index()
-    {
-        // Check supplier role exists
+{
     $supplierRole = Role::where('name', 'supplier')->where('guard_name', 'web')->first();
-if (!$supplierRole) {
-    abort(404, 'Supplier role not found for web guard.');
+
+    if (!$supplierRole) {
+        abort(404, 'Supplier role not found for web guard.');
+    }
+
+    $suppliers = User::role('supplier', 'web')->paginate(15);
+    $allRoles = Role::where('name', '!=', 'superadmin')->get(); // <-- Add this line
+
+    return view('admin.suppliers.index', [
+        'users' => $suppliers,
+        'allRoles' => $allRoles, // <-- Pass it to the view
+        'pageTitle' => 'Suppliers'
+    ]);
 }
 
-$suppliers = User::role('supplier', 'web')->paginate(15);
-return view('admin.users.index', ['users' => $suppliers, 'pageTitle' => 'Suppliers']);
-
-}
 }

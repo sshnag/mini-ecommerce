@@ -36,4 +36,8 @@ public function payment()
     'total_amount',
 
 ];
+public function getRouteKeyName()
+{
+    return 'id';
+}
 }

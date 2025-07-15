@@ -13,17 +13,38 @@ class UserController extends Controller
      * Displaying users ;ists from superadmin site
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+  public function index()
 {
+        $suppliers = User::role('supplier')->paginate(10); // or however you're filtering them
+
     $users = User::whereDoesntHave('roles', function($query) {
             $query->where('name', 'superadmin');
         })
         ->with('roles')
         ->paginate(10);
 
-    return view('admin.users.index', compact('users'));
-}
+    $allRoles = \Spatie\Permission\Models\Role::where('name', '!=', 'superadmin')->get();
 
+    return view('admin.users.index', compact('users', 'allRoles','suppliers'));
+}
+/**
+ * Summary of updateRoles
+ * Updating User roles in superadmin site
+ * @param \Illuminate\Http\Request $request
+ * @param \App\Models\User $user
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function updateRoles(Request $request, User $user)
+{
+    $validated = $request->validate([
+        'roles' => 'required|array',
+        'roles.*' => 'exists:roles,name'
+    ]);
+
+    $user->syncRoles($validated['roles']);
+
+    return back()->with('success', 'User roles updated successfully');
+}
 
     /**
      * Summary of create
@@ -56,7 +77,7 @@ class UserController extends Controller
             $user->assignRole($data['role']);
 
         }
-        return redirect()->route('admin.users.index')->with('succeess','New User Added!');
+        return redirect()->route('admin.users.index')->with('success','New User Added!');
     }
 
     /**

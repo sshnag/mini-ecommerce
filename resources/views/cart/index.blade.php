@@ -30,7 +30,7 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $item->product->image_url }}" class="img-thumbnail" style="width: 80px;">
+                                    <img src="{{ $item->product->image }}" class="img-thumbnail" style="width: 80px;">
                                     <div class="ms-3">
                                         <h5 class="mb-1">{{ $item->product->name }}</h5>
                                         <small>{{ $item->product->category->name }}</small>
@@ -38,7 +38,7 @@
                                 </div>
                             </td>
                             <td>{{ $item->quantity }}</td>
-                            <td>${{ number_format($item->price, 2) }}</td>
+<td>${{ number_format($item->product->price, 2) }}</td>
                             <td class="text-end">
                                 <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
                                     @csrf

@@ -42,7 +42,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('products.show');
 
 //  User Routes
-    Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
+Route::middleware(['auth'])->group(function () { // No role restriction
 Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
     ->name('orders.confirmation');
     Route::get('/checkout/shipping', [CheckoutController::class,'showShipping'])->name('checkout.shipping');
@@ -77,6 +77,11 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
+   Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])
+        ->name('orders.update-status');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
             Route::get('customers', [AdminCustomerController::class, 'index'])->name('customers.index');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -91,6 +96,8 @@ Route::resource('products', ProductController::class)->except(['destroy']);
 
     Route::resource('customers', AdminCustomerController::class)->only(['index']);
     Route::resource('users', UserController::class)->except(['show']);
+    Route::patch('/admin/users/{user}/update-roles', [UserController::class, 'updateRoles'])
+    ->name('users.update-roles');
     Route::resource('suppliers', SupplierController::class)->except(['show']);
 
 });

@@ -184,3 +184,56 @@ td[colspan] {
         font-size: 14px;
     }
 }
+/* Orders table */
+  /* Status Select Styles */
+    .status-select {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid #444;
+        background-color: #333;
+        color: #e0e0e0;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .status-select:hover, .filter-select:hover {
+        border-color: #555;
+    }
+
+   .status-select:focus, .filter-select:focus {
+        outline: none;
+        border-color: #28a745;
+    }
+
+    /* Status-specific colors */
+    option[value="pending"] { color: #C4B5FD; } /* Yellow for pending */
+    option[value="paid"] { color: #FBCFE8; } /* Blue for paid */
+    option[value="shipped"] { color: #A5F3FC; } /* Green for shipped */
+    option[value="cancelled"] { color: #FDE68A; } /* Red for cancelled */
+
+    /* Status filter form */
+    .status-filter {
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+/* User List table */
+  /* Additional styles for Select2 to match admin theme */
+    .select2-container--default .select2-selection--multiple {
+        background-color: #333;
+        border: 1px solid #444;
+        border-radius: 4px;
+        color: #e0e0e0;
+        min-height: 38px;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #28a745;
+        border: 1px solid #228e3b;
+        color: white;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #28a745;
+    }
