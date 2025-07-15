@@ -18,6 +18,7 @@
                     <th>ID</th>
                     <th>Preview</th>
                     <th>Name</th>
+                    <th>Category</th>
                     <th>Price ($)</th>
                     <th>Stock</th>
 
@@ -32,6 +33,7 @@
                         <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="thumb-img">
                     </td>
                     <td>{{ $product->name }}</td>
+                      <td>{{ $product->category->name ?? 'N/A' }}</td>
                     <td>{{ number_format($product->price, 2) }}</td>
                     <td>{{ $product->stock }}</td>
                     <td>

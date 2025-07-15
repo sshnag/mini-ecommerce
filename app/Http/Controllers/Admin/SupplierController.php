@@ -6,25 +6,58 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class SupplierController extends Controller
 {
     public function index()
-{
-    $supplierRole = Role::where('name', 'supplier')->where('guard_name', 'web')->first();
+    {
+        $supplierRole = Role::where('name', 'supplier')->where('guard_name', 'web')->first();
 
-    if (!$supplierRole) {
-        abort(404, 'Supplier role not found for web guard.');
+        if (!$supplierRole) {
+            abort(404, 'Supplier role not found for web guard.');
+        }
+
+        $suppliers = User::role('supplier', 'web')->paginate(15);
+
+        return view('admin.suppliers.index', [
+            'users' => $suppliers,
+            'pageTitle' => 'Suppliers'
+        ]);
     }
 
-    $suppliers = User::role('supplier', 'web')->paginate(15);
-    $allRoles = Role::where('name', '!=', 'superadmin')->get(); // <-- Add this line
+    public function create()
+    {
+        return view('admin.suppliers.create');
+    }
 
-    return view('admin.suppliers.index', [
-        'users' => $suppliers,
-        'allRoles' => $allRoles, // <-- Pass it to the view
-        'pageTitle' => 'Suppliers'
-    ]);
-}
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
 
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Assign supplier role
+        $user->assignRole('supplier');
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Supplier created successfully',
+                'user' => $user
+            ]);
+        }
+
+        return redirect()->route('superadmin.suppliers.index')
+            ->with('success', 'Supplier created successfully');
+    }
 }

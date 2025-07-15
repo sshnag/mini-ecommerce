@@ -40,7 +40,7 @@ class OrderController extends Controller
 public function updateStatus(Request $request, Order $order)
 {
     $validated = $request->validate([
-        'status' => 'required|in:pending,processing,completed,cancelled'
+        'status' => 'required|in:pending,paid,shipped,cancelled'
     ]);
 
     $order->update($validated);
@@ -211,5 +211,13 @@ public function userOrders()
 
     return view('orders.user', compact('orders'));
 }
+public function orderConfirmation($orderId)
+{
+    $order = Order::with(['orderItems.product.category', 'address'])->findOrFail($orderId);
+
+
+    return view('orders.confirmation', compact('order'));
+}
+
 
 }

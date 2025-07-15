@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
     /**
@@ -13,20 +14,29 @@ class UserController extends Controller
      * Displaying users ;ists from superadmin site
      * @return \Illuminate\Contracts\View\View
      */
-  public function index()
+public function index(Request $request)
 {
-        $suppliers = User::role('supplier')->paginate(10); // or however you're filtering them
+    $query = User::query()->with('roles');
 
-    $users = User::whereDoesntHave('roles', function($query) {
-            $query->where('name', 'superadmin');
-        })
-        ->with('roles')
-        ->paginate(10);
+    // Filter by selected role (if any)
+    if ($request->has('role') && $request->role !== '') {
+        $query->role($request->role); // From Spatie:role()
+    }
 
+    // Exclude superadmin from results
+    $query->whereDoesntHave('roles', function ($q) {
+        $q->where('name', 'superadmin');
+    });
+
+    $users = $query->paginate(10);
+
+    // Get all assignable roles
     $allRoles = \Spatie\Permission\Models\Role::where('name', '!=', 'superadmin')->get();
 
-    return view('admin.users.index', compact('users', 'allRoles','suppliers'));
+    return view('admin.users.index', compact('users', 'allRoles'));
 }
+
+
 /**
  * Summary of updateRoles
  * Updating User roles in superadmin site
@@ -112,6 +122,6 @@ public function updateRoles(Request $request, User $user)
     {
         //
         $user->delete();
-        return view('superadmin.users.index');
+        return view('admin.users.index');
     }
 }

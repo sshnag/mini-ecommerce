@@ -24,23 +24,41 @@ public function storeShipping(Request $request) {
     ]);
 
     $paymentMethod = $data['payment_method'];
-    unset($data['payment_method']); // remove so Address doesn't try to save it
+    unset($data['payment_method']);
 
     $data['user_id'] = Auth::id();
 
-    $address = Address::create($data);
+    try {
+        $address = Address::create($data);
 
-    session([
-        'checkout_address_id' => $address->id,
-        'checkout_payment_method' => $paymentMethod,  // save payment method in session
-    ]);
+        session([
+            'checkout_address_id' => $address->id,
+            'checkout_payment_method' => $paymentMethod,
+        ]);
 
-    return redirect()->route('checkout.review');
+        return redirect()->route('checkout.review')
+            ->with('success', 'Shipping address saved successfully');
+
+    } catch (\Exception $e) {
+        return back()->with('error', 'Failed to save address: ' . $e->getMessage());
+    }
 }
 
-
 public function showReview(CartService $cartService) {
-    $address = Address::find(session('checkout_address_id'));
+    $addressId = session('checkout_address_id');
+
+    if (!$addressId) {
+        return redirect()->route('checkout.shipping')
+            ->with('error', 'Please provide a shipping address first');
+    }
+
+    $address = Address::find($addressId);
+
+    if (!$address) {
+        return redirect()->route('checkout.shipping')
+            ->with('error', 'Invalid shipping address. Please provide a new one');
+    }
+
     $paymentMethod = session('checkout_payment_method');
     $cartItems = $cartService->getUserCart();
     $total = $cartService->getTotal();
@@ -49,19 +67,32 @@ public function showReview(CartService $cartService) {
 }
 
 public function placeOrder(CartService $cs) {
-    $order = $cs->placeOrder(Auth::id(), session('checkout_address_id'));
+    $addressId = session('checkout_address_id');
 
-    if (!$order) {
-        return redirect()->route('checkout.review')->with('error', 'Unable to place order. Your cart might be empty.');
+    if (!$addressId) {
+        return redirect()->route('checkout.review')
+            ->with('error', 'Shipping address is required');
     }
 
-    // Clear session data
-    session()->forget('checkout_address_id');
-    session()->forget('checkout_payment_method');
+    $address = Address::find($addressId);
 
-    // Redirect to the order details page with the order id
-    return redirect()->route('orders.show', ['order' => $order->id])
-                     ->with('success', 'Order placed successfully!');
+    if (!$address) {
+        return redirect()->route('checkout.review')
+            ->with('error', 'Invalid shipping address');
+    }
+
+    $order = $cs->placeOrder(Auth::id(), $addressId);
+
+    if (!$order) {
+        return redirect()->route('checkout.review')
+            ->with('error', 'Unable to place order. Your cart might be empty.');
+    }
+
+    session()->forget(['checkout_address_id', 'checkout_payment_method']);
+
+return redirect()->route('user.orders.confirmation', ['order' => $order->id])
+    ->with('success', 'Order placed successfully!');
+
 }
 
 }

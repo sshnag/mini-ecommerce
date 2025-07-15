@@ -39,7 +39,7 @@
       </div>
       <div class="form-group">
   <label for="payment_method">Payment Method</label>
-  <select id="payment_method" name="payment_method" class="form-input @error('payment_method') is-invalid @enderror" required>
+  <select id="payment_method" name="payment_method" class="form-input @error('payment_method') is-invalid @enderror" >
     <option value="">Select Payment Method</option>
     <option value="paypal" @selected(old('payment_method') == 'paypal')>PayPal</option>
     <option value="card" @selected(old('payment_method') == 'card')>Credit Card</option>

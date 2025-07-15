@@ -6,11 +6,11 @@
 <div class="admin-section">
     <div class="section-header d-flex justify-content-between align-items-center">
         <h2>Supplier Management</h2>
-        @can('create users')
-        <a href="{{ route('admin.users.create') }}" class="btn-add">
+        @role('superadmin')
+        <a href="{{ route('superadmin.users.create') }}" class="btn-add">
             <i class="fas fa-plus"></i> Add Supplier
         </a>
-        @endcan
+        @endrole
     </div>
 
     <div class="section-body">
@@ -38,9 +38,6 @@
                     </td>
                     <td>{{ $supplier->created_at->format('Y-m-d') }}</td>
                     <td>
-                        <a href="{{ route('admin.users.edit', $supplier) }}" class="btn-icon" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </a>
                         @role('superadmin')
                         <form action="{{ route('admin.users.destroy', $supplier) }}" method="POST" class="delete-form d-inline">
                             @csrf @method('DELETE')

@@ -40,7 +40,7 @@
                     <div class="product-card h-100">
                         <a href="{{ route('products.show', $product) }}">
                             <div class="product-image">
-                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-fluid">
+<img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid">
                                 <div class="product-overlay"></div>
                             </div>
                             <div class="product-details p-2">
@@ -67,8 +67,9 @@
 
         <!-- Pagination -->
         <div class="pagination-wrapper">
-            {{ $products->withQueryString()->links() }}
+            {{ $products->links() }}
         </div>
+
     </div>
 </section>
 @endsection

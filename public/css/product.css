@@ -12,6 +12,13 @@
   line-height: 1;
   user-select: none;
 }
+    .filter-form select {
+        padding: 6px 12px;
+        border: 1px solid #555;
+        background-color: #1f1f1f;
+        color: #fff;
+        border-radius: 4px;
+    }
 
 #quantityInput {
   font-size: 1.1rem;

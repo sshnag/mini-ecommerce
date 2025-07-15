@@ -1,56 +1,67 @@
 @extends('adminlte::page')
 
-@section('title', 'Users')
+@section('title', 'Orders')
 
 @section('content')
 <div class="admin-section">
     <div class="section-header">
-        <h2>User Management</h2>
-        @can('create users')
-        <a href="{{ route('admin.users.create') }}" class="btn-add">
-            <i class="fas fa-plus"></i> Add User
-        </a>
-        @endcan
+        <h2>Order Management</h2>
     </div>
 
     <div class="section-body">
+        <div class="mb-3">
+            <form action="{{ route('admin.orders.index') }}" method="GET" class="status-filter">
+                <select name="status" class="filter-select" onchange="this.form.submit()">
+                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All Orders</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
+                    <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+            </form>
+        </div>
+
         <table class="styled-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Roles</th>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($users as $user)
+                @foreach($orders as $order)
                 <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
+                    <td>#{{ $order->id }}</td>
+                    <td>{{ $order->user->name ?? 'Guest' }}</td>
+                    <td>${{ number_format($order->total_amount, 2) }}</td>
                     <td>
-                        <form action="{{ route('admin.users.update-roles', $user) }}" method="POST" class="roles-form">
+                        <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="status-form">
                             @csrf
                             @method('PATCH')
-                            <select name="roles[]" class="roles-select" multiple data-user-id="{{ $user->id }}">
-                                @foreach($allRoles as $role)
-                                    <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                                        {{ ucfirst($role->name) }}
-                                    </option>
-                                @endforeach
+                            <select name="status"
+                                class="status-select"
+                                data-order-id="{{ $order->id }}"
+                                data-original="{{ $order->status }}">
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>Paid</option>
+                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             </select>
                         </form>
                     </td>
+                    <td>{{ $order->created_at->format('M d, Y') }}</td>
                     <td>
-                        <a href="{{ route('admin.users.edit', $user) }}" class="btn-icon" title="Edit">
-                            <i class="fas fa-edit"></i>
+                        <a href="{{ route('admin.orders.show', $order) }}" class="btn-icon" title="View">
+                            <i class="fas fa-eye"></i>
                         </a>
-
                         @role('superadmin')
-                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="delete-form d-inline">
-                            @csrf @method('DELETE')
+                        <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="delete-form d-inline">
+                            @csrf
+                            @method('DELETE')
                             <button type="submit" class="btn-icon danger" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -58,16 +69,12 @@
                         @endrole
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="text-center">No users found</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
 
         <div class="pagination-wrap">
-            {{ $users->links() }}
+            {{ $orders->links() }}
         </div>
     </div>
 </div>
@@ -75,108 +82,66 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/admin/product.css') }}">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    /* Additional styles for Select2 to match admin theme */
-    .select2-container--default .select2-selection--multiple {
-        background-color: #333;
-        border: 1px solid #444;
-        border-radius: 4px;
-        color: #e0e0e0;
-        min-height: 38px;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background-color: #28a745;
-        border: 1px solid #228e3b;
-        color: white;
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        color: white;
-    }
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background-color: #28a745;
-    }
-</style>
 @endsection
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    // Initialize Select2 when DOM is fully loaded
-    $(document).ready(function() {
-        $('.roles-select').select2({
-            placeholder: "Select roles",
-            width: '100%',
-            dropdownParent: $('.admin-section')
-        });
+   document.querySelectorAll('select.status-select').forEach(select => {
+    select.addEventListener('change', function () {
+        const form = this.closest('form');
+        const orderId = this.dataset.orderId;
+        const newStatus = this.value;
+        const originalValue = this.dataset.original;
 
-        // Role change confirmation
-        document.querySelectorAll('.roles-select').forEach(select => {
-            select.addEventListener('change', function() {
-                const form = this.closest('form');
-                const userId = this.dataset.userId;
-                const selectedRoles = Array.from(this.selectedOptions).map(option => option.value);
-
-                Swal.fire({
-                    title: 'Confirm Role Update',
-                    html: `Update roles for user <strong>#${userId}</strong> to:<br><br>${selectedRoles.map(r => `<span class="badge bg-success">${r}</span>`).join(' ')}`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Update',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    } else {
-                        // Reset to original values
-                        $(this).val($(this).data('previous-values')).trigger('change');
-                    }
-                });
-            });
-
-            // Store initial values
-            $(select).data('previous-values', $(select).val());
-        });
-
-        // Delete confirmation
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Delete User?',
-                    text: "This action cannot be undone!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#e3342f',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Delete',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-
-        // Success message
-        @if(session('success'))
         Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: '{{ session('success') }}',
-            showConfirmButton: false,
-            timer: 3000,
-            toast: true,
-            background: '#1f1f1f',
-            color: '#fff'
+            title: 'Confirm Status Change',
+            text: `Change order #${orderId} to ${newStatus}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Update',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            } else {
+                this.value = originalValue;
+            }
         });
-        @endif
     });
+});
+
+
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Delete Order?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e3342f',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Delete',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    @if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ session('success') }}',
+        timer: 2500,
+        showConfirmButton: false
+    });
+    @endif
 </script>
 @endsection

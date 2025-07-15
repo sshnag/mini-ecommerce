@@ -2,7 +2,7 @@
 
 <div class="luxury-product group relative overflow-hidden transition-all duration-500 hover:shadow-lg">
     <a href="{{ route('products.show', $product) }}" class="block overflow-hidden">
-        <img src="{{ $product->image_url }}"
+        <img src="{{ $product->image }}"
              alt="{{ $product->name }}"
              class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
     </a>

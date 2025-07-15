@@ -44,7 +44,7 @@ Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('p
 //  User Routes
 Route::middleware(['auth'])->group(function () { // No role restriction
 Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
-    ->name('orders.confirmation');
+    ->name('user.orders.confirmation');
     Route::get('/checkout/shipping', [CheckoutController::class,'showShipping'])->name('checkout.shipping');
     Route::post('/checkout/shipping', [CheckoutController::class,'storeShipping'])->name('checkout.shipping.store');
     Route::get('/checkout/review', [CheckoutController::class,'showReview'])->name('checkout.review');
@@ -60,7 +60,7 @@ Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfir
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('user.orders.show');
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'edit', 'update']);
 
     // Addresses
@@ -77,7 +77,8 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
-   Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard'); // admin.dashboard
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])
         ->name('orders.update-status');
@@ -85,6 +86,7 @@ Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->nam
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
             Route::get('customers', [AdminCustomerController::class, 'index'])->name('customers.index');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
+
 Route::resource('products', ProductController::class)->except(['destroy']);
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
          Route::get('users/create',[UserController::class,'create'])->name('users.create');
@@ -98,23 +100,15 @@ Route::resource('products', ProductController::class)->except(['destroy']);
     Route::resource('users', UserController::class)->except(['show']);
     Route::patch('/admin/users/{user}/update-roles', [UserController::class, 'updateRoles'])
     ->name('users.update-roles');
-    Route::resource('suppliers', SupplierController::class)->except(['show']);
+    Route::resource('suppliers', SupplierController::class)->except(['destroy']);
 
-});
-
-
-// Supplier Routes
-Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
-    Route::get('/dashboard', [SupplierDashboardController::class, 'index'])->name('supplier.dashboard');
-    Route::resource('products', SupplierProductController::class);
-    Route::get('orders', [SupplierOrderController::class, 'index'])->name('orders.index');
 });
 
 // Superadmin Routes
 Route::prefix('admin')->middleware(['auth:admin', 'role:superadmin'])->name('superadmin.')->group(function () {
-   Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::resource('suppliers', SupplierController::class);
 
     // Manage all users
     Route::get('users', [UserController::class, 'index'])->name('users.index');

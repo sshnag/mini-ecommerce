@@ -1,11 +1,39 @@
-.btn-icon {
-    border: none;
-    background: transparent;
-    color: #ccc;
-    margin-left: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-}
-.btn-icon.danger:hover {
-    color: #e74c3c;
-}
+.supplier-container {
+        padding: 2rem 0;
+    }
+    .supplier-card {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+    .supplier-header {
+        background-color: #006b54;
+        color: white;
+        border-radius: 10px 10px 0 0 !important;
+        padding: 1.5rem;
+    }
+    .supplier-submit-btn {
+        background-color: #006b54;
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    .supplier-submit-btn:hover {
+        background-color: #004d3a;
+    }
+    .password-toggle {
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .password-toggle:hover {
+        background-color: #f8f9fa;
+    }
+    .form-control:focus {
+        border-color: #006b54;
+        box-shadow: 0 0 0 0.25rem rgba(0, 107, 84, 0.25);
+    }
+    .invalid-feedback {
+        display: block;
+        margin-top: 5px;
+    }

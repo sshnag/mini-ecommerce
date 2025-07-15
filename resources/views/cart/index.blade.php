@@ -13,7 +13,7 @@
 
         @if($cartItems->isEmpty())
             <div class="alert alert-info">
-                Your cart is empty. <a href="{{ route('products.index') }}" class="btn btn-sm btn-primary ml-2">Start Shopping</a>
+                Your cart is empty. <a href="{{ route('home') }}" class="btn btn-sm btn-outline-dark ml-2">Start Shopping</a>
             </div>
         @else
             <table class="table table-borderless cart-table">
@@ -72,7 +72,7 @@
             @foreach($recommended as $product)
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm mb-4">
-                        <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}">
+                        <img src="{{ $product->image }}" class="card-img-top" alt="{{ $product->name }}">
                         <div class="card-body text-center">
                             <h6 class="card-title">{{ $product->name }}</h6>
                             <p class="text-muted">${{ number_format($product->price, 2) }}</p>
@@ -80,7 +80,7 @@
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" name="quantity" value="1">
-                                <button class="btn btn-sm btn-outline-primary">Add to Bag</button>
+                                <button class="btn btn-sm btn-outline-dark">Add to Bag</button>
                             </form>
                         </div>
                     </div>
