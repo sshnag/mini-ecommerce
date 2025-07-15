@@ -50,4 +50,11 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+    protected function authenticated(Request $request, $user)
+{if ($user->hasRole('supplier')) {
+        return redirect()->route('supplier.dashboard');
+    } else {
+        return redirect()->route('home'); // normal user homepage
+    }
+}
 }

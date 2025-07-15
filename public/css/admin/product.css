@@ -1,0 +1,83 @@
+.admin-section {
+    padding: 20px;
+    background: #1f1f1f;
+    border-radius: 6px;
+    color: #e0e0e0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h2 {
+    font-weight: 600;
+    color: #f8f8f8;
+}
+
+.btn-add {
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.btn-add:hover {
+    background-color: #218838;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.styled-table thead {
+    background-color: #333;
+    color: #fff;
+}
+
+.styled-table td, .styled-table th {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.thumb-img {
+    width: 50px;
+    border-radius: 4px;
+}
+
+.btn-action {
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.btn-edit {
+    background-color: #ffc107;
+    color: #212529;
+}
+.btn-icon {
+    border: none;
+    background: transparent;
+    color: #ccc;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-icon.danger:hover {
+    color: #e74c3c;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.pagination-wrap {
+    margin-top: 20px;
+    text-align: right;
+}

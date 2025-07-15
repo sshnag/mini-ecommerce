@@ -358,13 +358,7 @@ return [
         'active'=>['admin/customers'],
         'icon' => 'fas fa-users',
     ],
-      ['header'=>'CONTENT'],
-      [
-        'text'=>'Pages',
-        'url'=>'admin/pages',
-        'active'=>['admin/pages'],
-        'icon'=>'fas fa-folder'
-      ],
+
        ['header' => 'ADMINISTRATION'],
     [
         'text' => 'Users',

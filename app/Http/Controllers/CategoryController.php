@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -16,7 +17,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::paginate(5);
+    $categories = Category::withCount('products')->paginate(15);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -47,19 +48,21 @@ class CategoryController extends Controller
      * @param string $slug
      * @return \Illuminate\Contracts\View\View
      */
-   public function show($slug)
+ public function show(Category $category, Request $request)
 {
-    $category = Category::where('slug', $slug)->firstOrFail();
+    $query = $category->products()->with('reviews');
 
-    $products = Product::where('category_id', $category->id)
-        ->with(['category', 'reviews'])
-        ->paginate(12);
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $query->where(function($q) use ($searchTerm) {
+            $q->where('name', 'like', "%{$searchTerm}%")
+              ->orWhereHas('category', fn($c) => $c->where('name', 'like', "%{$searchTerm}%"));
+        });
+    }
 
-    return view('categories.show', [
-        'category' => $category,
-        'products' => $products,
-        'sizePresets' => $this->getSizePresets($category->size_type)
-    ]);
+    $products = $query->paginate(9);
+
+    return view('categories.show', compact('category', 'products'));
 }
 
     /**
@@ -92,11 +95,18 @@ class CategoryController extends Controller
      * @param \App\Models\Category $category
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Category $category)
-    {
-        $category->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'Category is archived');
-    }
+  public function destroy(Category $category)
+{
+    $this->authorize('delete', $category);
+
+    $category->delete();
+
+    return redirect()->route('admin.categories.index')
+        ->with('success', 'Category deleted successfully.');
+}
+
+
+
 
     /**
      * Get size presets based on category type

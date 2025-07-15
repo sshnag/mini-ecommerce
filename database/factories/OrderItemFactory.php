@@ -21,10 +21,10 @@ class OrderItemFactory extends Factory
     {
         return [
             //
-            'order_id'=>Order::inRandomOrder()->first()?->id,
+            'order_id' => Order::factory(), // fallback
             'product_id'=>Product::inRandomOrder()->first()?->id,
             'quantity'=>fake()->numberBetween(1,5),
-            'price'=>fake()->randomFloat(1,50,300)
+            'price'=>fake()->randomFloat(1,50,3000)
         ];
     }
 }

@@ -93,9 +93,9 @@
     <div class="container text-center">
         <h2 class="animate__animated animate__fadeIn">Experience Perfection</h2>
         <p class="animate__animated animate__fadeIn animate__delay-1s">Book a private viewing of our collections</p>
-        <a href="" class="btn-cta animate__animated animate__fadeInUp animate__delay-2s">
-            Contact Us <i class="fas fa-chevron-down ms-2"></i>
-        </a>
+        <label class="btn-cta animate__animated animate__fadeInUp animate__delay-2s">
+            Contact Us By Following
+        </label>
     </div>
 </section>
 @endsection

@@ -17,14 +17,14 @@ class DatabaseSeeder extends Seeder
 {
     $this->call([
 
-                UserSeeder::class,
+                // UserSeeder::class,
                 // CategorySeeder::class,
                 // AddressSeeder::class,
                 // ProductSeeder::class,
                 // CartSeeder::class,
                 // ReviewSeeder::class,
-                // OrderSeeder::class,
-                // OrderItemSeeder::class,
+                OrderSeeder::class,
+                OrderItemSeeder::class,
                 // PaymentSeeder::class,
                 // AdminSeeder::class,
                 // RoleSeeder::class,

@@ -12,17 +12,20 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CheckoutController;
-
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Supplier\SupplierDashboardController;
+use App\Http\Controllers\Supplier\SupplierOrderController;
+use App\Http\Controllers\Supplier\SupplierProductController;
+
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\Admin\SupplierController;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Supplier\ProductController as SupplierProductController;
-use App\Models\Supplier;
+    use App\Models\Supplier;
 
 
 Route::get('/products', [ShopController::class, 'index'])->name('products.index');
@@ -36,8 +39,8 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
-Route::get('/products/{custom_id}', [ProductController::class, 'show'])
-     ->name('products.show');
+Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('products.show');
+
 //  User Routes
     Route::middleware(['auth', 'role:user|admin|supplier|superadmin'])->group(function () {
 Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
@@ -58,18 +61,14 @@ Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfir
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'edit', 'update']);
 
     // Addresses
     Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
     Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
 
-    // Reviews
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
@@ -79,33 +78,36 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('categories', CategoryController::class)->except(['show']);
+            Route::get('customers', [AdminCustomerController::class, 'index'])->name('customers.index');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
-    Route::get('products',[ProductController::class,'index'])->name('products');
+Route::resource('products', ProductController::class)->except(['destroy']);
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
          Route::get('users/create',[UserController::class,'create'])->name('users.create');
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
      Route::get('users/edit',[UserController::class,'edit'])->name('users.edit');
+     Route::resource('products', ProductController::class)->except(['show']);
+    Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('orders', OrderController::class)->only(['index']);
+
+    Route::resource('customers', AdminCustomerController::class)->only(['index']);
+    Route::resource('users', UserController::class)->except(['show']);
+    Route::resource('suppliers', SupplierController::class)->except(['show']);
 
 });
 
 
 // Supplier Routes
-Route::prefix('supplier')->middleware(['auth', 'role:supplier'])->name('supplier.')->group(function () {
-
-    // Manage own products
-    Route::get('products', [SupplierProductController::class, 'index'])->name('products.index');
-    Route::get('products/create', [SupplierProductController::class, 'create'])->name('products.create');
-    Route::post('products', [SupplierProductController::class, 'store'])->name('products.store');
-    Route::get('products/{product}/edit', [SupplierProductController::class, 'edit'])->name('products.edit');
-    Route::put('products/{product}', [SupplierProductController::class, 'update'])->name('products.update');
-    Route::delete('products/{product}', [SupplierProductController::class, 'destroy'])->name('products.destroy');
-
+Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
+    Route::get('/dashboard', [SupplierDashboardController::class, 'index'])->name('supplier.dashboard');
+    Route::resource('products', SupplierProductController::class);
+    Route::get('orders', [SupplierOrderController::class, 'index'])->name('orders.index');
 });
 
 // Superadmin Routes
-Route::prefix('superadmin')->middleware(['auth', 'role:superadmin'])->name('superadmin.')    ->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+Route::prefix('admin')->middleware(['auth:admin', 'role:superadmin'])->name('superadmin.')->group(function () {
+   Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
     // Manage all users
     Route::get('users', [UserController::class, 'index'])->name('users.index');

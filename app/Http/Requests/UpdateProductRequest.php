@@ -6,23 +6,39 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'user_id'      => 'required|exists:users,id',
+            'name'         => 'required|string|max:255',
+            'description'  => 'required|string',
+            'price'        => 'required|numeric|min:0|max:10000',
+            'stock'        => 'required|integer|min:0',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:20480',
+            'category_id'  => 'required|exists:categories,id',
+
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $category = \App\Models\Category::find($this->category_id);
+
+            if ($category && $category->size_type !== 'none') {
+                $allowedSizes = $category->default_sizes;
+
+                foreach ($this->input('sizes', []) as $size) {
+                    if (!in_array($size, $allowedSizes)) {
+                        $validator->errors()->add('sizes', "Invalid size '$size' for selected category.");
+                    }
+                }
+            }
+        });
     }
 }

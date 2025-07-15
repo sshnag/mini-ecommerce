@@ -20,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'check.superadmin' => \App\Http\Middleware\CheckSuperadmin::class,
+
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

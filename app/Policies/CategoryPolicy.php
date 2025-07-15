@@ -44,9 +44,9 @@ class CategoryPolicy
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Category $category): bool
-    {
-        return false;
-    }
+{
+    return $user->hasRole('superadmin');
+}
 
     /**
      * Determine whether the user can restore the model.

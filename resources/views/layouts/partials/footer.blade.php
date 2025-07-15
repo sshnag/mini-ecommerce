@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-4 mb-4 mb-md-0">
                 <h3 class="fs-4 mb-3">TIFFANY</h3>
-                <p>Crafting elegance since 2023</p>
+                <p>Crafting elegance since 1837</p>
             </div>
 
             <div class="col-md-2 mb-4 mb-md-0">

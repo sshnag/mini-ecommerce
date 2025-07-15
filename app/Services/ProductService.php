@@ -20,6 +20,8 @@ class ProductService
         // Handle image upload
         if ($imageFile) {
             $data['image'] = $this->storeImage($imageFile);
+            $data['available_sizes'] = $data['available_sizes'] ?? null;
+
         }
 
         return Product::create($data + [
@@ -41,6 +43,8 @@ class ProductService
         if ($imageFile) {
             $this->deleteImage($product->image);
             $data['image'] = $this->storeImage($imageFile);
+            $data['available_sizes'] = $data['available_sizes'] ?? null;
+
         }
 
         $product->update($data);

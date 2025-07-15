@@ -13,6 +13,7 @@ class User extends Authenticatable
 {
 
     use HasFactory, Notifiable, SoftDeletes, HasRoles;
+     protected $guard_name = 'web';
      public function orders()
      {
         return $this->hasMany(Order::class);

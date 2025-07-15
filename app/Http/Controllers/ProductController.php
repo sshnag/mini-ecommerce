@@ -8,6 +8,7 @@ use App\Repositories\ProductRepository;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
@@ -20,7 +21,6 @@ class ProductController extends Controller
         $this->productRepo = $productRepo;
         $this->productService = $productService;
 
-        $this->middleware('can:superadmin')->only('destroy');
     }
 
    public function index()
@@ -29,42 +29,44 @@ class ProductController extends Controller
     return view('admin.products.index', compact('products'));
 }
 
-    public function create()
-    {
-        return view('admin.products.create');
-    }
+   public function create()
+{
+    $categories = Category::all(); // or paginate if many
+    return view('admin.products.create', compact('categories'));
+}
+
 
     public function store(StoreProductRequest $request)
     {
         try {
-            $product = $this->productService->createProduct(
-                $request->validated(),
-                $request->file('image')
-            );
+    $product = $this->productService->createProduct(
+        $request->validated(),
+        $request->file('image')
+    );
+   return redirect()
+    ->route('admin.products.index')
+    ->with('success', 'Product created successfully');
+} catch (\Exception $e) {
+    return back()->withInput()->withErrors(['error' => $e->getMessage()]);
+}
 
-            return redirect()
-                ->route('admin.products.show', $product->custom_id)
-                ->with('success', 'Product created successfully');
-
-        } catch (\Exception $e) {
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'Product creation failed: ' . $e->getMessage()]);
-        }
     }
 
-    public function show($custom_id)
-    { $product = Product::with(['category', 'reviews', 'supplier'])
-                ->where('custom_id', $custom_id)
-                ->firstOrFail();
+  public function show($custom_id)
+{
+    $product = Product::with('category')->where('custom_id', $custom_id)->firstOrFail();
 
     return view('products.show', compact('product'));
-    }
+}
+
+
 
     public function edit(Product $product)
-    {
-        return view('admin.products.edit', compact('product'));
-    }
+{
+    $categories = Category::all();
+    return view('admin.products.edit', compact('product', 'categories'));
+}
+
 
     public function update(UpdateProductRequest $request, Product $product)
     {
@@ -76,8 +78,8 @@ class ProductController extends Controller
             );
 
             return redirect()
-                ->route('admin.products.show', $product->custom_id)
-                ->with('success', 'Product updated successfully');
+    ->route('admin.products.index')
+    ->with('success', 'Product updated successfully');
 
         } catch (\Exception $e) {
             return back()
@@ -86,22 +88,22 @@ class ProductController extends Controller
         }
     }
 
-    public function destroy(Product $product)
-    {
-        try {
-            if (!Gate::allows('superadmin')) {
-                abort(403, 'Only superadmins can delete products');
-            }
+public function destroy(Product $product)
+{
+    try {
+        // This single line does all authorization via your ProductPolicy
+        $this->authorize('delete', $product);
 
-            $this->productService->deleteProduct($product);
+        $this->productService->deleteProduct($product);
 
-            return redirect()
-                ->route('admin.products.index')
-                ->with('success', 'Product deleted successfully');
+        return redirect()
+            ->route('admin.products.index')
+            ->with('success', 'Product deleted successfully');
 
-        } catch (\Exception $e) {
-            return back()
-                ->withErrors(['error' => 'Product deletion failed: ' . $e->getMessage()]);
-        }
+    } catch (\Exception $e) {
+        return back()
+            ->withErrors(['error' => 'Deletion failed: ' . $e->getMessage()]);
     }
+}
+
 }

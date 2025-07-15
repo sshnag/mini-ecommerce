@@ -33,11 +33,9 @@ class OrderController extends Controller
         ->paginate(10);
 
     // Use different view for admin vs user
- if (in_array(Auth::user()->role, ['admin', 'superadmin'])) {
-    return view('admin.orders.index', compact('orders'));
-}
 
-    return view('orders.user', compact('orders')); // regular user
+
+    return view('admin.orders.index', compact('orders')); // regular user
 }
     /**
      * Summary of show
@@ -47,9 +45,8 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        abort_if($order->user_id !==Auth::id(),403);
-        $order->load('orderItems.product');
-        return view('orders.show',compact('order'));
+
+        return view('orders.index',compact('order'));
     }
 
     /**
@@ -173,8 +170,8 @@ public function placeOrder(CartService $cartService)
     // Create payment record for this order
     $payment = $order->payment()->create([
         'method' => $paymentMethod,
-        'status' => 'paid',  // or pending if you want to confirm asynchronously
-        'transaction_id' => null,  // fill if you have a transaction ID from payment gateway
+        'status' => 'paid',
+        'transaction_id' => null,
     ]);
 
     foreach ($cartService->getUserCart() as $item) {

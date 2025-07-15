@@ -17,17 +17,17 @@
             <table class="table table-bordered table-hover text-center align-middle">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Roles</th>
-                        @can('assign roles')
                         <th>Actions</th>
-                          @endcan
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($users as $user)
                     <tr>
+                        <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>

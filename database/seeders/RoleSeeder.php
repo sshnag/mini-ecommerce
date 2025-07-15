@@ -33,9 +33,11 @@ class RoleSeeder extends Seeder
         $roles = ['superadmin', 'admin', 'supplier', 'user'];
 
         foreach ($roles as $role) {
-            Role::firstOrCreate(['name' => $role]);
-        }
-
+    Role::firstOrCreate([
+        'name' => $role,
+        'guard_name' => 'web',
+    ]);
+}
         // Assign permissions to roles
         Role::findByName('admin')->givePermissionTo([
             'manage products',
@@ -61,5 +63,14 @@ class RoleSeeder extends Seeder
         );
 
         $superadmin->assignRole('superadmin');
+        $supplier = User::firstOrCreate(
+    ['email' => 'supplier@example.com'],
+    [
+        'name' => 'Test Supplier',
+        'password' => Hash::make('password123'), // Use a simple password for testing
+    ]
+);
+
+$supplier->assignRole('supplier');
     }
 }

@@ -16,6 +16,13 @@ class Category extends Model
 }
 
 
+    protected $casts = [
+        'default_sizes' => 'array',
+    ];
+    public function getRouteKeyName()
+{
+    return 'slug';
+}
 public function reviews()
 {
     return $this->hasMany(Review::class);
