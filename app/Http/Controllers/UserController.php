@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         try {
             $query = User::with('roles')
-                ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'superadmin'));
+                ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'superadmin'))->latest();
 
             if ($request->filled('role')) {
                 $query->role($request->role);

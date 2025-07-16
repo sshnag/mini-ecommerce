@@ -10,13 +10,16 @@
 
 @section('content')
   {{-- Notifications --}}
-    @foreach(auth()->user()->unreadNotifications as $notification)
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            {{ $notification->data['message'] }}
-            <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endforeach
+ @foreach(auth()->user()->unreadNotifications()->latest()->get() as $notification)
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+    {{ $notification->data['message'] }}
+    <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+@endforeach
+
+
 <div class="container-fluid">
     <div class="row g-4">
         <!-- Summary Cards -->
@@ -78,6 +81,8 @@
 
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+
 @stop
 
 @section('css')
@@ -156,6 +161,9 @@
             color: '#fff',
         });
     @endforeach
+
 </script>
+
+
 
 @stop

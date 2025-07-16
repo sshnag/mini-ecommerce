@@ -40,6 +40,35 @@
             </div>
         </div>
     </div>
+<!-- Limited Edition Section -->
+<section class="limited-edition-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title animate__animated animate__fadeInDown">Limited Edition</h2>
+            <p class="text-muted">Discover exclusive pieces with only a few left in stock</p>
+        </div>
+        <div class="row">
+            @foreach ($limitedEditionProducts as $index => $product)
+                <div class="col-md-3 mb-4">
+                    <div class="card product-card shadow border-0 h-100 animate__animated animate__fadeInUp" style="animation-delay: {{ $index * 0.2 }}s;">
+                        <a href="{{ route('products.show', $product) }}">
+<div class="product-image-wrapper">
+    <img src="{{ asset('storage/' . $product->image) }}" class="product-image" alt="{{ $product->name }}">
+</div>
+
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ $product->name }}</h5>
+                            <p class="text-muted mb-1">${{ number_format($product->price, 2) }}</p>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+
 
     <!-- Bracelets -->
     <div class="collection-item bg-light">
