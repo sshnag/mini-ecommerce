@@ -8,7 +8,7 @@
         <h2>Supplier Management</h2>
         @role('superadmin')
         <a href="{{ route('superadmin.users.create') }}" class="btn-add">
-            <i class="fas fa-plus"></i> Add Supplier
+            <i class="fas fa-user-plus"></i> Add Supplier
         </a>
         @endrole
     </div>
@@ -39,7 +39,7 @@
                     <td>{{ $supplier->created_at->format('Y-m-d') }}</td>
                     <td>
                         @role('superadmin')
-                        <form action="{{ route('admin.users.destroy', $supplier) }}" method="POST" class="delete-form d-inline">
+                        <form action="{{ route('superadmin.users.destroy', $supplier) }}" method="POST" class="delete-form d-inline">
                             @csrf @method('DELETE')
                             <button type="submit" class="btn-icon danger" title="Delete">
                                 <i class="fas fa-trash"></i>

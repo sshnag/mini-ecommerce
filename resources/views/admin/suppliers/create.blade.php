@@ -50,7 +50,7 @@
                 @error('roles') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
-            <button type="submit" class="btn btn-main">
+            <button type="submit" class="btn btn-primary">
                 <i class="fas fa-user-plus"></i> Create User
             </button>
         </form>
@@ -59,6 +59,8 @@
 @endsection
 
 @section('css')
+<!-- Add this line before your other CSS links -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <link rel="stylesheet" href="{{ asset('css/admin/product.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
@@ -78,7 +80,7 @@
             // Show success message
             Swal.fire({
                 icon: 'success',
-                title: 'User created successfully',
+                title: 'Supplier created successfully',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,

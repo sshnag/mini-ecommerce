@@ -5,123 +5,132 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use Spatie\Permission\Models\Role;
+
 class UserController extends Controller
 {
-    /**
-     * Summary of index
-     * Displaying users ;ists from superadmin site
-     * @return \Illuminate\Contracts\View\View
-     */
-public function index(Request $request)
-{
-    $query = User::query()->with('roles');
-
-    // Filter by selected role (if any)
-    if ($request->has('role') && $request->role !== '') {
-        $query->role($request->role); // From Spatie:role()
+    public function __construct()
+    {
+        $this->middleware('role:admin|superadmin');
     }
 
-    // Exclude superadmin from results
-    $query->whereDoesntHave('roles', function ($q) {
-        $q->where('name', 'superadmin');
-    });
+    public function index(Request $request)
+    {
+        try {
+            $query = User::with('roles')
+                ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'superadmin'));
 
-    $users = $query->paginate(10);
+            if ($request->filled('role')) {
+                $query->role($request->role);
+            }
 
-    // Get all assignable roles
-    $allRoles = \Spatie\Permission\Models\Role::where('name', '!=', 'superadmin')->get();
+            $users = $query->paginate(10);
+            $allRoles = Role::where('name', '!=', 'superadmin')->get();
 
-    return view('admin.users.index', compact('users', 'allRoles'));
-}
+            return view('admin.users.index', compact('users', 'allRoles'));
 
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading users: '.$e->getMessage());
+        }
+    }
 
-/**
- * Summary of updateRoles
- * Updating User roles in superadmin site
- * @param \Illuminate\Http\Request $request
- * @param \App\Models\User $user
- * @return \Illuminate\Http\RedirectResponse
- */
-public function updateRoles(Request $request, User $user)
-{
-    $validated = $request->validate([
-        'roles' => 'required|array',
-        'roles.*' => 'exists:roles,name'
-    ]);
-
-    $user->syncRoles($validated['roles']);
-
-    return back()->with('success', 'User roles updated successfully');
-}
-
-    /**
-     * Summary of create
-     * Inserting new users from superdamin site only
-     * @return \Illuminate\Contracts\View\View
-     */
     public function create()
     {
-        //
-        return view('admin.users.create');
-    }
+        try {
+            $roles = Role::where('name', '!=', 'superadmin')->get();
+            return view('admin.users.create', compact('roles'));
 
-    /**
-     * Summary of store
-     * Storing Users' data from create form
-     * @param \App\Http\Requests\StoreUserRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(StoreUserRequest $request)
-    {
-        //
-        $data=$request->validated();
-        $user=User::create([
-            'name'=>$data['name'],
-            'email'=>$data['email'],
-            'password'=>bcrypt($data['password']),
-        ]);
-        if (isset($data['role'])) {
-            # code...
-            $user->assignRole($data['role']);
-
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading create form: '.$e->getMessage());
         }
-        return redirect()->route('admin.users.index')->with('success','New User Added!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
+ public function store(StoreUserRequest $request)
+{
+    try {
+        $data = $request->validated();
+
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+
+        if (!empty($data['roles'])) {
+            $user->syncRoles($data['roles']);
+        }
+
+        // Redirect back to create form with success message and reset flag
+        return redirect()
+            ->route('superadmin.users.create')
+            ->with('success', 'User created successfully')
+            ->with('form_reset', true);
+
+    } catch (\Exception $e) {
+        return back()
+            ->withInput()
+            ->with('error', 'Error creating user: '.$e->getMessage());
+    }
+}    public function updateRoles(Request $request, User $user)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'roles' => 'required|array',
+                'roles.*' => 'exists:roles,name'
+            ]);
+
+            $user->syncRoles($validated['roles']);
+
+            return back()->with('success', 'User roles updated.');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error updating roles: '.$e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request)
+    public function edit(User $user)
     {
-        //
-        return view('admin.users.edit');
+        try {
+            $roles = Role::where('name', '!=', 'superadmin')->get();
+            return view('admin.users.edit', compact('user', 'roles'));
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading edit form: '.$e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $user)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name'  => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,'.$user->id,
+            ]);
+
+            $user->update($validated);
+
+            return redirect()
+                ->route('admin.users.index') // Changed from superadmin to admin
+                ->with('success', 'User updated successfully.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error updating user: '.$e->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user)
     {
-        //
-        $user->delete();
-        return view('admin.users.index');
+        try {
+            $user->delete();
+            return redirect()
+                ->route('admin.users.index') // Changed from superadmin to admin
+                ->with('success', 'User deleted successfully.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error deleting user: '.$e->getMessage());
+        }
     }
 }

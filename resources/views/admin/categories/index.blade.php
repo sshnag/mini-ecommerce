@@ -31,9 +31,9 @@
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $category->products_count }}</td>
                                 <td class="text-end">
-                                    @can('update', $category)
+                                    {{-- @can('update', $category)
                                         <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn-icon warning"><i class="fas fa-edit"></i></a>
-                                    @endcan
+                                    @endcan --}}
 
                                     @can('delete', $category)
                                         <form action="{{ route('superadmin.categories.destroy', $category->id) }}"

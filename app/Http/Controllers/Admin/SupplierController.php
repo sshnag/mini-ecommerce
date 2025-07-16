@@ -19,7 +19,7 @@ class SupplierController extends Controller
             abort(404, 'Supplier role not found for web guard.');
         }
 
-        $suppliers = User::role('supplier', 'web')->paginate(15);
+        $suppliers = User::role('supplier', 'web')->paginate(10);
 
         return view('admin.suppliers.index', [
             'users' => $suppliers,

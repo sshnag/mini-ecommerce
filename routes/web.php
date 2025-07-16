@@ -89,7 +89,7 @@ Route::prefix('admin')->middleware(['auth:admin', 'role:admin|superadmin'])->nam
 
 Route::resource('products', ProductController::class)->except(['destroy']);
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-         Route::get('users/create',[UserController::class,'create'])->name('users.create');
+
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
      Route::get('users/edit',[UserController::class,'edit'])->name('users.edit');
      Route::resource('products', ProductController::class)->except(['show']);
@@ -97,7 +97,7 @@ Route::resource('products', ProductController::class)->except(['destroy']);
     Route::resource('orders', OrderController::class)->only(['index']);
 
     Route::resource('customers', AdminCustomerController::class)->only(['index']);
-    Route::resource('users', UserController::class)->except(['show']);
+    Route::resource('users', UserController::class)->except(['show','create']);
     Route::patch('/admin/users/{user}/update-roles', [UserController::class, 'updateRoles'])
     ->name('users.update-roles');
     Route::resource('suppliers', SupplierController::class)->except(['destroy']);
@@ -109,9 +109,18 @@ Route::prefix('admin')->middleware(['auth:admin', 'role:superadmin'])->name('sup
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     Route::resource('suppliers', SupplierController::class);
+    // Manage suppliers
+      Route::get('/suppliers', [SupplierController::class, 'index'])->name('index');
+        Route::get('/suppliers/create', [SupplierController::class, 'create'])->name('create');
+        Route::post('/suppliers', [SupplierController::class, 'store'])->name('store');
 
     // Manage all users
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
-    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('users', [UserController::class, 'store'])->name('users.store');
+     // User Management
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::patch('/users/{user}/roles', [UserController::class, 'updateRoles'])->name('users.update-roles');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });

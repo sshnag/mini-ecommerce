@@ -7,11 +7,11 @@
     <div class="section-header">
         <h2>User Management</h2>
 
-        @can('create users')
+        @role('superadmin')
         <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Add User
         </a>
-        @endcan
+        @endrole
     </div>
 
     <div class="section-body">
@@ -32,7 +32,6 @@
         <table class="styled-table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Roles</th>
@@ -42,7 +41,6 @@
             <tbody>
                 @forelse ($users as $user)
                 <tr>
-                    <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
@@ -64,7 +62,7 @@
                         </a>
 
                         @role('superadmin')
-                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="delete-form d-inline">
+                        <form action="{{ route('superadmin.users.destroy', $user) }}" method="POST" class="delete-form d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-icon danger" title="Delete">
