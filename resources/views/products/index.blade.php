@@ -12,7 +12,7 @@
                     <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->title }}">
                 </a>
                 <div class="card-body text-center">
-                    <a href="{{ route('products.show', $product->id) }}" class="text-dark text-decoration-none">
+                    <a href="{{ route('products.show', $product->id) }}" class="text-dark text">
                         <h5 class="card-title">{{ $product->title }}</h5>
                     </a>
                     <p class="card-text">${{ $product->price }}</p>

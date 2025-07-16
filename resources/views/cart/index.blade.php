@@ -30,8 +30,7 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $item->product->image }}" class="img-thumbnail" style="width: 80px;">
-                                    <div class="ms-3">
+<img src="{{ asset('storage/' . $item->product->image) }}" class="img-thumbnail" style="width: 80px;">                                    <div class="ms-3">
                                         <h5 class="mb-1">{{ $item->product->name }}</h5>
                                         <small>{{ $item->product->category->name }}</small>
                                     </div>
@@ -72,9 +71,11 @@
             @foreach($recommended as $product)
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm mb-4">
-                        <img src="{{ $product->image }}" class="card-img-top" alt="{{ $product->name }}">
-                        <div class="card-body text-center">
+<img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
+                       <div class="card-body text-center">
+                                            <a href="{{ route('products.show', $product->custom_id) }}" class="text-dark text">
                             <h6 class="card-title">{{ $product->name }}</h6>
+                                            </a>
                             <p class="text-muted">${{ number_format($product->price, 2) }}</p>
                             <form action="{{ route('cart.store') }}" method="POST">
                                 @csrf

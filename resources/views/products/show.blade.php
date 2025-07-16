@@ -11,8 +11,8 @@
 <div class="container py-5">
   <div class="row">
     <div class="col-md-6">
-      @if($product->image)
-        <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-fluid rounded">
+        @if($product->image && Storage::disk('public')->exists($product->image))
+        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid rounded">
       @else
         <img src="{{ asset('images/default-product.png') }}" alt="No image" class="img-fluid rounded">
       @endif

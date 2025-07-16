@@ -7,7 +7,7 @@
     <div class="section-header d-flex justify-content-between align-items-center">
         <h2>Supplier Management</h2>
         @role('superadmin')
-        <a href="{{ route('superadmin.users.create') }}" class="btn-add">
+        <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Add Supplier
         </a>
         @endrole

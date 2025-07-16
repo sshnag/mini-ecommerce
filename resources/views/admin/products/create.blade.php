@@ -1,19 +1,15 @@
 @extends('adminlte::page')
 
 @section('content')
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-        </ul>
-    </div>
-@endif
+
 
 <div class="container">
+        <div class="section-header mb-4 d-flex justify-content-between align-items-center">
     <h2>Create New Product</h2>
-
+ <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Users
+        </a>
+        </div>
     <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -107,6 +103,8 @@
         <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
         <button type="submit" class="btn btn-primary">Create Product</button>
+        <br>
+        <br>
     </form>
 </div>
 @endsection

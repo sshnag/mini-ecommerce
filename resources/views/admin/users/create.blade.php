@@ -50,7 +50,7 @@
                 @error('roles') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
-            <button type="submit" class="btn btn-main">
+            <button type="submit" class="btn btn-primary">
                 <i class="fas fa-user-plus"></i> Create User
             </button>
         </form>
