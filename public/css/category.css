@@ -239,3 +239,18 @@
     font-weight: 600;
     text-transform: uppercase;
 }
+.btn-gold {
+  background-color: #bfa36f; /* Classic gold color */
+  color: #fff;
+      transition: background-color 0.25s ease;
+  border: 1px solid #bfa36f;
+      box-shadow: 0 4px 15px (--gold);
+      border-radius: 0%;
+
+}
+
+.btn-gold:hover {
+  background-color: transparent; /* Slightly darker gold on hover */
+  color: #bfa36f;
+  border: 1px solid #bfa36f;
+}

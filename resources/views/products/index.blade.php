@@ -1,4 +1,3 @@
-{{-- resources/views/products/index.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Shop')
@@ -31,7 +30,5 @@
     @endforeach
 </div>
 
-{{-- Include dropdown cart animation via JS --}}
-@include('partials.cart-dropdown')
 
 @endsection

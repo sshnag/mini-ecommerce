@@ -27,9 +27,9 @@
         <input type="hidden" name="product_id" value="{{ $product->id }}">
 
         <div class="quantity-control d-flex align-items-center">
-          <button type="button" id="decreaseQty" class="btn btn-outline-secondary">-</button>
+          <button type="button" id="decreaseQty" class="btn btn-outline-dark">-</button>
           <input type="text" name="quantity" id="quantityInput" value="1" readonly class="form-control text-center mx-2" style="width: 60px;">
-          <button type="button" id="increaseQty" class="btn btn-outline-secondary">+</button>
+          <button type="button" id="increaseQty" class="btn btn-outline-dark">+</button>
         </div>
         <br>
         <br>
@@ -37,6 +37,8 @@
       <button type="submit" class="btn btn-gold">
 Add to Bag
 </button>
+<br>
+    <a href="{{route('home') }}" class="btn btn-gold mt-4 mb-4 d-flex" role="button"> Back</a>
       </form>
     </div>
   </div>

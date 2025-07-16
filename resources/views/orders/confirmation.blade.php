@@ -8,7 +8,7 @@
 @section('content')
 <div class="container py-5 text-center">
     <h2 class="display-5 text-gold">Thank you for your order!</h2>
-    <p class="lead">Your order <strong>#{{ $order->id }}</strong> has been placed successfully.</p>
+    <p class="lead">Your order has been placed successfully.</p>
 
     <div class="my-5">
         <h4 class="text-uppercase">Shipping To</h4>

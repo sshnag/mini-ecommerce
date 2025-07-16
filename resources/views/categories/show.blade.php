@@ -28,7 +28,7 @@
                         placeholder="Search products by name or category..."
                         value="{{ request('search') }}"
                     >
-                    <button type="submit" class="btn btn-gold px-4 text-white">Search</button>
+                    <button type="submit" class="btn btn-gold px-4">Search</button>
                 </form>
             </div>
         </div>
