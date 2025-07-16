@@ -10,13 +10,17 @@
 
 @section('content')
   {{-- Notifications --}}
- @foreach(auth()->user()->unreadNotifications()->latest()->get() as $notification)
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-    {{ $notification->data['message'] }}
-    <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
+ <div id="notifications-container">
+    @foreach(auth()->user()->unreadNotifications as $notification)
+      <div class="notification alert alert-info alert-dismissible fade show"
+           data-notification-id="{{ $notification->id }}"
+           role="alert">
+        {{ $notification->data['message'] }}
+        <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endforeach
+  </div>
 @endforeach
 
 
@@ -166,4 +170,64 @@
 
 
 
+@stop
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Mark notifications as read when dismissed or page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mark all notifications as read when page loads
+        markNotificationsAsRead();
+
+        // Handle manual dismissal
+        document.querySelectorAll('.notification .btn-close').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const notificationId = this.closest('.notification').dataset.notificationId;
+                markNotificationAsRead(notificationId);
+            });
+        });
+
+        // Show SweetAlert notifications
+        @foreach(auth()->user()->unreadNotifications as $notification)
+            Swal.fire({
+                toast: true,
+                icon: 'info',
+                title: "{{ addslashes($notification->data['message']) }}",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                background: '#1f1f1f',
+                color: '#fff',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+        @endforeach
+    });
+
+    function markNotificationsAsRead() {
+        fetch('{{ route("admin.notifications.mark-as-read") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ mark_all: true })
+        });
+    }
+
+    function markNotificationAsRead(notificationId) {
+        fetch('{{ route("admin.notifications.mark-as-read") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ notification_id: notificationId })
+        });
+    }
+</script>
 @stop

@@ -11,7 +11,7 @@
     <p class="lead">Your order has been placed successfully.</p>
 
     <div class="my-5">
-        <h4 class="text-uppercase">Shipping To</h4>
+        <h4 class="text-uppercase">Order To</h4>
         <p class="mb-4">
             {{ $order->address->street }}<br>
             {{ $order->address->city }}, {{ $order->address->postal_code }}<br>
@@ -32,7 +32,9 @@
 <tbody>
     @foreach($order->orderItems as $item)
         <tr>
-            <td>{{ $item->product->name }}</td>
+<td><img src="{{ asset('storage/' . $item->product->image) }}" class="img-thumbnail" style="width: 50px; height: 50px;"></td>
+
+<td>{{ $item->product->name }}</td>
             <td>{{ $item->product->category->name ?? 'N/A' }}</td>
             <td>{{ $item->quantity }}</td>
             <td>${{ number_format($item->price, 2) }}</td>
