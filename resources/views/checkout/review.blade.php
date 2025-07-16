@@ -2,7 +2,7 @@
 
 @section('title', 'Review Order')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
+<link rel="stylesheet" href="{{ asset('css/checkout-shipping.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endpush
 
@@ -69,7 +69,7 @@
 
   <form action="{{ route('checkout.place') }}" method="POST">
     @csrf
-    <button type="submit" class="btn btn-success btn-lg">Place Order</button>
+    <button type="submit" class="btn-gold">Place Order</button>
   </form>
 </div>
 @endsection

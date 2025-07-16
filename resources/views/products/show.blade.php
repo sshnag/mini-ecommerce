@@ -31,10 +31,12 @@
           <input type="text" name="quantity" id="quantityInput" value="1" readonly class="form-control text-center mx-2" style="width: 60px;">
           <button type="button" id="increaseQty" class="btn btn-outline-secondary">+</button>
         </div>
+        <br>
+        <br>
 
-        <button type="submit" class="btn btn-main">
-          <i class="fas fa-shopping-cart me-1"></i> Add to Bag
-        </button>
+      <button type="submit" class="btn btn-gold">
+Add to Bag
+</button>
       </form>
     </div>
   </div>

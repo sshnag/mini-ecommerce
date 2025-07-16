@@ -1,0 +1,64 @@
+/* Recommendation Cards */
+.recommended-section .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.recommended-section .card-img-top {
+    width: 100%;
+    height: 200px; /* Fixed height for images */
+    object-fit: cover; /* Ensures images maintain aspect ratio */
+}
+
+.recommended-section .card-body {
+    flex: 1; /* Makes card body take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Spaces out content */
+}
+
+.recommended-section .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+/* Hover effects */
+.recommended-section .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Equal width columns */
+@media (min-width: 768px) {
+    .recommended-section .col-md-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+/* Card border radius */
+.recommended-section .card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.recommended-section .btn {
+    width: 100%;
+    margin-top: auto; /* Pushes button to bottom */
+}
+/* Submit Button  */
+/* Gold button styles */
+.btn-gold {
+  background-color: #bfa36f; /* Classic gold color */
+  color: #fff;
+  border: 1px solid #bfa36f;
+}
+
+.btn-gold:hover {
+  background-color: transparent; /* Slightly darker gold on hover */
+  color: #bfa36f;
+  border: 1px solid #bfa36f;
+}

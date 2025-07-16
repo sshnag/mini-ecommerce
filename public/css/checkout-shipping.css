@@ -88,25 +88,29 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0.25rem;
 }
 
-.btn-submit {
-  width: 100%;
-  background-color: var(--tiffany-blue);
-  border: #333333;
-  color: black;
-  font-weight: 700;
+
+/* Submit Button  */
+/* Gold button styles */
+.btn-gold {
+      width: 100%;
+        font-weight: 700;
   font-size: 1.15rem;
-  padding: 0.9rem 0;
-  border-radius: 12px;
-  cursor: pointer;
-  border-color: #333333;
-  transition: background-color 0.25s ease;
-  box-shadow: 0 4px 15px (--gold);
-  letter-spacing: 0.05em;
+  background-color: #bfa36f;
+  color: #fff;
+    padding: 0.9rem 0;
+    box-shadow: 0 4px 15px (--gold);
+    transition: background-color 0.25s ease;
+  border: 1px solid #bfa36f;
+    letter-spacing: 0.05em;
+
+
 }
 
-.btn-submit:hover,
+.btn-gold:hover,
 .btn-submit:focus {
-  background-color: var(--gold-accent);
-  box-shadow: 0 6px 25px rgba(197, 167, 109, 0.6);
-  outline: none;
+  background-color: transparent; /* Slightly darker gold on hover */
+  color: #bfa36f;
+  border: 1px solid #bfa36f;
+    box-shadow: 0 6px 25px rgba(197, 167, 109, 0.6);
+
 }

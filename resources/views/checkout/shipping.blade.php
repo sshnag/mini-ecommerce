@@ -63,7 +63,7 @@
         @enderror
       </div>
 
-      <button type="submit" class="btn-submit">Continue to Review</button>
+      <button type="submit" class="btn-gold">Continue to Review</button>
     </form>
   </div>
 </div>

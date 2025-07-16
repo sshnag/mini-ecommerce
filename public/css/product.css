@@ -4,6 +4,22 @@
     border: 1px solid #ccc;
     padding: 5px;
 }
+/* Submit Button  */
+/* Gold button styles */
+.btn-gold {
+  background-color: #bfa36f; /* Classic gold color */
+  color: #fff;
+      transition: background-color 0.25s ease;
+  border: 1px solid #bfa36f;
+      box-shadow: 0 4px 15px (--gold);
+
+}
+
+.btn-gold:hover {
+  background-color: transparent; /* Slightly darker gold on hover */
+  color: #bfa36f;
+  border: 1px solid #bfa36f;
+}
 .quantity-control button {
   width: 36px;
   height: 36px;

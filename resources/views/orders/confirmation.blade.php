@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('title', 'Order Confirmation')
-
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/checkout-shipping.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@endpush
 @section('content')
 <div class="container py-5 text-center">
     <h2 class="display-5 text-gold">Thank you for your order!</h2>
@@ -43,7 +46,7 @@
         <h4 class="mt-4">Total Amount: <strong>${{ number_format($order->total_amount, 2) }}</strong></h4>
     </div>
 
-    <a href="{{ route('home') }}" class="btn btn-outline-dark btn-lg">Back To Home</a>
+    <a href="{{ route('home') }}" class="btn btn-gold">Back To Home</a>
 </div>
 
 @endsection
