@@ -20,16 +20,38 @@
         <!-- Search Form -->
         <div class="row justify-content-center mb-5">
             <div class="col-md-8">
-                <form method="GET" action="{{ route('categories.show', $category->slug ?? $category->id) }}" class="d-flex shadow rounded overflow-hidden">
-                    <input
-                        type="text"
-                        name="search"
-                        class="form-control search-input"
-                        placeholder="Search products by name or category..."
-                        value="{{ request('search') }}"
-                    >
-                    <button type="submit" class="btn btn-gold px-4">Search</button>
-                </form>
+               <form method="GET" action="{{ route('categories.show', $category->slug ?? $category->id) }}" class="d-flex flex-wrap gap-3 shadow rounded p-3 mb-4">
+    <input
+        type="text"
+        name="search"
+        class="form-control search-input flex-fill"
+        placeholder="Search products by name    ..."
+        value="{{ request('search') }}"
+    >
+
+    <input
+        type="number"
+        step="100"
+        name="min_price"
+        class="form-control"
+        placeholder="Min Price"
+        value="{{ request('min_price') }}"
+        style="width: 140px;"
+    >
+
+    <input
+        type="number"
+        step="100"
+        name="max_price"
+        class="form-control"
+        placeholder="Max Price"
+        value="{{ request('max_price') }}"
+        style="width: 140px;"
+    >
+
+    <button type="submit" class="btn btn-gold px-4">Filter</button>
+</form>
+
             </div>
         </div>
 
@@ -72,4 +94,38 @@
 
     </div>
 </section>
+@endsection
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "{{ session('success') }}",
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            background: '#1f1f1f',
+            color: '#fff',
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "{{ session('error') }}",
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            background: '#1f1f1f',
+            color: '#fff',
+        });
+    @endif
+</script>
 @endsection

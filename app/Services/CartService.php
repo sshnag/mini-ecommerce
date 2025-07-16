@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
-
-class CartService
+use App\Notifications\NewOrderNotification;
+use Spatie\Permission\Models\Role;
+use App\Models\User;class CartService
 {
     /**
      * Get all cart items for the authenticated user.
@@ -125,6 +126,10 @@ class CartService
 
             Cart::where('user_id', $userId)->delete();
 
+            $admins= User::role(['admin','superadmin'])->get();
+            foreach($admins as $admin){
+                $admin->notify(new NewOrderNotification($order));
+            }
             return $order;
         });
     }

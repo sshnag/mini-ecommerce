@@ -9,6 +9,14 @@
 @stop
 
 @section('content')
+  {{-- Notifications --}}
+    @foreach(auth()->user()->unreadNotifications as $notification)
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ $notification->data['message'] }}
+            <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endforeach
 <div class="container-fluid">
     <div class="row g-4">
         <!-- Summary Cards -->
@@ -133,4 +141,21 @@
         legendContainer.appendChild(li);
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    @foreach(auth()->user()->unreadNotifications as $notification)
+        Swal.fire({
+            toast: true,
+            icon: 'info',
+            title: "{{ addslashes($notification->data['message']) }}",
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            background: '#1f1f1f',
+            color: '#fff',
+        });
+    @endforeach
+</script>
+
 @stop

@@ -48,10 +48,11 @@ class CategoryController extends Controller
      * @param string $slug
      * @return \Illuminate\Contracts\View\View
      */
- public function show(Category $category, Request $request)
+public function show(Category $category, Request $request)
 {
     $query = $category->products()->with('reviews');
 
+    // Search filter
     if ($request->filled('search')) {
         $searchTerm = $request->search;
         $query->where(function($q) use ($searchTerm) {
@@ -60,10 +61,19 @@ class CategoryController extends Controller
         });
     }
 
-    $products = $query->paginate(9);
+    // Price Range Filter
+    if ($request->filled('min_price')) {
+        $query->where('price', '>=', $request->min_price);
+    }
+    if ($request->filled('max_price')) {
+        $query->where('price', '<=', $request->max_price);
+    }
+
+    $products = $query->paginate(9)->withQueryString();
 
     return view('categories.show', compact('category', 'products'));
 }
+
 
     /**
      * Summary of edit
