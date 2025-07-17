@@ -7,7 +7,7 @@
     <div class="section-header">
         <h2>Order #{{ $order->id }}</h2>
         <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">
-            <i class="fas fa-arrow-left"></i> Back to Orders
+            <i class="fas fa-arrow-left"></i> Back to Orders List
         </a>
     </div>
 

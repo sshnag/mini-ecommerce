@@ -123,7 +123,9 @@
         <h2 class="animate__animated animate__fadeIn">Experience Perfection</h2>
         <p class="animate__animated animate__fadeIn animate__delay-1s">Book a private viewing of our collections</p>
         <label class="btn-cta animate__animated animate__fadeInUp animate__delay-2s">
+            <a href="{{route('contact.form')}}" class="text-white text-decoration-none">
             Contact Us By Following
+            </a>
         </label>
     </div>
 </section>

@@ -6,7 +6,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2>Edit Product</h2>
             <a href="javascript:void(0)" onclick="history.back()" class="btn btn-secondary" role="button">
-                <i class="fas fa-arrow-left mr-1"></i> Back to Products
+                <i class="fas fa-arrow-left mr-1"></i> Back to Products List
             </a>
         </div>
         <br>

@@ -7,7 +7,7 @@
     <div class="section-header mb-4 d-flex justify-content-between align-items-center">
         <h2>Add New User</h2>
         <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Users
+            <i class="fas fa-arrow-left"></i> Back to Users List
         </a>
     </div>
 

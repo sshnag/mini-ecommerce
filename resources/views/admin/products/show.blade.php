@@ -6,7 +6,7 @@
     <div class="d-flex justify-content-between align-items-center">
         <h1>Product Details</h1>
         <a href="{{ route('admin.products.index') }}" class="btn btn-secondary btn-sm">
-            <i class="fas fa-arrow-left mr-1"></i> Back to Products
+            <i class="fas fa-arrow-left mr-1"></i> Back to Products List
         </a>
     </div>
 @endsection

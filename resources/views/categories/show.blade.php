@@ -29,6 +29,8 @@
         value="{{ request('search') }}"
     >
 
+    <div class="input-group mb-2" style="width: 160px;">
+    <span class="input-group-text">$</span>
     <input
         type="number"
         step="100"
@@ -36,9 +38,11 @@
         class="form-control"
         placeholder="Min Price"
         value="{{ request('min_price') }}"
-        style="width: 140px;"
     >
+</div>
 
+<div class="input-group mb-2" style="width: 160px;">
+    <span class="input-group-text">$</span>
     <input
         type="number"
         step="100"
@@ -46,8 +50,9 @@
         class="form-control"
         placeholder="Max Price"
         value="{{ request('max_price') }}"
-        style="width: 140px;"
     >
+</div>
+
 
     <button type="submit" class="btn btn-gold px-4">Filter</button>
 </form>
