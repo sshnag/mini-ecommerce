@@ -375,8 +375,8 @@ return [
 
       ],
       [
-        'text'=>'Requestss',
-        'url'=>'admin/contact',
+        'text'=>'Requests',
+        'url'=>'admin/contacts',
         'active'=>['admin/contact'],
         'icon'=>'fas fa-envelope',
 

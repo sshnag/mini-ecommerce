@@ -8,8 +8,7 @@ use App\Http\Requests\UpdateContactRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormSubmitted;
-use Illuminate\Support\Facades\Request;
-
+use Illuminate\Http\Request;
 class ContactController extends Controller
 {
     /**
@@ -62,8 +61,9 @@ class ContactController extends Controller
         $contact =Contact::findOrFail($id);
 
         //Mark as read if status is still new
-        if ($contact->status==='new') {
-            $contact->update(['status'=>'read']);
+        if ($contact->status === 'new') {
+            $contact->status = 'read';
+            $contact->save();
         }
         return view('admin.contacts.show',compact('contact'));
     }

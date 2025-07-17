@@ -10,12 +10,12 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ContactController;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -31,8 +31,8 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/contact',[ContactController::class,'showForm'])->name('contact.form');
-Route::post('/contact',[ContactController::class,'store'])->name('contact.store');
+Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 //  User Routes
 Route::middleware(['auth'])->group(function () { // No role restriction
@@ -73,12 +73,18 @@ Route::get('/admin/notifications/{notification}/redirect', function ($notificati
     }
     $notification->markAsRead();
     if (isset($notification->data['order_id'])) {
-        return redirect()->route('admin.orders.show', $notification->data['order_id']);}return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.orders.show', $notification->data['order_id']);
+    }return redirect()->route('admin.dashboard');
 })->prefix('admin.')->middleware(['auth:admin', 'role:admin|superadmin'])->name('notifications.redirect');
 
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
-    Route::get('/contact',[ContactController::class,'index'])->name('contact');
+                                                                                                                              // Contact management for admin/superadmin
+    Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');                                     // list all contacts
+    Route::get('/contacts/{id}', [ContactController::class, 'show'])->name('contacts.show');                                  // view contact details
+    Route::patch('/contacts/{id}/update-status', [ContactController::class, 'updateStatus'])->name('contacts.updateStatus'); // update status
+    Route::delete('/contacts/{id}', [ContactController::class, 'destroy'])->name('contacts.destroy');                         // delete contact
+
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard'); // admin.dashboard
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

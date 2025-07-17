@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
                 // PaymentSeeder::class,
                 // AdminSeeder::class,
                 // RoleSeeder::class,
+                ContactSeeder::class,
     ]
     );
 

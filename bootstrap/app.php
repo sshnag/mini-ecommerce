@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\DeleteOrders;
+use App\Jobs\DeleteRequest;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         )
         ->withSchedule(function(Schedule $schedule){
             $schedule->job(new DeleteOrders)->cron('0 0 1  */6 *');
+            $schedule->job(new DeleteRequest)->cron('0 0 1 */4 *');
         })
     ->withMiddleware(function (Middleware $middleware): void {
         //
