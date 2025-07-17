@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Services\CartService;
 use App\Models\User;
 use App\Http\Controllers\CartController;
+use App\Notifications\NewOrderNotification;
 use App\Models\OrderItem;
 
 class OrderController extends Controller
@@ -79,6 +80,11 @@ public function updateStatus(Request $request, Order $order)
         $validated=$request->validated();
         $validated['user_id']=Auth::id();
         $order=Order::create($validated);
+        $admins = User::role(['admin', 'superadmin'])->get();
+
+foreach ($admins as $admin) {
+    $admin->notify(new NewOrderNotification($order));
+}
         $cartItems=Cart::with('products')->where('user_id',Auth::id())->get();
         foreach($cartItems as $item){
             OrderItem::create([
@@ -91,7 +97,7 @@ public function updateStatus(Request $request, Order $order)
 
         }
         Cart::where('user_id',Auth::id())->delete();
-        return redirect()->route('orders.index')->with('success','Order has been placed');
+    return redirect()->route('orders.index')->with('success','Order has been placed');
 
     }
 
@@ -198,6 +204,11 @@ public function placeOrder(CartService $cartService)
     session()->forget('checkout_address_id');
     session()->forget('checkout_payment_method');
 
+    $admins = User::role(['admin', 'superadmin'])->get();
+
+foreach ($admins as $admin) {
+    $admin->notify(new NewOrderNotification($order));
+}
     return redirect()->route('orders.show', $order->id)
         ->with('success', 'Thank you for your purchase!');
 }

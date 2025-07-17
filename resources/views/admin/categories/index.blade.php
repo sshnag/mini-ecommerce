@@ -22,7 +22,9 @@
                         <tr>
                             <th>Name</th>
                             <th>Product Count</th>
+                            @role('superadmin')
                             <th class="text-end">Actions</th>
+                            @endrole
                         </tr>
                     </thead>
                     <tbody>

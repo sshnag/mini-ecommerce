@@ -7,12 +7,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\OrderController;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\CategoryController;
-
+use Illuminate\Notifications\DatabaseNotification;
 use App\Http\Controllers\Auth\LoginController;
 
 
@@ -72,8 +72,26 @@ Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name
 Route::post('/admin/login', [AdminLoginController::class, 'login']);
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
+Route::get('/admin/notifications/{notification}/redirect', function ($notificationId) {
+    $notification = DatabaseNotification::findOrFail($notificationId);
+
+    // Ensure this notification belongs to the current admin
+    if ($notification->notifiable_id !== auth('admin')->id()) {
+        abort(403, 'Unauthorized');
+    }
+
+    $notification->markAsRead();
+
+    if (isset($notification->data['order_id'])) {
+        return redirect()->route('admin.orders.show', $notification->data['order_id']);
+    }
+
+    return redirect()->route('admin.dashboard');
+})->prefix('admin.')->middleware(['auth:admin', 'role:admin|superadmin'])->name('notifications.redirect');
+
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['admin.session','auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
+
 
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard'); // admin.dashboard
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

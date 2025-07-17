@@ -33,8 +33,10 @@
         <table class="styled-table">
             <thead>
                 <tr>
+                    <th>#ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Registered At</th>
                     @role('superadmin')
                     <th>Roles</th>
                     @endrole
@@ -46,8 +48,10 @@
             <tbody>
                 @forelse ($users as $user)
                 <tr>
+                    <td>{{$user->custom_id}}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
+                    <td>{{$user->created_at->format('Y-m-d')}}</td>
                     @role('superadmin')
                     <td>
                         <form method="POST" action="{{ route('admin.users.update-roles', $user) }}" class="roles-form">
@@ -76,6 +80,7 @@
                         @endrole
                     </td>
                 </tr>
+
                 @empty
                 <tr>
                     <td colspan="5" class="text-center">No users found</td>

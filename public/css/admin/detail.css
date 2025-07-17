@@ -1,0 +1,14 @@
+  .card-header {
+        border-bottom: none;
+    }
+    .detail-label {
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+    }
+    .detail-value {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+    .no-image-placeholder {
+        border: 2px dashed #ddd;
+    }
