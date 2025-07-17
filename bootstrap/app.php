@@ -21,8 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'check.superadmin' => \App\Http\Middleware\CheckSuperadmin::class,
+            'admin.session' => \App\Http\Middleware\AdminSessionMiddleware::class,
+
 
     ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

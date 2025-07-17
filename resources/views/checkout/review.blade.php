@@ -43,7 +43,14 @@
 
 
   <table class="table">
-    <thead><tr><th>Product</th><th>QTY</th><th>Price</th><th>Total</th></tr></thead>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>QTY</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
     <tbody>
   @if($cartItems && $cartItems->count())
     @foreach($cartItems as $item)

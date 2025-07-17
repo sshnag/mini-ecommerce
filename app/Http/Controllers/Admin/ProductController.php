@@ -69,7 +69,7 @@ return view('admin.products.index',compact('products'));
         //
         $data=$request->validated();
         if ($request->hasFile('image')) {
-            # code...
+
             $data['image']=$request->file('image')->store('products','public');}
 
             $product->update($data);

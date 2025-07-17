@@ -77,7 +77,7 @@ return [
         ],
  'admins' => [
         'driver' => 'eloquent',
-        'model' =>  User::class, // or App\Models\Admin if you have separate model
+        'model' =>  User::class,
     ],
         // 'users' => [
         //     'driver' => 'database',

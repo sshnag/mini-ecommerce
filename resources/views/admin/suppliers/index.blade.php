@@ -6,11 +6,11 @@
 <div class="admin-section">
     <div class="section-header d-flex justify-content-between align-items-center">
         <h2>Supplier Management</h2>
-        @role('superadmin')
+@can('role', 'superadmin')
         <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Add Supplier
         </a>
-        @endrole
+        @endcan
     </div>
 
     <div class="section-body">
@@ -22,7 +22,9 @@
                     <th>Email</th>
                     <th>Roles</th>
                     <th>Registered At</th>
+                            @role('superadmin')
                     <th>Actions</th>
+                    @endrole
                 </tr>
             </thead>
             <tbody>

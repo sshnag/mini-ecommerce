@@ -10,7 +10,7 @@
 
         {{-- Email --}}
         <div class="input-group mb-3">
-            <input type="email" name="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email" required autofocus>
+            <input type="email" name="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email"  autofocus>
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-envelope"></span>
@@ -25,7 +25,7 @@
 
         {{-- Password --}}
         <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required>
+            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" >
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-lock"></span>
@@ -40,14 +40,6 @@
 
         {{-- Remember Me --}}
         <div class="row mb-2">
-            <div class="col-8">
-                <div class="icheck-primary">
-                    <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                    <label for="remember">
-                        Remember Me
-                    </label>
-                </div>
-            </div>
             <div class="col-4">
                 <button type="submit" class="btn btn-primary btn-block">
                     Sign In
@@ -59,6 +51,6 @@
 
 @section('auth_footer')
     <p class="my-0">
-        <a href="{{ url('/') }}">← Back to Home</a>
+        <a href="{{ url('/') }}">Back to Home</a>
     </p>
 @endsection

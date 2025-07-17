@@ -33,7 +33,7 @@ class AdminLoginController extends Controller
 
         $user = Auth::guard('admin')->user();
 
-        // ✅ Manually check role names instead of using hasAnyRole()
+        //  Manually check role names instead of using hasAnyRole()
         $roleNames = $user->roles->pluck('name')->toArray(); // Get all roles as an array
 
         if (!in_array('admin', $roleNames) && !in_array('superadmin', $roleNames)) {

@@ -56,6 +56,12 @@ class ProductController extends Controller
 {
     $product = Product::with('category')->where('custom_id', $custom_id)->firstOrFail();
 
+    if (auth('admin')->check()) {
+        // Admin/Superadmin
+        return view('admin.products.show', compact('product'));
+    }
+
+    // Normal public user or guest
     return view('products.show', compact('product'));
 }
 

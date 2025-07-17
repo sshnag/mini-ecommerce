@@ -13,9 +13,9 @@
         </a>
         @endrole
     </div>
-
+@role('superadmin')
     <div class="section-body">
-        <form method="GET" action="{{ route('superadmin.users.index') }}" class="filter-form mb-3">
+        <form method="GET" action="{{ route('admin.users.index') }}" class="filter-form mb-3">
     <div style="display: flex; gap: 10px; align-items: center;">
         <label for="role">Filter by Role:</label>
         <select name="role" id="role" class="form-select" onchange="this.form.submit()">
@@ -28,14 +28,19 @@
         </select>
     </div>
 </form>
+@endrole
 
         <table class="styled-table">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    @role('superadmin')
                     <th>Roles</th>
+                    @endrole
+                            @role('superadmin')
                     <th>Actions</th>
+                    @endrole
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +48,7 @@
                 <tr>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
+                    @role('superadmin')
                     <td>
                         <form method="POST" action="{{ route('admin.users.update-roles', $user) }}" class="roles-form">
                             @csrf
@@ -56,10 +62,8 @@
                             </select>
                         </form>
                     </td>
+                    @endrole
                     <td>
-                        <a href="{{ route('admin.users.edit', $user) }}" class="btn-icon" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </a>
 
                         @role('superadmin')
                         <form action="{{ route('superadmin.users.destroy', $user) }}" method="POST" class="delete-form d-inline">

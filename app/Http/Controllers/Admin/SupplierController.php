@@ -11,22 +11,26 @@ use Illuminate\Validation\Rules;
 
 class SupplierController extends Controller
 {
-    public function index()
+      public function __construct()
     {
-        $supplierRole = Role::where('name', 'supplier')->where('guard_name', 'web')->first();
+        $this->middleware('role:admin|superadmin');
+    }
+  public function index()
+{
+    $supplierRole = Role::where('name', 'supplier')->where('guard_name', 'web')->first();
 
-        if (!$supplierRole) {
-            abort(404, 'Supplier role not found for web guard.');
-        }
-
-        $suppliers = User::role('supplier', 'web')->paginate(10);
-
-        return view('admin.suppliers.index', [
-            'users' => $suppliers,
-            'pageTitle' => 'Suppliers'
-        ]);
+    if (!$supplierRole) {
+        abort(404, 'Supplier role not found.');
     }
 
+    // Get users with 'supplier' role (web guard)
+    $suppliers = User::role('supplier', 'web')->paginate(10);
+
+    return view('admin.suppliers.index', [
+        'users' => $suppliers,
+        'pageTitle' => 'Suppliers'
+    ]);
+}
     public function create()
     {
         return view('admin.suppliers.create');
@@ -57,7 +61,7 @@ class SupplierController extends Controller
             ]);
         }
 
-        return redirect()->route('superadmin.suppliers.index')
+        return redirect()->route('admin.suppliers.index')
             ->with('success', 'Supplier created successfully');
     }
 }
