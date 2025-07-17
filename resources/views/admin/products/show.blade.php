@@ -79,7 +79,7 @@
             <div class="d-flex justify-content-between">
                 <div>
                     <small class="text-muted">
-                        Last updated: {{ $product->updated_at->format('M d, Y h:i A') }}
+                        Last updated: {{ $product->updated_at->format('M d, Y') }}
                     </small>
                 </div>
                 <div>

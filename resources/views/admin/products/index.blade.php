@@ -60,11 +60,7 @@
                     @endforeach
                 </tbody>
             </table>
-            @role('superadmin')
-                <p class="text-success">You are a superadmin and can delete.</p>
-            @else
-                <p class="text-danger">You do not have permission to delete.</p>
-            @endrole
+
             <div class="pagination-wrap">
                 {{ $products->links() }}
             </div>
