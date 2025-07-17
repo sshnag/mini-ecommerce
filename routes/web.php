@@ -78,7 +78,7 @@ Route::get('/admin/notifications/{notification}/redirect', function ($notificati
 
 // Admin/superadmin Routes
 Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
-
+    Route::get('/contact',[ContactController::class,'index'])->name('contact');
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard'); // admin.dashboard
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

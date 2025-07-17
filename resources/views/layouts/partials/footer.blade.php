@@ -21,7 +21,9 @@
                     123 Jewelry Ave<br>
                     New York, NY 10001<br>
                     <a href="mailto:info@tiffany.com" class="text-white-50">info@tiffany.com</a>
+                     <li class="list-unstyled"><a href="{{route('contact.form')}}" class="text-white-50">Contact Us</a></li>
                 </address>
+
             </div>
 
             <div class="col-md-3">

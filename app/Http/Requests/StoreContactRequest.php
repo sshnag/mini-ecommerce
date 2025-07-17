@@ -25,7 +25,7 @@ class StoreContactRequest extends FormRequest
             'name'=>'required|string|max:255',
             'email'=>'required|email',
             'subject'=>'required|string|max:150',
-            'message'=>'required|string|min:10',
+            'message'=>'required|string|min:10'
 
             //
         ];

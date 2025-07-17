@@ -374,6 +374,13 @@ return [
         'icon'=>'fas fa-boxes',
 
       ],
+      [
+        'text'=>'Requestss',
+        'url'=>'admin/contact',
+        'active'=>['admin/contact'],
+        'icon'=>'fas fa-envelope',
+
+      ],
 
 
     //     [
