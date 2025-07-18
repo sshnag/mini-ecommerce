@@ -49,6 +49,6 @@
 
     </div>
 
-    <a href="{{ route('orders.history') }}" class="btn btn-outline-dark mt-4">← Back to Order History</a>
+    <a href="{{ route('orders.history') }}" class="btn btn-outline-gold mt-4">← Back to Order History</a>
 </div>
 @endsection

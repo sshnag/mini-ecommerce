@@ -13,7 +13,7 @@
             <table class="table table-hover shadow rounded luxury-table">
                 <thead class="table-gold text-white">
                     <tr>
-                        <th>Order ID</th>
+                        <th>No.</th>
                         <th>Status</th>
                         <th>Date</th>
                         <th>Total</th>
@@ -23,7 +23,7 @@
                 <tbody>
                     @foreach ($orders as $order)
                         <tr>
-                            <td>#{{ $order->custom_id }}</td>
+            <td>{{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}</td>
                             <td>
                                 <span class="badge bg-{{ $order->status == 'pending' ? 'warning' : ($order->status == 'delivered' ? 'success' : 'secondary') }}">
                                     {{ ucfirst($order->status) }}
@@ -44,7 +44,7 @@
             {{ $orders->links('vendor.pagination.bootstrap-5') }}
         </div>
     @else
-        <div class="alert alert-info">You have not placed any orders yet.</div>
+        <div class="alert alert-info">You have not placed any orders yet.  <a href="{{ route('home') }}" class="btn btn-outline-gold ml-2"> Start Shopping</a></div>
     @endif
 </div>
 @endsection

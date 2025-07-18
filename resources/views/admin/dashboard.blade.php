@@ -122,7 +122,7 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Recently Added Products</h5>
+                        <h5 class="mb-0">Recently Created Products</h5>
                         <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
                     </div>
                     <div class="card-body">

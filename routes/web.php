@@ -90,8 +90,7 @@ Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:admin|s
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard'); // admin.dashboard
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])
-        ->name('orders.update-status');
+    Route::patch('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('customers', [AdminCustomerController::class, 'index'])->name('customers.index');

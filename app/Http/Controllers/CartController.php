@@ -47,7 +47,6 @@ class CartController extends Controller
         ['user_id' => Auth::id(), 'product_id' => $product->id],
         ['quantity' => DB::raw('quantity + ' . $request->quantity), 'price' => $product->price]
     );
-
     return back()->with('success', "{$product->name} has been added to your Bag.");
 }
   /**

@@ -32,7 +32,7 @@ use App\Models\User;class CartService
         ->first();
 
     if ($cartItem) {
-        $cartItem->quantity = $quantity;  // Replace quantity instead of adding
+        $cartItem->quantity = $quantity;
         $cartItem->save();
     } else {
         Cart::create([
@@ -125,6 +125,8 @@ use App\Models\User;class CartService
             }
 
             Cart::where('user_id', $userId)->delete();
+
+
 
             $admins= User::role(['admin','superadmin'])->get();
             foreach($admins as $admin){

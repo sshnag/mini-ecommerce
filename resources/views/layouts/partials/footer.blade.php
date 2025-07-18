@@ -40,7 +40,9 @@
         </div>
 
         <div class="border-top border-secondary mt-5 pt-4 text-center">
-            <p class="small">&copy; {{ date('Y') }} Tiffany & Co. All rights reserved.</p>
+            <p class="small">&copy; {{ date('Y') }} Tiffany All rights reserved.</p>
         </div>
     </div>
 </footer>
+
+

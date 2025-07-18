@@ -2,7 +2,7 @@
 
 @section('content')
 
-
+<br>
 <div class="container">
         <div class="section-header mb-4 d-flex justify-content-between align-items-center">
     <h2>Create New Product</h2>
@@ -21,7 +21,7 @@
                 id="name"
                 name="name"
                 value="{{ old('name') }}"
-                required
+
             >
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -34,7 +34,7 @@
                 name="category_id"
                 id="category_id"
                 class="form-select @error('category_id') is-invalid @enderror"
-                required
+
             >
                 <option value="">-- Select Category --</option>
                 @foreach ($categories as $category)
@@ -57,7 +57,7 @@
                 name="description"
                 class="form-control @error('description') is-invalid @enderror"
                 rows="4"
-                required
+
             >{{ old('description') }}</textarea>
             @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
