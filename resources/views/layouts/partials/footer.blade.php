@@ -9,8 +9,10 @@
             <div class="col-md-2 mb-4 mb-md-0">
                 <h4 class="fs-5 mb-3">Shop</h4>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="{{ route('categories.show', 'rings') }}" class="text-white-50">Rings</a></li>
-                    <li class="mb-2"><a href="{{ route('categories.show', 'necklaces') }}" class="text-white-50">Necklaces</a></li>
+                    <li class="mb-2"><a href="{{ route('categories.show', 'rings') }}" class="text-white-50">Rings</a>
+                    </li>
+                    <li class="mb-2"><a href="{{ route('categories.show', 'necklaces') }}"
+                            class="text-white-50">Necklaces</a></li>
                     <li><a href="{{ route('categories.show', 'bracelets') }}" class="text-white-50">Bracelets</a></li>
                 </ul>
             </div>
@@ -21,7 +23,8 @@
                     123 Jewelry Ave<br>
                     New York, NY 10001<br>
                     <a href="mailto:info@tiffany.com" class="text-white-50">info@tiffany.com</a>
-                     <li class="list-unstyled"><a href="{{route('contact.form')}}" class="text-white-50">Contact Us</a></li>
+                    <li class="list-unstyled"><a href="{{ route('contact.form') }}" class="text-white-50">Contact Us</a>
+                    </li>
                 </address>
 
             </div>

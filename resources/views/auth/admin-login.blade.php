@@ -5,12 +5,13 @@
 @section('auth_header', 'Sign in as Admin')
 
 @section('auth_body')
-<form method="POST" action="{{ route('admin.login') }}">
+    <form method="POST" action="{{ route('admin.login') }}">
         @csrf
 
         {{-- Email --}}
         <div class="input-group mb-3">
-            <input type="email" name="email" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror" placeholder="Email"  autofocus>
+            <input type="email" name="email" value="{{ old('email') }}"
+                class="form-control @error('email') is-invalid @enderror" placeholder="Email" autofocus>
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-envelope"></span>
@@ -25,7 +26,8 @@
 
         {{-- Password --}}
         <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" >
+            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                placeholder="Password">
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-lock"></span>

@@ -50,7 +50,6 @@
                                                 <option value="replied" selected>Replied</option>
                                             @endif
                                         </select>
-
                                     </form>
                                 </td>
                                 <td>{{ $contact->created_at->format('d M Y') }}</td>

@@ -2,78 +2,53 @@
 
 @section('title', 'Order Details')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/orders-show.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-@endpush
-
 @section('content')
-<div class="container py-5">
+<link rel="stylesheet" href="{{ asset('css/shop.css') }}">
 
-  <div class="mb-4">
-    <h2>Order Status:
-      <span class="badge
-        @if($order->status === 'paid') badge-success
-        @elseif($order->status === 'pending') badge-warning
-        @elseif($order->status === 'failed') badge-danger
-        @else badge-secondary @endif">
-        {{ ucfirst($order->status) }}
-      </span>
-    </h2>
-    <p>Placed on: {{ $order->created_at->format('M d, Y') }}</p>
-  </div>
+<div class="container my-5 luxury-section p-4 rounded bg-white">
+    <h2 class="text-gold mb-4">Order Details</h2>
 
-  <div class="card mb-4">
-    <div class="card-body">
-      <h5>Shipping Address</h5>
-      @if($order->address)
-        <p>
-          {{ $order->address->street }}, {{ $order->address->city }},<br>
-          {{ $order->address->postal_code }}, {{ $order->address->country }}
-        </p>
-      @else
-        <p>No shipping address available.</p>
-      @endif
+    <div class="mb-3">
+        <strong class="text-dark">Order Date:</strong>
+        <span>{{ $order->created_at->format('F j, Y') }}</span>
     </div>
-  </div>
 
-  @if($order->payment)
-  <div class="card mb-4">
-    <div class="card-body">
-      <h5>Payment Details</h5>
-      <p>Method: {{ ucfirst($order->payment->method) }}</p>
-      <p>Status: {{ ucfirst($order->payment->status) }}</p>
-      @if($order->payment->transaction_id)
-        <p>Transaction ID: {{ $order->payment->transaction_id }}</p>
-      @endif
+    <div class="mb-3">
+        <strong class="text-dark">Status:</strong>
+        <span class="badge bg-success">{{ ucfirst($order->status) }}</span>
     </div>
-  </div>
-  @endif
 
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>QTY</th>
-        <th>Price</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach($order->orderItems as $item)
-      <tr>
-        <td>{{ $item->product->name ?? 'Product not found' }}</td>
-        <td>{{ $item->quantity }}</td>
-        <td>${{ number_format($item->price, 2) }}</td>
-        <td>${{ number_format($item->price * $item->quantity, 2) }}</td>
-      </tr>
-      @endforeach
-    </tbody>
-  </table>
+    <div class="mb-3">
+        <strong class="text-dark">Total:</strong>
+        <span class="text-gold">${{ number_format($order->total_amount, 2) }}</span>
+    </div>
 
-  <div class="d-flex justify-content-end">
-    <h4>Total Amount: <strong>${{ number_format($order->total_amount, 2) }}</strong></h4>
-  </div>
+    <div class="mb-4">
+        <h4 class="text-gold">Shipping Address</h4>
+<p class="mb-4">
+                {{ $order->address->street }}<br>
+                {{ $order->address->city }}, {{ $order->address->postal_code }}<br>
+                {{ $order->address->country }}
+            </p>
+    </div>
 
+    <h4 class="text-gold mb-3">Items in this Order</h4>
+    <div class="row">
+        @foreach ($order->orderItems as $item)
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 rounded-lg">
+                <img src="{{ asset('storage/' . $item->product->image) }}" class="card-img-top rounded-top" alt="{{ $item->product->name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $item->product->name }}</h5>
+                    <p class="card-text">Quantity: <strong>{{ $item->quantity }}</strong></p>
+                    <p class="card-text">Price: ${{ number_format($item->price, 2) }}</p>
+                </div>
+            </div>
+        </div>
+        @endforeach
+
+    </div>
+
+    <a href="{{ route('orders.history') }}" class="btn btn-outline-dark mt-4">← Back to Order History</a>
 </div>
 @endsection

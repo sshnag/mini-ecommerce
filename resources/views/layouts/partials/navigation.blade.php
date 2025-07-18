@@ -19,37 +19,42 @@
                 </li>
 
                 @auth
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                             <li>
+                <a class="dropdown-item" href="{{ route('orders.history') }}">Order History</a>
+            </li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 @else
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('register') }}">Register</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">Register</a>
+                    </li>
                 @endauth
-<li class="nav-item">
-    <a class="nav-link position-relative" href="{{ route('cart.index') }}">
-        <i class="fas fa-shopping-bag"></i>
-        @if($cartCount > 0)
-            <span class="cart-count badge bg-dark rounded-circle position-absolute top-0 start-100 translate-middle">
-                {{ $cartCount }}
-            </span>
-        @endif
-    </a>
-</li>
+                <li class="nav-item">
+                    <a class="nav-link position-relative" href="{{ route('cart.index') }}">
+                        <i class="fas fa-shopping-bag"></i>
+                        @if ($cartCount > 0)
+                            <span
+                                class="cart-count badge bg-dark rounded-circle position-absolute top-0 start-100 translate-middle">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
 
             </ul>
         </div>

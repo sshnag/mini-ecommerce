@@ -52,7 +52,9 @@ Route::middleware(['auth'])->group(function () { // No role restriction
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('user.orders.show');
+    Route::get('/orders/history', [OrderController::class, 'userOrders'])->name('orders.history');
+
+Route::get('/orders/{order}', [OrderController::class, 'userShow'])->name('orders.userShow');
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'edit', 'update']);
 
     // Addresses
