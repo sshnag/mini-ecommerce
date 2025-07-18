@@ -21,7 +21,7 @@ class DashboardController extends Controller
     $ordersToday = Order::whereDate('created_at', today())->count();
     $newUsers = User::whereDate('created_at', today())->count();
     $totalRevenue = Order::sum('total_amount');
-    $recentProducts = Product::with('category')->latest()->take(5)->get();
+    $recentProducts = Product::with('category')->latest()->take(3)->get();
     // Chart Data (7 days)
     $days = collect(range(6, 0))->map(function ($i) {
         return now()->subDays($i)->format('D');

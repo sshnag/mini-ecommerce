@@ -15,11 +15,5 @@ class ReviewController extends Controller
      * @param \App\Http\Requests\StoreReviewRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreReviewRequest $request){
-        $data=$request->validated();
-        $data['user_id']=Auth::id();
-        Review::create($data);
-        return back()->with ('success','Thank you for your review');
 
-    }
 }

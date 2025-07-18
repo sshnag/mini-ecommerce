@@ -3,58 +3,57 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
- <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="fw-bold">Admin Dashboard</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Admin Dashboard</h1>
 
-    @php
-        $notifications = auth()->user()->unreadNotifications;
-    @endphp
+        @php
+            $notifications = auth()->user()->unreadNotifications;
+        @endphp
 
-    <div class="dropdown notification-dropdown ms-auto">
-        <button class="btn btn-notification position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bell fa-lg"></i>
-            @if($notifications->count())
-                <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">{{ $notifications->count() }}</span>
-            @endif
-        </button>
-
-        <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu p-0">
-            <div class="notification-header d-flex justify-content-between align-items-center p-3 border-bottom">
-                <h6 class="mb-0 fw-bold">Notifications</h6>
-                @if($notifications->count())
-                <a href="#" class="text-primary mark-all-read" onclick="markAllNotificationsRead()">Mark all as read</a>
+        <div class="dropdown notification-dropdown ms-auto">
+            <button class="btn btn-notification position-relative" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="fas fa-bell fa-lg"></i>
+                @if ($notifications->count())
+                    <span
+                        class="badge bg-danger position-absolute top-0 start-100 translate-middle">{{ $notifications->count() }}</span>
                 @endif
-            </div>
+            </button>
 
-            <div class="notification-list" style="max-height: 400px; overflow-y: auto;">
-                @forelse ($notifications as $notification)
-                <a href="{{ route('notifications.redirect', $notification->id) }}"
-   class="dropdown-item notification-item d-flex align-items-start p-3 border-bottom">
+            <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu p-0">
 
-                    <div class="notification-icon me-3">
-                        <div class="icon-circle bg-{{ $notification->data['type'] ?? 'primary' }}">
-                            <i class="fas fa-{{ $notification->data['icon'] ?? 'bell' }} text-white"></i>
+
+                <div class="notification-list" style="max-height: 400px; overflow-y: auto;">
+                    @forelse ($notifications as $notification)
+                        <a href="{{ route('notifications.redirect', $notification->id) }}"
+                            class="dropdown-item notification-item d-flex align-items-start p-3 border-bottom">
+
+                            <div class="notification-icon me-3">
+                                <div class="icon-circle bg-{{ $notification->data['type'] ?? 'primary' }}">
+                                    <i class="fas fa-{{ $notification->data['icon'] ?? 'bell' }} text-white"></i>
+                                </div>
+                            </div>
+                            <div class="notification-details">
+                                <div class="notification-title fw-bold">
+                                    {{ $notification->data['title'] ?? 'New Notification' }}</div>
+                                <div class="notification-message small text-muted">{{ $notification->data['message'] }}
+                                </div>
+                                <div class="notification-time small text-muted mt-1">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="text-center p-4">
+                            <i class="far fa-bell-slash fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No new notifications</p>
                         </div>
-                    </div>
-                    <div class="notification-details">
-                        <div class="notification-title fw-bold">{{ $notification->data['title'] ?? 'New Notification' }}</div>
-                        <div class="notification-message small text-muted">{{ $notification->data['message'] }}</div>
-                        <div class="notification-time small text-muted mt-1">
-                            {{ $notification->created_at->diffForHumans() }}
-                        </div>
-                    </div>
-                </a>
-                @empty
-                <div class="text-center p-4">
-                    <i class="far fa-bell-slash fa-2x text-muted mb-2"></i>
-                    <p class="text-muted mb-0">No new notifications</p>
+                    @endforelse
                 </div>
-                @endforelse
-            </div>
 
-                   </div>
+            </div>
+        </div>
     </div>
-</div>
 @stop
 
 
@@ -105,7 +104,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-white border-0">
-                        <h5>Top Product Categories</h5>
+                        <h5>Product Categories</h5>
                     </div>
                     <div class="card-body">
                         <canvas id="categoryPieChart"></canvas>
@@ -230,53 +229,53 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
- // Notification functions
-    function markAsRead(id, event) {
-        if (event) event.preventDefault();
+    <script>
+        // Notification functions
+        function markAsRead(id, event) {
+            if (event) event.preventDefault();
 
-        fetch(`/admin/notifications/${id}/read`, {
-            method: 'PATCH',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            }
-        }).then(() => {
-            if (event && event.currentTarget.href !== '#') {
-                window.location.href = event.currentTarget.href;
-            } else {
-                location.reload();
-            }
-        });
-    }
-
-    function markAllNotificationsRead() {
-        fetch('/admin/notifications/mark-all-read', {
-            method: 'PATCH',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            }
-        }).then(() => {
-            location.reload();
-        });
-    }
-
-    // SweetAlert for new order alerts
-    @if(session('new_order_alert'))
-    Swal.fire({
-        title: 'New Order!',
-        text: '{{ session('new_order_alert') }}',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'View Order',
-        cancelButtonText: 'Dismiss',
-        confirmButtonColor: '#4F46E5',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = "{{ route('admin.orders.index') }}";
+            fetch(`/admin/notifications/${id}/read`, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            }).then(() => {
+                if (event && event.currentTarget.href !== '#') {
+                    window.location.href = event.currentTarget.href;
+                } else {
+                    location.reload();
+                }
+            });
         }
-    });
-    @endif
-</script>
+
+        function markAllNotificationsRead() {
+            fetch('/admin/notifications/mark-all-read', {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            }).then(() => {
+                location.reload();
+            });
+        }
+
+        // SweetAlert for new order alerts
+        @if (session('new_order_alert'))
+            Swal.fire({
+                title: 'New Order!',
+                text: '{{ session('new_order_alert') }}',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'View Order',
+                cancelButtonText: 'Dismiss',
+                confirmButtonColor: '#4F46E5',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('admin.orders.index') }}";
+                }
+            });
+        @endif
+    </script>
 @stop

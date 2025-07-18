@@ -36,7 +36,7 @@
     </span>
 </p>
 
-            <p><strong>Submitted on:</strong> {{ $contact->created_at->format('d M Y H:i') }}</p>
+            <p><strong>Submitted on:</strong> {{ $contact->created_at->format('d M Y') }}</p>
         </div>
         <div class="card-footer">
 

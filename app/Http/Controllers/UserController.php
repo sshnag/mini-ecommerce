@@ -6,7 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-
+use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     public function __construct()
@@ -25,9 +25,8 @@ class UserController extends Controller
             }
 
             $users = $query->paginate(10);
-            $allRoles = Role::where('name', '!=', 'superadmin')->get();
-
-            return view('admin.users.index', compact('users', 'allRoles'));
+$allRoles = Role::where('name', '!=', 'superadmin')->get();
+            return view(    'admin.users.index', compact('users', 'allRoles'));
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error loading users: '.$e->getMessage());

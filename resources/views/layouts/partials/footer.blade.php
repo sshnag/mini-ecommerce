@@ -29,9 +29,9 @@
             <div class="col-md-3">
                 <h4 class="fs-5 mb-3">Follow Us</h4>
                 <div class="social-icons">
-                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.tiktok.com" class="text-white"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
         </div>

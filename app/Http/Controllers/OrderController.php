@@ -225,8 +225,6 @@ public function userOrders()
 public function orderConfirmation($orderId)
 {
     $order = Order::with(['orderItems.product.category', 'address'])->findOrFail($orderId);
-
-
     return view('orders.confirmation', compact('order'));
 }
 

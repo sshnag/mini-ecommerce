@@ -34,40 +34,40 @@
                                 <td>{{ Str::limit($contact->subject, 20) }}</td>
                                 <td>{{ Str::limit($contact->message, 50) }}</td>
                                 <td>
-                                    <form action="{{ route('admin.contacts.updateStatus', $contact->id) }}" method="POST" class="status-form">
+                                    <form action="{{ route('admin.contacts.updateStatus', $contact->id) }}" method="POST"
+                                        class="status-form">
                                         @csrf
                                         @method('PATCH')
                                         <select name="status" class="form-select form-select-sm status-dropdown">
-    @if ($contact->status == 'new')
-        <option value="new" selected>New</option>
-        <option value="read">Read</option>
-        <option value="replied">Replied</option>
-    @elseif($contact->status == 'read')
-        <option value="read" selected>Read</option>
-        <option value="replied">Replied</option>
-    @elseif ($contact->status == 'replied')
-        <option value="replied" selected>Replied</option>
-    @endif
-</select>
+                                            @if ($contact->status == 'new')
+                                                <option value="new" selected>New</option>
+                                                <option value="read">Read</option>
+                                                <option value="replied">Replied</option>
+                                            @elseif($contact->status == 'read')
+                                                <option value="read" selected>Read</option>
+                                                <option value="replied">Replied</option>
+                                            @elseif ($contact->status == 'replied')
+                                                <option value="replied" selected>Replied</option>
+                                            @endif
+                                        </select>
 
                                     </form>
                                 </td>
                                 <td>{{ $contact->created_at->format('d M Y') }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.contacts.show', $contact->id) }}"
-                                        class="btn-icon me-1">
+                                    <a href="{{ route('admin.contacts.show', $contact->id) }}" class="btn-icon me-1">
                                         <i class="fas fa-eye"></i>
                                     </a>
 
                                     @role('superadmin')
-                                    <form action="{{ route('admin.contacts.destroy', $contact->id) }}" method="POST"
-                                        class="d-inline delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                        <form action="{{ route('admin.contacts.destroy', $contact->id) }}" method="POST"
+                                            class="d-inline delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-icon danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     @endrole
                                 </td>
                             </tr>
@@ -88,7 +88,7 @@
     </div>
 @stop
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/admin/product.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/product.css') }}">
 @endsection
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -142,15 +142,15 @@
     </script>
 
     {{-- SweetAlert success after page reload --}}
-    @if(session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: "{{ session('success') }}",
-            timer: 2500,
-            showConfirmButton: false
-        });
-    </script>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: "{{ session('success') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        </script>
     @endif
 @stop
