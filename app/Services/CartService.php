@@ -117,7 +117,7 @@ use App\Models\User;class CartService
 
             foreach ($cartItems as $item) {
                 OrderItem::create([
-                    'order_id' => $order->id,
+                    'order_id' => $order->custom_id,
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'price' => $item->product->price,

@@ -39,16 +39,27 @@ class CartController extends Controller
     /**
      * Add item to cart (for AJAX or regular POST).
      */
-   public function store(Request $request)
+  public function store(Request $request)
 {
-    $product = Product::findOrFail($request->product_id);
+    $request->validate([
+        'product_id' => 'required|exists:products,custom_id',
+        'quantity' => 'required|integer|min:1'
+    ]);
+
+    $product = Product::where('custom_id', $request->product_id)->firstOrFail();
 
     Cart::updateOrCreate(
         ['user_id' => Auth::id(), 'product_id' => $product->id],
-        ['quantity' => DB::raw('quantity + ' . $request->quantity), 'price' => $product->price]
+        [
+            'quantity' => DB::raw('quantity + ' . $request->quantity),
+            'price' => $product->price
+        ]
     );
+
     return back()->with('success', "{$product->name} has been added to your Bag.");
 }
+
+
   /**
      * Remove a cart item.
      */
