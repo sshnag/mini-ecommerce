@@ -18,7 +18,7 @@ class ShopController extends Controller
 
         if ($request->has('category')) {
             $query->whereHas('category', function ($q) use ($request) {
-                $q->where('name', $request->category);
+                $q->where('name', $request['category']);
             });
         }
 

@@ -93,7 +93,7 @@ class OrderController extends Controller
         ]);
 
         session([
-            'checkout_address_id' => $address->id,
+            'checkout_address_id' => $address['id'],
             'checkout_payment_method' => $data['payment_method'],
         ]);
 
@@ -122,7 +122,7 @@ class OrderController extends Controller
         $paymentMethod = session('checkout_payment_method');
 
         $order = Order::create([
-            'user_id' => $user->id,
+            'user_id' => $user['id'],
             'address_id' => session('checkout_address_id'),
             'total_amount' => $cartService->getTotal(),
             'status' => 'paid',
@@ -136,7 +136,7 @@ class OrderController extends Controller
 
         foreach ($cartService->getUserCart() as $item) {
             OrderItem::create([
-                'order_id' => $order->id,
+                'order_id' => $order['id'],
                 'product_id' => $item->product_id,
                 'quantity' => $item->quantity,
                 'price' => $item->product->price,
@@ -152,7 +152,7 @@ class OrderController extends Controller
             $admin->notify(new NewOrderNotification($order));
         });
 
-        return redirect()->route('orders.userShow', $order->id)
+        return redirect()->route('orders.userShow', $order['id'])
             ->with('success', 'Thank you for your purchase!');
     }
 

@@ -47,6 +47,12 @@
         transition: transform 0.3s ease;
         margin-bottom: 2rem;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 420px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     }
 
     .product-card:hover {
@@ -87,10 +93,17 @@
         transform: scale(1.05);
     }
 
+    .product-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
     .product-details h3 {
         font-size: 1.2rem;
-        font-weight: 400;
-        color: #333;
+        font-weight: 500;
+        color: #222 !important;
         margin-bottom: 0.5rem;
     }
 
@@ -254,4 +267,40 @@
   background-color: transparent; /* Slightly darker gold on hover */
   color: #bfa36f;
   border: 1px solid #bfa36f;
+}
+
+.product-details p,
+.product-details .product-price {
+    color: #333 !important;
+}
+.product-details a,
+.product-details a:visited,
+.product-details a:hover {
+    color: #222 !important;
+    text-decoration: none;
+}
+
+/* Interactive Star Rating Input */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    font-size: 2rem;
+    cursor: pointer;
+    gap: 0.2em;
+}
+.star-rating input[type="radio"] {
+    display: none;
+}
+.star-rating label {
+    color: #ccc;
+    transition: color 0.2s;
+}
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffc107;
+}
+.star-rating input[type="radio"]:focus ~ label {
+    outline: 1px solid #bfa36f;
 }

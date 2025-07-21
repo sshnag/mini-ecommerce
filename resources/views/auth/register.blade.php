@@ -44,10 +44,10 @@
                     </div>
 
                     <!-- Password -->
-                    <div class="mb-3 position-relative password-wrapper">
-                        <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePassword('password', this)"></i>
+                    <div class="mb-3 password-wrapper">
                         <input type="password" name="password" id="password"
                             class="form-control login-input @error('password') is-invalid @enderror" placeholder="Password">
+                        <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePassword('password', this)"></i>
                         @error('password')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -56,11 +56,11 @@
                     </div>
 
                     <!-- Confirm Password -->
-                    <div class="mb-4 position-relative password-wrapper">
-                        <i class="fa-regular fa-eye-slash toggle-password"
-                            onclick="togglePassword('password_confirmation', this)"></i>
+                    <div class="mb-4 password-wrapper">
                         <input type="password" name="password_confirmation" id="password_confirmation"
                             class="form-control login-input" placeholder="Confirm Password">
+                        <i class="fa-regular fa-eye-slash toggle-password"
+                            onclick="togglePassword('password_confirmation', this)"></i>
                     </div>
 
                     <button type="submit" class="btn btn-outline-dark w-100">Create Account</button>

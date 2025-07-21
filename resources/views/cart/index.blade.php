@@ -6,6 +6,46 @@
     <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
 @endpush
 
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show SweetAlert for any cart errors
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#d4af37'
+                });
+            @endif
+
+            // Add event listener for all add-to-cart buttons
+            document.querySelectorAll('.add-to-cart-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const productId = this.querySelector('[name="product_id"]').value;
+                    const quantity = parseInt(this.querySelector('[name="quantity"]').value);
+                    const productStock = parseInt(this.dataset.stock);
+
+                    if (quantity > productStock) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Stock Limit Exceeded',
+                            text: `Only ${productStock} items available in stock`,
+                            confirmButtonColor: '#d4af37'
+                        });
+                        return;
+                    }
+
+                    // If stock is OK, submit the form
+                    this.submit();
+                });
+            });
+        });
+    </script>
+@endpush
+
 @section('content')
     <section class="cart-section py-5">
         <div class="container">
@@ -27,7 +67,7 @@
                     </thead>
                     <tbody>
                         @foreach ($cartItems as $item)
-                            <tr>
+                            <tr class="{{ $item->quantity > $item->product->stock ? 'table-warning' : '' }}">
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <img src="{{ asset('storage/' . $item->product->image) }}" class="img-thumbnail"
@@ -38,10 +78,31 @@
                                                 <h5 class="mb-1">{{ $item->product->name }}</h5>
                                             </a>
                                             <small>{{ $item->product->category->name }}</small>
+                                            @if($item->quantity > $item->product->stock)
+                                                <div class="text-danger small mt-1">
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                    Only {{ $item->product->stock }} available
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ $item->quantity }}</td>
+                                <td>
+                                    <form action="{{ route('cart.update', $item->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="number"
+                                               name="quantity"
+                                               value="{{ $item->quantity }}"
+                                               min="1"
+                                               max="{{ $item->product->stock }}"
+                                               class="form-control form-control-sm d-inline-block"
+                                               style="width: 70px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
                                 <td>${{ number_format($item->product->price, 2) }}</td>
                                 <td class="text-end">
                                     <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
@@ -61,7 +122,16 @@
                     <a href="{{ route('home') }}" class="btn btn-gold">Continue Shopping</a>
                     <div>
                         <h4>Total: ${{ number_format($total, 2) }}</h4>
-                        <a href="{{ route('checkout.shipping') }}" class="btn btn-gold">Proceed to Checkout</a>
+                        <a href="{{ route('checkout.shipping') }}"
+                           class="btn btn-gold {{ $cartItems->contains(function($item) { return $item->quantity > $item->product->stock; }) ? 'disabled' : '' }}">
+                            Proceed to Checkout
+                        </a>
+                        @if($cartItems->contains(function($item) { return $item->quantity > $item->product->stock; }))
+                            <div class="text-danger small mt-2">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Please adjust quantities to available stock before checkout
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endif
@@ -88,7 +158,10 @@
                                         </a>
                                         <p class="text-muted mb-2">${{ number_format($product->price, 2) }}</p>
                                     </div>
-                                    <form action="{{ route('cart.store') }}" method="POST" class="mt-auto">
+                                    <form action="{{ route('cart.store') }}"
+                                          method="POST"
+                                          class="mt-auto add-to-cart-form"
+                                          data-stock="{{ $product->stock }}">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">

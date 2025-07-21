@@ -61,7 +61,7 @@ class ContactController extends Controller
         $contact =Contact::findOrFail($id);
 
         //Mark as read if status is still new
-        if ($contact->status === 'new') {
+        if ($contact['status'] === 'new') {
             $contact->status = 'read';
             $contact->save();
         }

@@ -25,17 +25,17 @@
                         </div>
                     @enderror
                 </div>
-
-<div class="mb-4 position-relative password-wrapper">
-<i class="fa-regular fa-eye-slash toggle-password" onclick="togglePassword(this)"></i>
-                    <input type="password" name="password" id="password"  class="form-control login-input @error('password') is-invalid @enderror" placeholder="Password" >
-                     @error('password')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-
+<div class="mb-4 password-wrapper">
+    <input type="password" name="password" id="password"
+           class="form-control login-input @error('password') is-invalid @enderror"
+           placeholder="Password">
+    <i class="fas fa-eye-slash toggle-password" onclick="togglePassword()"></i>
+    @error('password')
+        <div class="invalid-feedback">
+            {{ $message }}
+        </div>
+    @enderror
+</div>
                 <button type="submit" class="btn btn-outline-dark w-100">Sign In</button>
 
                 <div class="mt-3">
@@ -58,15 +58,17 @@
 
 @push('scripts')
 <script>
-   function togglePassword(el) {
-    const input = document.getElementById('password');
-    const isVisible = input.type === 'text';
-    input.type = isVisible ? 'password' : 'text';
-
-    el.classList.toggle('fa-eye');
-    el.classList.toggle('fa-eye-slash');
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const icon = document.querySelector('.toggle-password');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    }
 }
-
 </script>
 @endpush
 @endsection

@@ -27,6 +27,8 @@ public function payment()
 {
     return $this->hasOne(Payment::class);
 }
+protected $guarded = [];
+
 
     protected $fillable = [
     'user_id',

@@ -27,20 +27,31 @@ use App\Models\User;class CartService
      */
     public function addToCart($productId, $quantity)
 {
-    $cartItem = Cart::where('user_id', Auth::id())
-        ->where('product_id', $productId)
-        ->first();
-
-    if ($cartItem) {
-        $cartItem->quantity = $quantity;
-        $cartItem->save();
-    } else {
-        Cart::create([
-            'user_id' => Auth::id(),
-            'product_id' => $productId,
-            'quantity' => $quantity,
-        ]);
+  $product=Product::findOrFail($productId);
+  //checking stock availibility
+  if ($product->stock <$quantity) {
+    throw new \Exception("Only {$product->stock} items are available in stock.");
+  }
+  $cartItem= Cart::where('user_id',Auth::id())->where('product_id',$productId)->first();
+  if ($cartItem) {
+    $newQuantity=$cartItem>$quantity+$quantity;
+    if ($product->stock<$newQuantity) {
+        throw new \Exception("You already have {$cartItem->quantity}in cart.Only {$product->stock} items are available.");
     }
+    $cartItem->quantity=$newQuantity;
+    $cartItem->save();
+
+  }
+  else{
+    Cart::create(
+        [
+            'user_id'=>Auth::id(),
+            'product_id'=>$productId,
+            'quantity'=>$quantity,
+            'price'=>$product->price
+        ]
+        );
+  }
 }
 
 
@@ -103,6 +114,14 @@ use App\Models\User;class CartService
                 // No cart items, cannot place order
                 return null;
             }
+            //check if there's stock left first
+          foreach ($cartItems as $item) {
+            if ($item->quantity> $item->product->stock) {
+                throw new \Exception(
+                    "There's no more stock left more than {$item->quantity}. "."Please adjust your cart quantity or remove the item."
+                );
+            }
+          }
 
             $total = $cartItems->sum(function ($item) {
                 return $item->product->price * $item->quantity;
@@ -111,17 +130,19 @@ use App\Models\User;class CartService
             $order = Order::create([
                 'user_id' => $userId,
                 'address_id' => $addressId,
-'total_amount' => $total,
+                'total_amount' => $total,
                 'status' => 'pending', // customize as needed
             ]);
-
+            //create order items & reduce stocks
             foreach ($cartItems as $item) {
                 OrderItem::create([
-                    'order_id' => $order->custom_id,
+                    'order_id' => $order['id'],
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'price' => $item->product->price,
                 ]);
+                //reduce the amount of stocks accordiing to the quantities customers chose
+                $item->product->decrement('stock',$item->quantity);
             }
 
             Cart::where('user_id', $userId)->delete();

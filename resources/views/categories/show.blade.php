@@ -2,7 +2,7 @@
 
 @section('title', "TIFFANY - {$category->name} Collection")
 
-@push('styles')
+@push('style')
     <link rel="stylesheet" href="{{ asset('css/category.css') }}">
 @endpush
 
@@ -18,29 +18,62 @@
         <div class="container">
 
             <!-- Search Form -->
+              <!-- Search and Filter Form -->
             <div class="row justify-content-center mb-5">
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <form method="GET" action="{{ route('categories.show', $category->slug ?? $category->id) }}"
-                        class="d-flex flex-wrap gap-3 shadow rounded p-3 mb-4">
-                        <input type="text" name="search" class="form-control search-input flex-fill"
-                            placeholder="Search products by name    ..." value="{{ request('search') }}">
-
-                        <div class="input-group mb-2" style="width: 160px;">
-                            <span class="input-group-text">$</span>
-                            <input type="number" step="100" name="min_price" class="form-control"
-                                placeholder="Min Price" value="{{ request('min_price') }}">
+                        class="d-flex flex-wrap gap-3 shadow rounded p-3 mb-4 align-items-end">
+                        <!-- Search Input -->
+                        <div class="flex-fill">
+                            <label for="search" class="form-label small text-muted">Search</label>
+                            <input type="text" name="search" id="search" class="form-control search-input"
+                                placeholder="Search products by name..." value="{{ request('search') }}">
                         </div>
 
-                        <div class="input-group mb-2" style="width: 160px;">
-                            <span class="input-group-text">$</span>
-                            <input type="number" step="100" name="max_price" class="form-control"
-                                placeholder="Max Price" value="{{ request('max_price') }}">
+                        <!-- Price Range -->
+                        <div>
+                            <label class="form-label small text-muted">Price Range</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="100" name="min_price" class="form-control"
+                                    placeholder="Min" value="{{ request('min_price') }}">
+                                <span class="input-group-text">to</span>
+                                <input type="number" step="100" name="max_price" class="form-control"
+                                    placeholder="Max" value="{{ request('max_price') }}">
+                            </div>
                         </div>
 
+                        <!-- Sorting Dropdown -->
+                        <div>
+                            <label for="sort" class="form-label small text-muted">Sort By</label>
+                            <select name="sort" id="sort" class="form-select">
+                                <option value="price_desc" {{ request('sort', 'price_desc') == 'price_desc' ? 'selected' : '' }}>
+                                    Price: High to Low
+                                </option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>
+                                    Price: Low to High
+                                </option>
+                                <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>
+                                    Name: A-Z
+                                </option>
+                                <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>
+                                    Name: Z-A
+                                </option>
+                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>
+                                    Newest First
+                                </option>
+                                <option value="top_rated" {{ request('sort') == 'top_rated' ? 'selected' : '' }}>
+                                    Top Rated
+                                </option>
+                            </select>
+                        </div>
 
-                        <button type="submit" class="btn btn-gold px-4">Filter</button>
+                        <button type="submit" class="btn btn-gold px-4">Apply</button>
+                        @if(request()->hasAny(['search', 'min_price', 'max_price', 'sort']))
+                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}"
+                               class="btn btn-outline-secondary px-4">Reset</a>
+                        @endif
                     </form>
-
                 </div>
             </div>
 
@@ -58,19 +91,23 @@
                                 <div class="product-details p-2">
                                     <h3>{{ $product->name }}</h3>
                                     <p class="product-price">${{ number_format($product->price, 2) }}</p>
-                                    <div class="product-rating">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= round($product->reviews->avg('rating')))
-                                                <i class="fas fa-star"></i>
-                                            @else
-                                                <i class="far fa-star"></i>
-                                            @endif
-                                        @endfor
-                                        <span>({{ $product->reviews->count() }})</span>
-                                    </div>
+                                    <div class="product-rating" title="Rated {{ number_format($product->reviews->avg('rating'), 1) }} out of 5">
+    @php $avg = $product->reviews->avg('rating'); @endphp
+    @for ($i = 1; $i <= 5; $i++)
+        @if ($avg >= $i)
+            <i class="fas fa-star"></i>
+        @elseif ($avg >= $i - 0.5)
+            <i class="fas fa-star-half-alt"></i>
+        @else
+            <i class="far fa-star"></i>
+        @endif
+    @endfor
+    <span>({{ $product->reviews->count() }})</span>
+</div>
                                 </div>
                             </a>
                         </div>
+
                     </div>
                 @empty
                     <p class="text-center text-muted">No products found.</p>
@@ -119,3 +156,27 @@
         @endif
     </script>
 @endsection
+
+@push('scripts')
+<script>
+document.querySelectorAll('.star-rating').forEach(function(ratingDiv) {
+    const stars = ratingDiv.querySelectorAll('label');
+    stars.forEach(function(star, idx) {
+        star.addEventListener('mouseenter', function() {
+            for (let i = 0; i <= idx; i++) stars[i].style.color = '#ffc107';
+        });
+        star.addEventListener('mouseleave', function() {
+            stars.forEach(s => s.style.color = '');
+        });
+    });
+    ratingDiv.addEventListener('mouseleave', function() {
+        const checked = ratingDiv.querySelector('input[type=radio]:checked');
+        if (checked) {
+            let idx = Array.from(ratingDiv.querySelectorAll('input[type=radio]')).indexOf(checked);
+            for (let i = 0; i < stars.length; i++)
+                stars[i].style.color = i <= idx ? '#ffc107' : '';
+        }
+    });
+});
+</script>
+@endpush

@@ -21,7 +21,7 @@ class UserController extends Controller
                 ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'superadmin'))->latest();
 
             if ($request->filled('role')) {
-                $query->role($request->role);
+                $query->role($request['role']);
             }
 
             $users = $query->paginate(10);
@@ -103,7 +103,7 @@ $allRoles = Role::where('name', '!=', 'superadmin')->get();
         try {
             $validated = $request->validate([
                 'name'  => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,'.$user->id,
+                'email' => 'required|email|unique:users,email,'.$user['id'],
             ]);
 
             $user->update($validated);

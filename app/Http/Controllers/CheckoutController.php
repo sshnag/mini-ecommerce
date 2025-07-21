@@ -32,7 +32,7 @@ public function storeShipping(Request $request) {
         $address = Address::create($data);
 
         session([
-            'checkout_address_id' => $address->id,
+            'checkout_address_id' => $address['id'],
             'checkout_payment_method' => $paymentMethod,
         ]);
 
@@ -80,18 +80,16 @@ public function placeOrder(CartService $cs) {
         return redirect()->route('checkout.review')
             ->with('error', 'Invalid shipping address');
     }
-
-    $order = $cs->placeOrder(Auth::id(), $addressId);
-
-    if (!$order) {
-        return redirect()->route('checkout.review')
-            ->with('error', 'Unable to place order. Your cart might be empty.');
+    try {
+        $order=$cs->placeOrder(Auth::id(),$addressId);
+        if (!$order) {
+            return redirect()->route('checkout.review')->with('error','Unable to place order.Your cart might be empty.');
+        }
+        session()->forget(['checkout_address_id','checkout_payment_method']);
+        return redirect()->route('user.orders.confirmation',['order'=>$order['id']])->with('success','Order placed successfully!');
+    } catch (\Exception $e) {
+        return redirect()->route('checkout.review')->with('error',$e->getMessage());
     }
-
-    session()->forget(['checkout_address_id', 'checkout_payment_method']);
-
-return redirect()->route('user.orders.confirmation', ['order' => $order->id])
-    ->with('success', 'Order placed successfully!');
 
 }
 

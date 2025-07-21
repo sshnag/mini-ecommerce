@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
@@ -49,6 +50,8 @@ Route::middleware(['auth'])->group(function () { // No role restriction
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+        Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/products/{product}/rate', [ReviewController::class, 'store'])->name('products.rate');
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -70,12 +73,12 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 Route::get('/admin/notifications/{notification}/redirect', function ($notificationId) {
     $notification = DatabaseNotification::findOrFail($notificationId);
 
-    if ($notification->notifiable_id !== auth('admin')->id()) {
+    if ($notification['notifiable_id'] !== auth('admin')->id()) {
         abort(403, 'Unauthorized');
     }
     $notification->markAsRead();
     if (isset($notification->data['order_id'])) {
-        return redirect()->route('admin.orders.show', $notification->data['order_id']);
+        return redirect()->route('admin.orders.show', $notification['data']['order_id']);
     }return redirect()->route('admin.dashboard');
 })->prefix('admin.')->middleware(['auth:admin', 'role:admin|superadmin'])->name('notifications.redirect');
 

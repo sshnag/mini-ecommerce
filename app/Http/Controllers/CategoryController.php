@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use JeroenNoten\LaravelAdminLte\View\Components\Form\Input;
 
 class CategoryController extends Controller
 {
@@ -54,7 +55,7 @@ public function show(Category $category, Request $request)
 
     // Search filter
     if ($request->filled('search')) {
-        $searchTerm = $request->search;
+        $searchTerm = $request['search'];
         $query->where(function($q) use ($searchTerm) {
             $q->where('name', 'like', "%{$searchTerm}%")
               ->orWhereHas('category', fn($c) => $c->where('name', 'like', "%{$searchTerm}%"));
@@ -63,15 +64,34 @@ public function show(Category $category, Request $request)
 
     // Price Range Filter
     if ($request->filled('min_price')) {
-        $query->where('price', '>=', $request->min_price);
+        $query->where('price', '>=', $request['min_price']);
     }
     if ($request->filled('max_price')) {
-        $query->where('price', '<=', $request->max_price);
+        $query->where('price', '<=', $request['max_price']);
+    }
+
+    //sorting:highesst to lowest
+    $sort=$request->input('sort','price_desc');
+    switch ($sort) {
+        case 'price_asc':
+            $query->orderBy('price','asc');
+            break;
+             case 'name_asc':
+            $query->orderBy('name','asc');
+            break;
+             case 'name_desc':
+            $query->orderBy('name','desc');
+            break;
+             case 'newest':
+            $query->orderBy('created_at','desc');
+            break;
+        default:
+                $query->orderBy('price','desc');
     }
 
     $products = $query->paginate(9)->withQueryString();
 
-    return view('categories.show', compact('category', 'products'));
+    return view('categories.show', compact('category', 'products','sort'));
 }
 
 

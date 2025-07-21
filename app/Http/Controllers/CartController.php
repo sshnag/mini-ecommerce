@@ -37,21 +37,26 @@ class CartController extends Controller
 
 
     /**
-     * Add item to cart (for AJAX or regular POST).
+     * Add item to cart
      */
-  public function store(Request $request)
+ public function store(Request $request)
 {
     $request->validate([
-        'product_id' => 'required|exists:products,custom_id',
+        'product_id' => 'required|exists:products,id',
         'quantity' => 'required|integer|min:1'
     ]);
 
-    $product = Product::where('custom_id', $request->product_id)->firstOrFail();
+    $product = Product::findOrFail($request['product_id']);
 
-    Cart::updateOrCreate(
-        ['user_id' => Auth::id(), 'product_id' => $product->id],
+    // Check stock availability
+    if ($product->stock < $request['quantity']) {
+        return back()->with('error', "Only {$product->stock} items available for {$product->name}");
+    }
+
+    $cartItem = Cart::updateOrCreate(
+        ['user_id' => Auth::id(), 'product_id' => $product['id']],
         [
-            'quantity' => DB::raw('quantity + ' . $request->quantity),
+            'quantity' => DB::raw('quantity + ' . $request['quantity']),
             'price' => $product->price
         ]
     );
@@ -85,5 +90,16 @@ class CartController extends Controller
     {
         $this->cartService->clearCart();
         return redirect()->back()->with('success', 'Cart cleared.');
+    }
+    public function update(Request $request,$id){
+        $request->validate([
+            'quantity'=>'required|integer|min:1',
+        ]);
+        $cartItem=Cart::with('product')->findOrFail($id);
+        if ($request['quantity'] > $cartItem->product->stock) {
+            return back()->with('error', "No more items availbel more than {$cartItem->product->stock}. ");
+        }
+        $cartItem->update(['quantity'=>$request['quantity']]);
+        return back()->with('success','Cart Updated Successfully!');
     }
 }

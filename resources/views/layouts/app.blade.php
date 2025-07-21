@@ -16,7 +16,7 @@
     <!-- Custom CSS -->
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 
-    @stack('styles')
+    @stack('style')
 </head>
 <body class="luxury-theme">
     @include('layouts.partials.navigation')
