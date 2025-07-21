@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
     public function __construct()
@@ -70,22 +72,55 @@ $allRoles = Role::where('name', '!=', 'superadmin')->get();
             ->withInput()
             ->with('error', 'Error creating user: '.$e->getMessage());
     }
-}    public function updateRoles(Request $request, User $user)
-    {
-        try {
-            $validated = $request->validate([
-                'roles' => 'required|array',
-                'roles.*' => 'exists:roles,name'
-            ]);
+}
+ public function updateRoles(Request $request, User $user)
+{
+    try {
+        $validated = $request->validate([
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,name'
+        ]);
 
-            $user->syncRoles($validated['roles']);
+        // Get current roles before update
+        $currentRoles = $user->getRoleNames()->toArray();
 
-            return back()->with('success', 'User roles updated.');
+        // Sync new roles
+        $user->syncRoles($validated['roles']);
 
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error updating roles: '.$e->getMessage());
+        // Check if roles were actually changed
+        $rolesChanged = array_diff($currentRoles, $validated['roles']) ||
+                        array_diff($validated['roles'], $currentRoles);
+
+        if ($rolesChanged) {
+            // Invalidate remember token
+            $user->setRememberToken(Str::random(60));
+
+            // Delete all active sessions
+            DB::table('sessions')
+                ->where('user_id', $user['id'])  // Use $user->getKey() if id doesn't work
+                ->delete();
+
+            // If the modified user is currently logged in
+            if (Auth::check() && Auth::user()['id'] === $user['id']) {
+                auth()->guard('web')->logout();  // Explicitly specify the guard
+
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->with('info', 'Your roles have been updated. Please log in again.');
+            }
+
+            // Optionally send notification
+            // $user->notify(new RolesChangedNotification($validated['roles']));
         }
+
+        return back()->with('success', 'User roles updated successfully.');
+
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error updating roles: '.$e->getMessage());
     }
+}
 
     public function edit(User $user)
     {

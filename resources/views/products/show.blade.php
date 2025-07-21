@@ -156,7 +156,7 @@
     <h4>Customer Reviews</h4>
     @forelse($product->reviews as $review)
         <div class="review mb-3 p-2 border rounded">
-            <strong>{{ $review->user->name }}</strong>
+            <strong>{{ $review->user ? $review->user->name : 'Deleted User' }}</strong>
             <span>
                 @for ($i = 1; $i <= 5; $i++)
                     <i class="{{ $i <= $review->rating ? 'fas' : 'far' }} fa-star"></i>

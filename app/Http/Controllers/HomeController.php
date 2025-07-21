@@ -44,8 +44,8 @@ public function index()
         ->take(6)
         ->get();
 
- $limitedEditionProducts = Product::where('stock', '<=', 5) // Adjust 5 as needed
-    ->orderBy('stock', 'asc')
+ $limitedEditionProducts = Product::where('price', '>',500) // Adjust 5 as needed
+    ->orderBy('price', 'desc')
     ->take(4)
     ->get();
 

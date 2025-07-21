@@ -2,7 +2,7 @@
 
 @section('title', 'Your Shopping Bag')
 
-@push('styles')
+@push('style')
     <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
 @endpush
 
