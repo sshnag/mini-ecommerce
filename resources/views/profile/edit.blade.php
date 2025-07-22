@@ -1,29 +1,38 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
+@section('title', 'Edit Profile')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('content')
+<link rel="stylesheet" href="{{ asset('css/shop.css') }}">
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+<div class="container my-5">
+    <div class="card shadow p-4 luxury-section">
+        <h2 class="text-gold mb-4">Edit Profile</h2>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+       <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+
+    <div class="mb-3">
+        <label for="name" class="form-label text-gold">Name</label>
+        <input type="text" class="form-control" name="name" value="{{ old('name', $user->name) }}" required>
     </div>
-</x-app-layout>
+
+    <div class="mb-3">
+        <label for="profile_image" class="form-label text-gold">Profile Image</label>
+        <input type="file" name="profile_image" class="form-control">
+        @if ($user->profile_image)
+            <img src="{{ asset($user->profile_image) }}" alt="Profile" width="100" class="mt-2">
+        @endif
+        @error('profile_image') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+
+    <button type="submit" class="btn btn-outline-gold">Save Changes</button>
+    <a href="{{ route('profile.index') }}" class="btn btn-link">Cancel</a>
+</form>
+
+    </div>
+</div>
+@endsection

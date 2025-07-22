@@ -10,6 +10,8 @@ class Category extends Model
     protected $fillable = ['name', 'slug', 'size_type', 'default_sizes'];
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
+
+    //relation with Product
     public function products()
 {
     return $this->hasMany(Product::class);
@@ -23,6 +25,7 @@ class Category extends Model
 {
     return 'slug';
 }
+    //relation with Review Model
 public function reviews()
 {
     return $this->hasMany(Review::class);

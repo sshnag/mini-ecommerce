@@ -9,6 +9,7 @@ class CategoryRepository
     {
         return Category::all();
     }
+
     public function create(array $data){
         return Category::create($data);
     }

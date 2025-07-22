@@ -27,10 +27,12 @@ class Product extends Model
         'available_sizes' => 'array'
     ];
 
+    //relation with Review Model
     public function reviews()
 {
     return $this->hasMany(Review::class);
 }
+
     public function getSizes()
     {
         return $this->available_sizes ?? $this->category->default_sizes;
@@ -41,11 +43,13 @@ class Product extends Model
         return $this->category->size_type != 'none';
     }
 
+    //relation with Category Model
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    //relation with Supplier Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);

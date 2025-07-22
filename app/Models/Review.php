@@ -15,12 +15,14 @@ class Review extends Model
         'user_id',
         'product_id',
         'rating',
-        'comment', // use 'comment' not 'review'
+        'comment',
     ];
+    //relation with user model
     public function user(){
         return $this->belongsTo(User::class);
 
     }
+    //relation with Product model
     public function product(){
         return $this->belongsTo(Product::class);
     }

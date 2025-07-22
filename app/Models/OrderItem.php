@@ -10,9 +10,11 @@ class OrderItem extends Model
 {
     //
     use HasFactory,SoftDeletes;
+    //relation with Product model
     public function product(){
         return $this->belongsTo(Product::class);
     }
+    //relation with Order model
     public function order(){
         return $this->belongsTo(Order::class);
     }

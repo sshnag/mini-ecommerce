@@ -7,8 +7,9 @@ class OrderRepository{
         return Order::with('orderItems.product')->where('user_id',$userId)->latest()->get();
 
     }
+
     public function create(array $data){
         return Order::create($data);
-        
+
     }
 }

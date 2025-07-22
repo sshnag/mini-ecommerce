@@ -17,6 +17,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,10 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 //  User Routes
 Route::middleware(['auth'])->group(function () { // No role restriction
+
+        Route::get('/profile',[ProfileController::class,'index'])->name('profile.index');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');
     Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
         ->name('orders.confirmation');
     Route::get('/checkout/shipping', [CheckoutController::class, 'showShipping'])->name('checkout.shipping');

@@ -10,7 +10,6 @@ class ProductService
 {
     /**
      * Creates a new product with validation and image handling
-     *
      * @param array $data Validated product data
      * @param UploadedFile|null $imageFile Uploaded image file
      * @return Product

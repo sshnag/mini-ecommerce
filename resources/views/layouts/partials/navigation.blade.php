@@ -26,7 +26,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                              <li>
-                <a class="dropdown-item" href="{{ route('orders.history') }}">Order History</a>
+                <a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a>
             </li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">

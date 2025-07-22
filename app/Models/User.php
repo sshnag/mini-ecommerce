@@ -19,18 +19,23 @@ class User extends Authenticatable
 
     use HasFactory, Notifiable, SoftDeletes, HasRoles;
      protected $guard_name = 'web';
+     //relation with Order model
      public function orders()
      {
         return $this->hasMany(Order::class);
      }
+     //relation with Address model
      public function addresses()
 {
     return $this->hasMany(Address::class);
 }
+    //relation with Cart model
 
      public function carts(){
         return $this->hasMany(Cart::class);
      }
+
+     //relation with Review model
      public function reviews(){
         return $this->hasMany(Review::class);
      }
@@ -43,6 +48,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_image'
     ];
 
     /**
@@ -89,6 +95,12 @@ class User extends Authenticatable
             }
         });
     }
+
+    /**
+     * Summary of forceLogout
+     * forcing the user to log out once the role is changed to admin from user
+     * @return void
+     */
     public function forceLogout()
     {
         // Invalidate remember token
