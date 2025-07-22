@@ -33,7 +33,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Summary of store
+     *
      * storing categories' data
      * @param \App\Http\Requests\StoreCategoryRequest $request
      * @return \Illuminate\Http\RedirectResponse
@@ -95,15 +95,9 @@ public function show(Category $category, Request $request)
 }
 
 
-    /**
-     * Summary of edit
-     * Editing the categories' datas
-     * @param \App\Models\Category $category
-     * @return \Illuminate\Contracts\View\View
-     */
+
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -138,17 +132,17 @@ public function show(Category $category, Request $request)
 
 
 
-    /**
-     * Get size presets based on category type
-     * @param string $sizeType
-     * @return array
-     */
-    protected function getSizePresets($sizeType)
-    {
-        return match($sizeType) {
-            'ring' => ['4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8'],
-            'bracelet' => ['Small', 'Medium', 'Large', 'XL'],
-            default => []
-        };
-    }
+    // /**
+    //  * Get size presets based on category type
+    //  * @param string $sizeType
+    //  * @return array
+    //  */
+    // protected function getSizePresets($sizeType)
+    // {
+    //     return match($sizeType) {
+    //         'ring' => ['4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8'],
+    //         'bracelet' => ['Small', 'Medium', 'Large', 'XL'],
+    //         default => []
+    //     };
+    // }
 }

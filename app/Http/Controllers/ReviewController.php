@@ -11,8 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-
-
+    /**
+     * Summary of store
+     * Storing data from reviews' data from users
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Product $product
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request, Product $product)
     {
             Log::info('ReviewController@store called');
@@ -20,6 +25,7 @@ class ReviewController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:2000'
         ]);
+        //if the user reviewing the same product
         $existing = Review::where('user_id', Auth::id())->where('product_id', $product['id'])->first();
         if ($existing) {
             return back()->with('error', 'You have already reviewed this product.');

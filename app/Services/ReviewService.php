@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+/**
+ * Summary of ReviewService
+ * Calculate the average rating
+ */
 class ReviewService
 {
     public function avaerageRating($product){

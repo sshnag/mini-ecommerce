@@ -2,7 +2,7 @@
 
 @section('title', 'Contact Us')
 
-@push('styles')
+@push('style')
     <link rel="stylesheet" href="{{ asset('css/contact.css') }}">
 @endpush
 

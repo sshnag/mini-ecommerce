@@ -17,7 +17,9 @@ use App\Notifications\NewOrderNotification;
 class OrderController extends Controller
 {
     /**
+     * Summary of index
      * ADMIN: List orders (filtered by status).
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -32,7 +34,11 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of updateStatus
      * ADMIN: Update order status.
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Order $order
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function updateStatus(Request $request, Order $order)
     {
@@ -46,7 +52,10 @@ class OrderController extends Controller
     }
 
     /**
-     * ADMIN: Show detailed order view.
+     * Summary of show
+     * ADMIN: Show order details page.
+     * @param \App\Models\Order $order
+     * @return \Illuminate\Contracts\View\View
      */
     public function show(Order $order)
     {
@@ -55,7 +64,10 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of destroy
      * ADMIN: Archive (delete) order.
+     * @param \App\Models\Order $order
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Order $order)
     {
@@ -64,7 +76,9 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of showShippingForm
      * USER: Show shipping form (checkout step 1).
+     * @return \Illuminate\Contracts\View\View
      */
     public function showShippingForm()
     {
@@ -72,7 +86,10 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of storeShipping
      * USER: Store shipping address.
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function storeShipping(Request $request)
     {
@@ -101,7 +118,10 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of showReview
      * USER: Show order review (checkout step 2).
+     * @param \App\Services\CartService $cartService
+     * @return \Illuminate\Contracts\View\View
      */
     public function showReview(CartService $cartService)
     {
@@ -114,7 +134,10 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of placeOrder
      * USER: Place order.
+     * @param \App\Services\CartService $cartService
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function placeOrder(CartService $cartService)
     {
@@ -157,7 +180,10 @@ class OrderController extends Controller
     }
 
     /**
+     * Summary of userShow
      * USER: Show one of their own orders.
+     * @param mixed $orderId
+     * @return \Illuminate\Contracts\View\View
      */
     public function userShow($orderId)
     {
@@ -170,7 +196,9 @@ class OrderController extends Controller
     }
 
     /**
-     * USER: Order history list.
+     * Summary of userOrders
+    * USER: Order history list.
+     * @return \Illuminate\Contracts\View\View
      */
     public function userOrders()
     {
@@ -182,14 +210,20 @@ class OrderController extends Controller
         return view('orders.user', compact('orders'));
     }
 
-    /**
+   /**
+    * Summary of orderConfirmation
      * USER: Thank you / order confirmation page.
-     */
-    public function orderConfirmation($orderId)
-    {
-        $order = Order::with(['orderItems.product.category', 'address'])
-            ->findOrFail($orderId);
+    * @param mixed $orderId
+    * @return \Illuminate\Contracts\View\View
+    */
+   public function orderConfirmation($orderId)
+{
+    // Add ownership check
+    $order = Order::with(['orderItems.product', 'address'])
+        ->where('id', $orderId)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
 
-        return view('orders.confirmation', compact('order'));
-    }
+    return view('orders.confirmation', compact('order'));
+}
 }

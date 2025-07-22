@@ -12,7 +12,9 @@ use Illuminate\Http\Request;
 class ContactController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+    * Display a listing of the resource.
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -21,20 +23,21 @@ class ContactController extends Controller
         return view('admin.contacts.index',compact('contacts'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         //
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Summary of store
+     * Store a newly created contact form and send email to admin and superadmin emails
+     * @param \App\Http\Requests\StoreContactRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreContactRequest $request)
     {
-        //
+
         $validated= $request->validated();
         //Saving to database
         $contact= Contact::create($validated);
@@ -50,23 +53,36 @@ class ContactController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Summary of showForm
+     * Showing the contact form for users to fill
+     * @return \Illuminate\Contracts\View\View
      */
     public function showForm()
     {
         //
         return view ('contact.form');
     }
+    /**
+     * Summary of show
+     * Displaying the details of the users' requests
+     * @param mixed $id
+     * @return \Illuminate\Contracts\View\View
+     */
     public function show($id){
         $contact =Contact::findOrFail($id);
 
-        //Mark as read if status is still new
+        //Mark as read if status is still new when opening the details of the request
         if ($contact['status'] === 'new') {
             $contact->status = 'read';
             $contact->save();
         }
         return view('admin.contacts.show',compact('contact'));
     }
+
+
+    /**
+     * Updatating status of the requests from users
+     */
 
     public function updateStatus(Request $request,$id){
         $contact=Contact::findOrFail($id);
@@ -77,24 +93,25 @@ class ContactController extends Controller
         $contact->save();
         return back()->with('success','Status updated successfully!');
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Contact $contact)
-    {
-        //
-    }
+
+    // public function edit(Contact $contact)
+    // {
+    //     //
+    // }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateContactRequest $request, Contact $contact)
-    {
-        //
-    }
+    // public function update(UpdateContactRequest $request, Contact $contact)
+    // {
+    //     //
+    // }
 
     /**
-     * Remove the specified resource from storage.
+     * Summary of destroy
+     * Deleting the requests from users
+     * @param mixed $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {

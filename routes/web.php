@@ -38,7 +38,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 //  User Routes
 Route::middleware(['auth'])->group(function () { // No role restriction
     Route::get('/orders/{order}/confirmation', [OrderController::class, 'orderConfirmation'])
-        ->name('user.orders.confirmation');
+        ->name('orders.confirmation');
     Route::get('/checkout/shipping', [CheckoutController::class, 'showShipping'])->name('checkout.shipping');
     Route::post('/checkout/shipping', [CheckoutController::class, 'storeShipping'])->name('checkout.shipping.store');
     Route::get('/checkout/review', [CheckoutController::class, 'showReview'])->name('checkout.review');

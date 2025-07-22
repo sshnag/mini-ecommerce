@@ -15,6 +15,8 @@ class CartController extends Controller
     protected $cartService;
 
     /**
+     * Summary of __construct
+     * @param \App\Services\CartService $cartService
      * Inject CartService into the controller.
      */
     public function __construct(CartService $cartService)
@@ -24,7 +26,9 @@ class CartController extends Controller
     }
 
     /**
-     * Show full cart page.
+          * Show full cart page.
+     * @param \App\Services\CartService $cartService
+     * @return \Illuminate\Contracts\View\View
      */
     public function index(CartService $cartService)
 {
@@ -36,9 +40,11 @@ class CartController extends Controller
 }
 
 
-    /**
+ /**
      * Add item to cart
-     */
+  * @param \Illuminate\Http\Request $request
+  * @return \Illuminate\Http\RedirectResponse
+  */
  public function store(Request $request)
 {
     $request->validate([
@@ -48,7 +54,7 @@ class CartController extends Controller
 
     $product = Product::findOrFail($request['product_id']);
 
-    // Check stock availability
+    // Check if stock is available
     if ($product->stock < $request['quantity']) {
         return back()->with('error', "Only {$product->stock} items available for {$product->name}");
     }
@@ -65,8 +71,12 @@ class CartController extends Controller
 }
 
 
-  /**
+
+    /**
+     *
      * Remove a cart item.
+     * @param mixed $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
@@ -75,22 +85,20 @@ class CartController extends Controller
     }
 
     /**
-     * Show cart dropdown preview (partial for navbar).
-     */
-    public function dropdownPreview()
-    {
-        $data = $this->cartService->getDropdownPreview();
-        return view('components.cart-dropdown', $data);
-    }
-
-    /**
      * Clear the entire cart.
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function clear()
     {
         $this->cartService->clearCart();
         return redirect()->back()->with('success', 'Cart cleared.');
     }
+    /**
+     * Updating the amount of items in cart
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request,$id){
         $request->validate([
             'quantity'=>'required|integer|min:1',

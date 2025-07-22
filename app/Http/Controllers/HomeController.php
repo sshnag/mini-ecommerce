@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
 
+
         protected $productRepository;
     /**
      *
@@ -16,6 +17,11 @@ class HomeController extends Controller
      * @return void
      */
 
+    /**
+     * Summary of __construct
+     * connecting wuth productrepository and adding guard
+     * @param \App\Repositories\ProductRepository $productRepository
+     */
     public function __construct(ProductRepository $productRepository)
     {
         $this->middleware('auth')->except(['index']);
@@ -23,31 +29,23 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the index home page showcasing the lastest jewels
+     * Displaying the index page
      *@author=SSA
      * @return \Illuminate\Contracts\Support\Renderable
      */
 public function index()
 {
-    $rings = Product::whereHas('category', fn($q) => $q->where('name', 'Rings'))
-        ->latest()
-        ->take(6)
-        ->get();
+    //Ring Category
+    $rings = Product::whereHas('category', fn($q) => $q->where('name', 'Rings'))->latest()->take(6)->get();
 
-    $necklaces = Product::whereHas('category', fn($q) => $q->where('name', 'Necklaces'))
-        ->latest()
-        ->take(6)
-        ->get();
+    //Necklace Category
+    $necklaces = Product::whereHas('category', fn($q) => $q->where('name', 'Necklaces'))->latest()->take(6)->get();
 
-    $bracelets = Product::whereHas('category', fn($q) => $q->where('name', 'Bracelets'))
-        ->latest()
-        ->take(6)
-        ->get();
+    //Bracelet Category
+    $bracelets = Product::whereHas('category', fn($q) => $q->where('name', 'Bracelets'))->latest()->take(6)->get();
 
- $limitedEditionProducts = Product::where('price', '>',500) // Adjust 5 as needed
-    ->orderBy('price', 'desc')
-    ->take(4)
-    ->get();
+    //Limited edition with high price range
+    $limitedEditionProducts = Product::where('price', '>',500) ->orderBy('price', 'desc')->take(4)->get();
 
 
 return view('home', compact('rings', 'necklaces', 'bracelets', 'limitedEditionProducts'));

@@ -25,6 +25,7 @@
                         </div>
                     @enderror
                 </div>
+
 <div class="mb-4 password-wrapper">
     <input type="password" name="password" id="password"
            class="form-control login-input @error('password') is-invalid @enderror"

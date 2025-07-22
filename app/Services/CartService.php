@@ -13,8 +13,11 @@ use Spatie\Permission\Models\Role;
 use App\Models\User;class CartService
 {
     /**
-     * Get all cart items for the authenticated user.
+     * Summary of getUserCart
+       * Get all cart items for the authenticated user.
+     * @return \Illuminate\Database\Eloquent\Collection<int, Cart>
      */
+
     public function getUserCart()
     {
         return Cart::with('product')
@@ -23,12 +26,17 @@ use App\Models\User;class CartService
     }
 
     /**
+     * Summary of addToCart
      * Add a product to the user's cart.
+     * @param mixed $productId
+     * @param mixed $quantity
+     * @throws \Exception
+     * @return void
      */
     public function addToCart($productId, $quantity)
 {
   $product=Product::findOrFail($productId);
-  //checking stock availibility
+  //checking if stock is availible
   if ($product->stock <$quantity) {
     throw new \Exception("Only {$product->stock} items are available in stock.");
   }
@@ -56,7 +64,10 @@ use App\Models\User;class CartService
 
 
     /**
+     * Summary of removeFromCart
      * Remove item from cart by ID.
+     * @param mixed $id
+     * @return void
      */
     public function removeFromCart($id)
     {
@@ -66,7 +77,9 @@ use App\Models\User;class CartService
     }
 
     /**
+     * Summary of getTotal
      * Get total price of the cart.
+     * @return float|int|mixed
      */
     public function getTotal()
     {
@@ -78,32 +91,21 @@ use App\Models\User;class CartService
     }
 
     /**
+     * Summary of clearCart
      * Clear all cart items for the user.
+     * @return void
      */
     public function clearCart()
     {
         Cart::where('user_id', Auth::id())->delete();
     }
 
-    /**
-     * Dropdown preview data (cart summary).
-     */
-    public function getDropdownPreview()
-    {
-        $cartItems = $this->getUserCart();
-        $total = $this->getTotal();
 
-        return [
-            'cartItems' => $cartItems,
-            'total' => $total,
-        ];
-    }
     /**
+     * Summary of placeOrder
      * Place an order for the user with the selected address.
-     *
      * @param int $userId
      * @param int $addressId
-     * @return Order|null
      */
     public function placeOrder(int $userId, int $addressId)
     {
@@ -122,16 +124,14 @@ use App\Models\User;class CartService
                 );
             }
           }
-
             $total = $cartItems->sum(function ($item) {
                 return $item->product->price * $item->quantity;
             });
-
             $order = Order::create([
                 'user_id' => $userId,
                 'address_id' => $addressId,
                 'total_amount' => $total,
-                'status' => 'pending', // customize as needed
+                'status' => 'pending',
             ]);
             //create order items & reduce stocks
             foreach ($cartItems as $item) {
@@ -146,9 +146,7 @@ use App\Models\User;class CartService
             }
 
             Cart::where('user_id', $userId)->delete();
-
-
-
+            //admin/superadmin dashboard getting notifications
             $admins= User::role(['admin','superadmin'])->get();
             foreach($admins as $admin){
                 $admin->notify(new NewOrderNotification($order));

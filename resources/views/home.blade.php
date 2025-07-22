@@ -8,6 +8,13 @@
 @endpush
 
 @section('content')
+<!-- Cookie Consent Popup -->
+<div id="cookieConsent" style="position:fixed;bottom:20px;left:0;right:0;z-index:9999;display:none;">
+    <div style="max-width:500px;margin:0 auto;background:#222;color:#fff;padding:20px 30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:space-between;">
+        <span>We use cookies to ensure you get the best experience on our website.</span>
+        <button id="acceptCookies" style="background:#bfa36f;color:#fff;border:none;padding:8px 18px;border-radius:5px;cursor:pointer;font-weight:500;">Accept</button>
+    </div>
+</div>
 <!-- Hero Section -->
 <section class="tiffany-hero">
     <div class="hero-content">
@@ -130,3 +137,16 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+// Cookie Consent Popup
+if (!localStorage.getItem('cookieConsent')) {
+    document.getElementById('cookieConsent').style.display = 'block';
+}
+document.getElementById('acceptCookies').onclick = function() {
+    localStorage.setItem('cookieConsent', 'true');
+    document.getElementById('cookieConsent').style.display = 'none';
+};
+</script>
+@endpush
