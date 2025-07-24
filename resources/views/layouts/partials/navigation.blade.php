@@ -19,6 +19,9 @@
                 </li>
 
                 @auth
+                    <li class="nav-item">
+                        <a href="{{url('wishlist')}}" class="nav-link"><i class="fas fa-heart"></i></a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">

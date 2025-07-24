@@ -83,18 +83,20 @@ class User extends Authenticatable
             $user->custom_id = 'USER-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
         });
 
-        // Add this new observer for role changes
-        static::updated(function ($user) {
-            if ($user->isDirty()) { // Check if any attributes were changed
-                $originalRoles = $user->getOriginal('roles') ?? [];
-                $currentRoles = $user->getRoleNames()->toArray();
+    // Remove or comment out the updated observer to prevent infinite recursion
+    /*
+    static::updated(function ($user) {
+        if ($user->isDirty()) { // Check if any attributes were changed
+            $originalRoles = $user->getOriginal('roles') ?? [];
+            $currentRoles = $user->getRoleNames()->toArray();
 
-                if ($originalRoles != $currentRoles) {
-                    $user->forceLogout();
-                }
+            if ($originalRoles != $currentRoles) {
+                $user->forceLogout();
             }
-        });
-    }
+        }
+    });
+    */
+}
 
     /**
      * Summary of forceLogout

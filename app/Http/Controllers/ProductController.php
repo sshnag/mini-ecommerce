@@ -5,7 +5,10 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
 use App\Repositories\ProductRepository;
+use Illuminate\Support\Facades\Auth;
+
 use App\Services\ProductService;
 
 class ProductController extends Controller
@@ -77,7 +80,7 @@ class ProductController extends Controller
     public function show($custom_id)
     {
         $product = Product::with('category')->where('custom_id', $custom_id)->firstOrFail();
-        if (auth()->check() && auth()->user()->hasAnyRole('admin', 'suepradmin')) {
+        if (Auth::check() && User::find(Auth::id())->hasAnyRole('admin', 'suepradmin')) {
             return view('admin.products.show', compact('product'));
         }
 

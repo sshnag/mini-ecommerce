@@ -2,40 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function index(){
-        $user=User::find(Auth::id());
-        $orders=$user->orders()->latest()->paginate(10);
-        return view('profile.index',compact('user','orders'));
+    public function index()
+    {
+        // Use eager loading with specific relationship columns
+        $user = User::find(Auth::id())->load([
+            'orders' => function ($query) {
+                $query->select('id', 'user_id', 'status', 'total_amount', 'created_at')
+                      ->latest();
+            }
+        ]);
+
+        // Paginate orders separately for better performance
+        $orders = $user->orders()->paginate(10);
+
+        return view('profile.index', compact('user', 'orders'));
     }
-   public function edit(){
-    return view('profile.edit',['user'=>Auth::user()]);
-   }
 
-   public function update(Request $request){
-    $request->validate([
-        'name'=>'required|string|max:255',
-        'profile_image'=>'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
-    ]);
-   $user=User::find(Auth::id());
-   $user['name']=$request['name'];
-   if ($request->hasFile('profile_image')) {
-    $filename=time().'.'.$request->file('profile_image')->extension();
-    $request['profile_image']->move(public_path('uploads/profile_images'),$filename);
-    $user['profile_image']='uploads/profile_images/'.$filename;
+    public function edit()
+    {
+        $user = Auth::user();
+        return view('profile.edit', compact('user'));
+    }
 
-   }
-   $user->save();
-return redirect()->route('profile.index')->with('success','Profile updated successfully');
-   }
+    public function update(UpdateProfileRequest $request)
+    {
+          set_time_limit(120);
+        $user = User::find(Auth::id());
+        $user->name = $request->name;
+
+        if ($request->hasFile('profile_image')) {
+            $this->processProfileImage($user, $request->file('profile_image'));
+        }
+
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Profile updated successfully');
+    }
+
+    protected function processProfileImage($user, $file)
+    {
+        // Delete old image if exists
+        if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+            Storage::disk('public')->delete($user->profile_image);
+        }
+
+        // Store with optimized path
+        $path = $file->store('profile_images', 'public');
+        $user->profile_image = $path;
+    }
 }

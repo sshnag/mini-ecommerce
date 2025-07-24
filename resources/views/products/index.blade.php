@@ -24,6 +24,7 @@
                             Add to Bag
                         </button>
                     </form>
+
                 </div>
             </div>
         </div>

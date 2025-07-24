@@ -12,27 +12,39 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-       <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
-    @csrf
+        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-3">
+                <label for="name" class="form-label text-gold">Name</label>
+                <input type="text"
+                       class="form-control"
+                       name="name"
+                       value="{{ old('name', $user->name) }}"
+                       required>
+            </div>
 
-    <div class="mb-3">
-        <label for="name" class="form-label text-gold">Name</label>
-        <input type="text" class="form-control" name="name" value="{{ old('name', $user->name) }}" required>
-    </div>
+            <div class="mb-3">
+                <label for="profile_image" class="form-label text-gold">Profile Image</label>
+                <input type="file"
+                       name="profile_image"
+                       class="form-control"
+                       accept="image/*">
 
-    <div class="mb-3">
-        <label for="profile_image" class="form-label text-gold">Profile Image</label>
-        <input type="file" name="profile_image" class="form-control">
-        @if ($user->profile_image)
-            <img src="{{ asset($user->profile_image) }}" alt="Profile" width="100" class="mt-2">
-        @endif
-        @error('profile_image') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
+                @if ($user->profile_image)
+                    <img src="{{ Storage::url($user->profile_image) }}"
+                         alt="Profile"
+                         width="100"
+                         class="mt-2">
+                @endif
 
-    <button type="submit" class="btn btn-outline-gold">Save Changes</button>
-    <a href="{{ route('profile.index') }}" class="btn btn-link">Cancel</a>
-</form>
+                @error('profile_image')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
 
+            <button type="submit" class="btn btn-outline-gold">Save Changes</button>
+            <a href="{{ route('profile.index') }}" class="btn btn-link">Cancel</a>
+        </form>
     </div>
 </div>
 @endsection

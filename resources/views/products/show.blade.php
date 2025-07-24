@@ -90,7 +90,7 @@
     @if($product->stock < 1) Out of Stock @else Add to Bag @endif
 </button>
       </form>
-
+                                                  <a href="{{url('wishlist')}}"><i class="fas fa-heart"></i></a>
 
       <a href="{{route('home') }}" class="btn btn-gold mt-4 mb-4 d-flex" role="button">Back</a>
       <!-- Average Rating -->
