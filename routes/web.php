@@ -60,6 +60,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout/review', [CheckoutController::class, 'showReview'])->name('checkout.review');
     Route::post('/checkout/place', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
     Route::post('/products/{product}/rate', [ReviewController::class, 'store'])->name('products.rate');
+    Route::put('/reviews/{review}',[ReviewController::class,'update'])->name('reviews.update');
+    Route::delete('/reviews/{review}',[ReviewController::class,'destroy'])->name('reviews.destroy');
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');

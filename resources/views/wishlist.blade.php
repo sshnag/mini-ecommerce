@@ -16,7 +16,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-10">
                         <div class="card shadow border-0 h-100">
                             <a href="{{ route('products.show', $item->product->custom_id) }}" class="text-decoration-none">
-                                <img src="{{ asset('storage/' . $item->product->image) }}" class="card-img-top" alt="{{ $item->product->name }}" style="height:350px">
+                                <img src="{{ asset('storage/' . $item->product->image) }}" class="card-img-top" alt="{{ $item->product->name }}" style="height:350px; justify-content:center;    ">
                             </a>
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <h5 class="card-title mb-2">{{ $item->product->name }}</h5>

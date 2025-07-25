@@ -8,6 +8,7 @@ use App\Models\Review;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ReviewController extends Controller
 {
@@ -39,4 +40,42 @@ class ReviewController extends Controller
         return back()->with('success', 'Thank you for your review!');
     }
 
+    public function edit(Review $review){
+        //authorization check
+        if (Gate::denies('manage-reviews',$review)) {
+            abort(403, 'Unauthorized action');
+
+        }
+    }
+    public function update(Request $request,Review $review){
+        //Authorization check
+        if ($review->user_id !== Auth::id()) {
+            abort(403,'Unauthorized access');
+        }
+        $request->validate([
+            'rating'=>'required|integer|min:1|max:5',
+            'comment'=>'nullable|string|max:2000'
+        ]);
+        $review->update([
+            'rating'=>$request->rating,
+            'comment'=>$request->comment,
+        ]);
+        return response()->json([
+            'success'=>true,
+            'review'=>[
+                'rating'=>$review->rating,
+                'comment'=> $review->comment,
+                'updated_at'=>$review->updated_at->diffForHumans()
+            ]
+            ]);
+    }
+    public function destroy(Review $review){
+        //Authorization check
+        if ($review->user_id !== Auth::id()) {
+            abort(403,'Unauthorized action');
+
+        }
+        $review->delete();
+        return response()->json(['success'=>true]);
+    }
 }

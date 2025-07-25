@@ -140,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
       <form action="{{ route('cart.store') }}" method="POST" class="d-flex align-items-center gap-2 mt-4" id="addToCartForm">
         @csrf
         <input type="hidden" name="product_id" value="{{ $product->id }}">
-
         <div class="quantity-control d-flex align-items-center">
           <button type="button" id="decreaseQty" class="btn btn-outline-dark">-</button>
           <input type="text" name="quantity" id="quantityInput" value="1" readonly class="form-control text-center mx-2" style="width: 60px;" max="{{ $product->stock }}">
@@ -221,15 +220,34 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="reviews-list">
     <h4>Customer Reviews</h4>
     @forelse($product->reviews as $review)
-        <div class="review mb-3 p-2 border rounded">
-            <strong>{{ $review->user ? $review->user->name : 'Deleted User' }}</strong>
-            <span>
-                @for ($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= $review->rating ? 'fas' : 'far' }} fa-star"></i>
-                @endfor
-            </span>
-            <p class="mb-1">{{ $review->comment }}</p>
-            <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
+        <div class="review mb-3 p-2 border rounded" data-review-id="{{ $review->id }}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ $review->user ? $review->user->name : 'Deleted User' }}</strong>
+                    <div class="review-rating">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <i class="{{ $i <= $review->rating ? 'fas' : 'far' }} fa-star"></i>
+                        @endfor
+                    </div>
+                </div>
+                @auth
+                @if(Auth::id() == $review->user_id)
+                <div class="review-actions">
+                    <button class="btn btn-sm btn-outline-gold edit-review-btn"
+                            data-review-id="{{ $review->id }}"
+                            data-review='@json(["rating" => $review->rating, "comment" => $review->comment])'>
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-review-btn"
+                            data-review-id="{{ $review->id }}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                @endif
+                @endauth
+            </div>
+            <p class="mb-1 review-comment">{{ $review->comment }}</p>
+            <small class="text-muted review-time">{{ $review->created_at->diffForHumans() }}</small>
         </div>
     @empty
         <p class="text-muted">No reviews yet. Be the first to review this product!</p>
@@ -237,5 +255,45 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
     </div>
   </div>
+</div>
+
+<div class="modal fade" id="editReviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Your Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editReviewForm">
+                <div class="modal-body">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="review_id" id="editReviewId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="star-rating" style="display: flex; flex-direction: row-reverse; justify-content: flex-end;">
+                            @for ($i = 5; $i >= 1; $i--)
+                                <input type="radio" id="editStar{{ $i }}" name="rating"
+                                       value="{{ $i }}">
+                                <label for="editStar{{ $i }}" style="cursor:pointer; font-size:2rem; color:#ccc; margin:0 2px;">
+                                    <i class="fas fa-star"></i>
+                                </label>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editComment" class="form-label">Comment</label>
+                        <textarea name="comment" id="editComment" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-gold">Update Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection

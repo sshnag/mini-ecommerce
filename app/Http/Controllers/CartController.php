@@ -53,19 +53,32 @@ class CartController extends Controller
         'quantity' => 'required|integer|min:1',
     ]);
 
+    if (Auth::check()) {
+        $userId = Auth::id();
+        $sessionId = null;
+    } else {
+        $userId = null;
+        $sessionId = session()->getId();
+    }
+
     $cartItem = Cart::updateOrCreate(
-        ['user_id' =>Auth::user()->id, 'product_id' => $request->product_id],
+        ['user_id' => $userId, 'session_id' => $sessionId, 'product_id' => $request->product_id],
         ['quantity' => DB::raw("quantity + {$request->quantity}")]
     );
 
     if ($request->ajax()) {
-        $count = Cart::where('user_id', User::find(Auth::id()))->count();
+        $count = Cart::where(function($query) use ($userId, $sessionId) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('session_id', $sessionId);
+            }
+        })->count();
 
         return response()->json([
-    'message' => 'Added to Bag!',
-    'cartCount' => Cart::where('user_id', Auth::user()->id)->count()
-]);
-
+            'message' => 'Added to Bag!',
+            'cartCount' => $count
+        ]);
     }
 
     return redirect()->back()->with('success', 'Product added to cart.');
