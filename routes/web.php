@@ -35,11 +35,14 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', action: [ContactController::class, 'store'])->name('contact.store');
+       Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
 
 //  User Routes
 Route::middleware(['auth'])->group(function () { // No role restriction
-    Route::get('wishlist',[WishlistController::class,'index']);
+
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
         Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');

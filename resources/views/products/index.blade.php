@@ -24,7 +24,7 @@
                             Add to Bag
                         </button>
                     </form>
-
+x
                 </div>
             </div>
         </div>

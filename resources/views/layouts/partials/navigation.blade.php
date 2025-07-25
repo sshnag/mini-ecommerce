@@ -19,9 +19,7 @@
                 </li>
 
                 @auth
-                    <li class="nav-item">
-                        <a href="{{url('wishlist')}}" class="nav-link"><i class="fas fa-heart"></i></a>
-                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">
@@ -47,14 +45,22 @@
                         <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                 @endauth
+                 <li class="nav-item">
+                        <a href="{{url('wishlist')}}" class="nav-link"><i class="fas fa-heart"></i>
+                            @if ($wishlistCount>0)
+                            <span class="wishlist-count badge bg-danger rounded-pill">
+                                {{$wishlistCount}}
+                            </span>
+
+                            @endif
+                        </a>
+                    </li>
                 <li class="nav-item">
                     <a class="nav-link position-relative" href="{{ route('cart.index') }}">
                         <i class="fas fa-shopping-bag"></i>
                         @if ($cartCount > 0)
-                            <span
-                                class="cart-count badge bg-dark rounded-circle position-absolute top-0 start-100 translate-middle">
-                                {{ $cartCount }}
-                            </span>
+                            <span class="cart-count badge bg-dark rounded-circle">{{ $cartCount }}</span>
+
                         @endif
                     </a>
                 </li>

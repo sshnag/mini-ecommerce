@@ -7,6 +7,7 @@ use App\Services\CartService;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -49,28 +50,26 @@ class CartController extends Controller
 {
     $request->validate([
         'product_id' => 'required|exists:products,id',
-        'quantity' => 'required|integer|min:1'
+        'quantity' => 'required|integer|min:1',
     ]);
 
-    $product = Product::findOrFail($request['product_id']);
-
-    // Check if stock is available
-    if ($product->stock < $request['quantity']) {
-        return back()->with('error', "Only {$product->stock} items available for {$product->name}");
-    }
-
     $cartItem = Cart::updateOrCreate(
-        ['user_id' => Auth::id(), 'product_id' => $product['id']],
-        [
-            'quantity' => DB::raw('quantity + ' . $request['quantity']),
-            'price' => $product->price
-        ]
+        ['user_id' =>Auth::user()->id, 'product_id' => $request->product_id],
+        ['quantity' => DB::raw("quantity + {$request->quantity}")]
     );
 
-    return back()->with('success', "{$product->name} has been added to your Bag.");
+    if ($request->ajax()) {
+        $count = Cart::where('user_id', User::find(Auth::id()))->count();
+
+        return response()->json([
+    'message' => 'Added to Bag!',
+    'cartCount' => Cart::where('user_id', Auth::user()->id)->count()
+]);
+
+    }
+
+    return redirect()->back()->with('success', 'Product added to cart.');
 }
-
-
 
     /**
      *

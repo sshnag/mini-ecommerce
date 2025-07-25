@@ -57,8 +57,48 @@
       // If stock is OK, submit the form
       this.submit();
     });
+
   });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const wishListBtn = document.getElementById('addToWishList');
+
+    if (wishListBtn) {
+        wishListBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const productId = document.querySelector('.prod_id').value;
+
+            fetch("{{ route('wishlist.add') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ prod_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                Swal.fire({
+                    icon: 'success',
+                    title: data.success,
+                    confirmButtonColor: '#bfa36f'
+                });
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: 'Please try again later',
+                    confirmButtonColor: '#bfa36f'
+                });
+                console.error(error);
+            });
+        });
+    }
+});
+</script>
+
 @endpush
 
 @section('content')
@@ -90,7 +130,10 @@
     @if($product->stock < 1) Out of Stock @else Add to Bag @endif
 </button>
       </form>
-                                                  <a href="{{url('wishlist')}}"><i class="fas fa-heart"></i></a>
+<div class="product_data">
+    <input type="hidden" class="prod_id" value="{{ $product->id }}">
+    <a href="#" id="addToWishList"><i class="fas fa-heart"></i></a>
+</div>
 
       <a href="{{route('home') }}" class="btn btn-gold mt-4 mb-4 d-flex" role="button">Back</a>
       <!-- Average Rating -->
