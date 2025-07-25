@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
             if (Auth::check()) {
                 $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
             } else {
-                $wishlistCount = Wishlist::where('user_id', session()->getId())->count();
+                $wishlistCount = Wishlist::where('session_id', session()->getId())->count();
             }
 
             $view->with('wishlistCount', $wishlistCount);

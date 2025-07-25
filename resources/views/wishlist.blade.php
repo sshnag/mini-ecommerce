@@ -9,39 +9,34 @@
 @section('content')
 <section class="cart-section py-5">
     <div class="container">
-        <h2 class="mb-4">My Wishlist</h2>
-
+        <h2 class="mb-5 text-center">My Wishlist</h2>
         @if ($wishlistItems->count() > 0)
-            <table class="table table-borderless cart-table align-middle">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-            <tbody>
-  @foreach($wishlistItems as $item)
-    <div>
-        <h4>{{ $item->product->name }}</h4>
-        <p>${{ number_format($item->product->price, 2) }}</p>
-        <a href="{{ route('products.show', $item->product->custom_id) }}">View</a>
-        <form method="POST" action="{{ route('wishlist.remove', $item->id) }}">
-            @csrf
-            @method('DELETE')
-            <button type="submit">Remove</button>
-        </form>
-    </div>
-@endforeach
-
-</tbody>
-
-
-            </table>
+            <div class="row g-4 justify-content-center">
+                @foreach($wishlistItems as $item)
+                    <div class="col-lg-4 col-md-6 col-sm-10">
+                        <div class="card shadow border-0 h-100">
+                            <a href="{{ route('products.show', $item->product->custom_id) }}" class="text-decoration-none">
+                                <img src="{{ asset('storage/' . $item->product->image) }}" class="card-img-top" alt="{{ $item->product->name }}" style="height:350px">
+                            </a>
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title mb-2">{{ $item->product->name }}</h5>
+                                <p class="card-text mb-3">${{ number_format($item->product->price, 2) }}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <a href="{{ route('products.show', $item->product->custom_id) }}" class="btn btn-outline-dark">View</a>
+                                    <form method="POST" action="{{ route('wishlist.remove', $item->id) }}" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-danger">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         @else
-            <h4 class="text-muted">There are no products in your Wishlist</h4>
-            <div class="mt-4">
-                <a href="{{ route('home') }}" class="btn btn-gold">Continue Shopping</a>
+            <h4 class="text-muted text-center">There are no products in your Wishlist</h4>
+            <div class="mt-4 text-center">
+                <a href="{{ route('home') }}" class="btn btn-dark">Continue Shopping</a>
             </div>
         @endif
     </div>

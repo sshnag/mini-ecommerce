@@ -45,16 +45,16 @@
                         <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                 @endauth
-                 <li class="nav-item">
-                        <a href="{{url('wishlist')}}" class="nav-link"><i class="fas fa-heart"></i>
-                            @if ($wishlistCount>0)
-                            <span class="wishlist-count badge bg-danger rounded-pill">
-                                {{$wishlistCount}}
-                            </span>
-
-                            @endif
-                        </a>
-                    </li>
+                 <li class="nav-item position-relative">
+                    <a href="{{url('wishlist')}}" class="nav-link position-relative" id="wishlistNavLink">
+                        <i class="fas fa-heart" style="font-size:1rem;"></i>
+                        @if ($wishlistCount>0)
+                        <span id="wishlistBadge" class="wishlist-count badge bg-info text-white position-absolute top-0 start-100 translate-middle rounded-pill" style="font-size:0.8rem;min-width:1.5em;min-height:1.5em;line-height:1.5em;padding:0;text-align:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.08);z-index:10;">
+                            {{$wishlistCount}}
+                        </span>
+                        @endif
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link position-relative" href="{{ route('cart.index') }}">
                         <i class="fas fa-shopping-bag"></i>
@@ -69,3 +69,13 @@
         </div>
     </div>
 </nav>
+
+@push('scripts')
+<script>
+// Remove wishlist badge from DOM on wishlist page
+if (window.location.pathname === '/wishlist') {
+    var badge = document.getElementById('wishlistBadge');
+    if (badge) badge.remove();
+}
+</script>
+@endpush

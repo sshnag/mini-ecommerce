@@ -60,13 +60,30 @@
 
   });
 </script>
+@php
+    $inWishlist = false;
+    if (Auth::check()) {
+        $inWishlist = \App\Models\Wishlist::where('user_id', Auth::id())->where('product_id', $product->id)->exists();
+    } else {
+        $inWishlist = \App\Models\Wishlist::where('session_id', session()->getId())->where('product_id', $product->id)->exists();
+    }
+@endphp
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const wishListBtn = document.getElementById('addToWishList');
+    const heartIcon = document.getElementById('wishlistHeart');
+    let isFilled = heartIcon.classList.contains('filled');
 
     if (wishListBtn) {
+        wishListBtn.addEventListener('mouseenter', function () {
+            if (!isFilled) heartIcon.classList.add('wishlist-heart-hover');
+        });
+        wishListBtn.addEventListener('mouseleave', function () {
+            if (!isFilled) heartIcon.classList.remove('wishlist-heart-hover');
+        });
         wishListBtn.addEventListener('click', function (e) {
             e.preventDefault();
+            if (isFilled) return; // Prevent duplicate add
             const productId = document.querySelector('.product_id').value;
 
             fetch("{{ route('wishlist.add') }}", {
@@ -84,6 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: data.success,
                     confirmButtonColor: '#bfa36f'
                 });
+                // Animate and fill heart
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas', 'filled');
+                isFilled = true;
             })
             .catch(error => {
                 Swal.fire({
@@ -130,9 +151,11 @@ document.addEventListener('DOMContentLoaded', function () {
     @if($product->stock < 1) Out of Stock @else Add to Bag @endif
 </button>
       </form>
-<div class="product_data">
+<div class="product_data text-end">
     <input type="hidden" class="product_id" value="{{ $product->id }}">
-    <a href="#" id="addToWishList"><i class="fas fa-heart"></i></a>
+    <a href="#" id="addToWishList">
+        <i class="fa-heart wishlist-heart{{ $inWishlist ? ' fas filled' : ' far' }}" id="wishlistHeart"></i>
+    </a>
 </div>
 
       <a href="{{route('home') }}" class="btn btn-gold mt-4 mb-4 d-flex" role="button">Back</a>

@@ -135,3 +135,17 @@
         border-radius: 12px;
         border: 1px solid #ccc;
     }
+.wishlist-heart {
+    font-size: 2.2rem;
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.15s;
+    vertical-align: middle;
+}
+.wishlist-heart:hover {
+    color: #81D8D0;
+    transform: scale(1.1);
+}
+.wishlist-heart.filled {
+    color: #009ca6;
+}

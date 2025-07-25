@@ -38,11 +38,16 @@ Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.fo
 Route::post('/contact', action: [ContactController::class, 'store'])->name('contact.store');
        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
-Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+Route::post('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
 
-//  User Routes
-Route::middleware(['auth'])->group(function () { // No role restriction
+// Cart routes (guests and users)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
 
+// Checkout routes (auth only)
+Route::middleware(['auth'])->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
         Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -54,27 +59,16 @@ Route::middleware(['auth'])->group(function () { // No role restriction
     Route::post('/checkout/shipping', [CheckoutController::class, 'storeShipping'])->name('checkout.shipping.store');
     Route::get('/checkout/review', [CheckoutController::class, 'showReview'])->name('checkout.review');
     Route::post('/checkout/place', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-    // Cart
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-        Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::post('/products/{product}/rate', [ReviewController::class, 'store'])->name('products.rate');
+    Route::post('/products/{product}/rate', [ReviewController::class, 'store'])->name('products.rate');
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/history', [OrderController::class, 'userOrders'])->name('orders.history');
-
-Route::get('/orders/{order}', [OrderController::class, 'userShow'])->name('orders.userShow');
+    Route::get('/orders/{order}', [OrderController::class, 'userShow'])->name('orders.userShow');
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'edit', 'update']);
-
     // Addresses
     Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
     Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
-
 });
 
 Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');

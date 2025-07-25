@@ -22,7 +22,7 @@ class CartController extends Controller
      */
     public function __construct(CartService $cartService)
     {
-        $this->middleware('auth');
+        // Removed auth middleware so guests can add to cart
         $this->cartService = $cartService;
     }
 
