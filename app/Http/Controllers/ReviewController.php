@@ -39,7 +39,6 @@ class ReviewController extends Controller
         ]);
         return back()->with('success', 'Thank you for your review!');
     }
-
     public function edit(Review $review){
         //authorization check
         if (Gate::denies('manage-reviews',$review)) {
@@ -47,10 +46,11 @@ class ReviewController extends Controller
 
         }
     }
-    public function update(Request $request,Review $review){
+    public function update(Request $request, $id){
+        $review = Review::findOrFail($id);
         //Authorization check
         if ($review->user_id !== Auth::id()) {
-            abort(403,'Unauthorized access');
+            return response()->json(['error' => 'Unauthorized access'], 403);
         }
         $request->validate([
             'rating'=>'required|integer|min:1|max:5',
@@ -67,13 +67,13 @@ class ReviewController extends Controller
                 'comment'=> $review->comment,
                 'updated_at'=>$review->updated_at->diffForHumans()
             ]
-            ]);
+        ]);
     }
-    public function destroy(Review $review){
+    public function destroy($id){
+        $review = Review::findOrFail($id);
         //Authorization check
         if ($review->user_id !== Auth::id()) {
-            abort(403,'Unauthorized action');
-
+            return response()->json(['error' => 'Unauthorized action'], 403);
         }
         $review->delete();
         return response()->json(['success'=>true]);

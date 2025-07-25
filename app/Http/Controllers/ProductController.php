@@ -79,13 +79,25 @@ class ProductController extends Controller
      */
     public function show($custom_id)
     {
-        $product = Product::with('category')->where('custom_id', $custom_id)->firstOrFail();
-        if (Auth::check() && User::find(Auth::id())->hasAnyRole('admin', 'suepradmin')) {
+        $product = Product::with('category', 'reviews')->where('custom_id', $custom_id)->firstOrFail();
+        // Only show admin view if logged in as admin guard and has admin or superadmin role
+        if (auth('admin')->check() && (auth('admin')->user()->hasRole('admin') || auth('admin')->user()->hasRole('superadmin'))) {
             return view('admin.products.show', compact('product'));
         }
 
-        // Normal public user or guest (or user with both roles, but logged in as user)
-        return view('products.show', compact('product'));
+        // Determine if product is in wishlist for current user or guest
+        $inWishlist = false;
+        if (\Auth::check()) {
+            $inWishlist = \App\Models\Wishlist::where('user_id', \Auth::id())
+                ->where('product_id', $product->id)
+                ->exists();
+        } else {
+            $inWishlist = \App\Models\Wishlist::where('session_id', session()->getId())
+                ->where('product_id', $product->id)
+                ->exists();
+        }
+
+        return view('products.show', compact('product', 'inWishlist'));
     }
 
     /**

@@ -143,9 +143,119 @@
     vertical-align: middle;
 }
 .wishlist-heart:hover {
-    color: #81D8D0;
+    color: #000000;
     transform: scale(1.1);
 }
 .wishlist-heart.filled {
-    color: #009ca6;
+    color: #000000;
+}
+
+/* Product Page Layout */
+.product-main-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: flex-start;
+}
+.product-image-col {
+    flex: 1 1 350px;
+    max-width: 480px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    padding: 2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.product-image-col img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    object-fit: contain;
+}
+.product-info-col {
+    flex: 1 1 350px;
+    background: #fafbfc;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    padding: 2.5rem 2rem;
+}
+.product-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #222;
+}
+.product-price {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 1.2rem;
+}
+.product-description {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+.product-actions {
+    margin-bottom: 2rem;
+}
+.product-actions .btn {
+    min-width: 140px;
+    font-weight: 500;
+    border-radius: 6px;
+}
+.product-actions .quantity-control {
+    margin-right: 1rem;
+}
+.product_data {
+    margin-top: 1.5rem;
+}
+.product-rating {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+/* Review Section */
+.reviews-list {
+    margin-top: 2.5rem;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    padding: 2rem 1.5rem;
+}
+.review {
+    background: #f7f7f7;
+    border-radius: 10px;
+    margin-bottom: 1.2rem;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.review .review-rating {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+.review-actions .btn {
+    margin-left: 0.3rem;
+}
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+}
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+.modal-footer {
+    border-top: none;
+    padding-top: 0;
 }
