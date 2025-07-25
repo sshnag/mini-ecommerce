@@ -60,7 +60,16 @@ class WishlistController extends Controller
             'product_id' => $productId,
         ]);
 
-        return response()->json(['success' => 'Product added to wishlist']);
+        // Get updated wishlist count
+        $count = Wishlist::where(function($query) use ($userId, $sessionId) {
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('session_id', $sessionId);
+            }
+        })->count();
+
+        return response()->json(['success' => 'Product added to wishlist', 'count' => $count]);
     } catch (Exception $e) {
         Log::error('Wishlist add error', ['error' => $e->getMessage()]);
         return response()->json(['error' => 'Something went wrong.'], 500);
@@ -80,6 +89,19 @@ class WishlistController extends Controller
 
     if ($item) {
         $item->delete();
+    }
+
+    // Get updated wishlist count
+    $count = Wishlist::where(function($query) use ($userId, $sessionId) {
+        if (isset($userId) && $userId) {
+            $query->where('user_id', $userId);
+        } else {
+            $query->where('session_id', $sessionId);
+        }
+    })->count();
+
+    if (request()->ajax()) {
+        return response()->json(['success' => 'Removed from wishlist.', 'count' => $count]);
     }
 
     return redirect()->back()->with('success', 'Removed from wishlist.');

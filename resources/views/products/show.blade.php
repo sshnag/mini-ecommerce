@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         wishListBtn.addEventListener('click', function (e) {
             e.preventDefault();
             if (isFilled) return; // Prevent duplicate add
-            const productId = document.querySelector('.product_id').value;
+            const productId = wishListBtn.dataset.productId;
 
             fetch("{{ route('wishlist.add') }}", {
                 method: 'POST',
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </button>
         </form>
          <div class="d-flex justify-content-end align-items-center mb-3 gap-2" style="position:relative; top:-12px;">
-           <a href="#" id="addToWishList" class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:44px; height:44px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+           <a href="#" id="addToWishList" data-product-id="{{ $product->id }}" class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:44px; height:44px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
              <i class="fa-heart wishlist-heart{{ $inWishlist ? ' fas filled' : ' far' }}" id="wishlistHeart" style="font-size:1.5rem;"></i>
            </a>
            <a href="{{route('home') }}" class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" style="width:44px; height:44px;" role="button" title="Back">

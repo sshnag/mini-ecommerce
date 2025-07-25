@@ -90,6 +90,7 @@ Route::get('/admin/notifications/{notification}/redirect', function ($notificati
 })->prefix('admin.')->middleware(['auth:admin', 'role:admin|superadmin'])->name('notifications.redirect');
 
 // Admin/superadmin Routes
+// Always use 'admin.session' for admin and superadmin routes to separate sessions from user routes
 Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:admin|superadmin'])->name('admin.')->group(function () {
                                                                                                                               // Contact management for admin/superadmin
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');                                     // list all contacts
@@ -110,7 +111,7 @@ Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:admin|s
     Route::resource('products', ProductController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::resource('orders', OrderController::class)->only(['index']);
-    Route::get('/products/show/{custom_id}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('products.show');
     Route::resource('customers', AdminCustomerController::class)->only(['index']);
     Route::resource('users', UserController::class)->except(['show', 'create']);
     Route::patch('/admin/users/{user}/update-roles', [UserController::class, 'updateRoles'])
@@ -120,7 +121,8 @@ Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:admin|s
 });
 
 // Superadmin Routes
-Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:superadmin'])->name('superadmin.')->group(function () {
+// Always use 'admin.session' for superadmin routes to separate sessions from user routes
+Route::prefix('admin')->middleware(['admin.session', 'auth:admin', 'role:superadmin', 'check.superadmin'])->name('superadmin.')->group(function () {
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     // Manage suppliers

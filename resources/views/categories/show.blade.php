@@ -80,8 +80,17 @@
             <!-- Products -->
             <div class="row">
                 @forelse($products as $product)
+                    @php
+                        $inWishlist = in_array($product->id, $wishlistProductIds);
+                        $wishlistItemId = null;
+                        if ($inWishlist) {
+                            $wishlistItemId = \App\Models\Wishlist::where('product_id', $product->id)
+                                ->where(function($query) { if (auth()->check()) { $query->where('user_id', auth()->id()); } else { $query->where('session_id', session()->getId()); } })
+                                ->value('id');
+                        }
+                    @endphp
                     <div class="col-md-4 mb-4">
-                        <div class="product-card h-100">
+                        <div class="product-card h-100 position-relative">
                             <a href="{{ route('products.show', $product) }}">
                                 <div class="product-image">
                                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
@@ -105,6 +114,11 @@
 </div>
                                 </div>
                             </a>
+                            <button class="wishlist-btn position-absolute top-0 end-0 m-2 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center"
+                                data-product-id="{{ $product->id }}" data-wishlist-id="{{ $wishlistItemId }}"
+                                style="width:40px; height:40px; z-index:2;">
+                                <i class="fa-heart wishlist-heart {{ $inWishlist ? 'fas filled' : 'far' }}" style="font-size:1.3rem;"></i>
+                            </button>
                         </div>
 
                     </div>
@@ -158,22 +172,104 @@
 
 @push('scripts')
 <script>
-document.querySelectorAll('.star-rating').forEach(function(ratingDiv) {
-    const stars = ratingDiv.querySelectorAll('label');
-    stars.forEach(function(star, idx) {
-        star.addEventListener('mouseenter', function() {
-            for (let i = 0; i <= idx; i++) stars[i].style.color = '#ffc107';
-        });
-        star.addEventListener('mouseleave', function() {
-            stars.forEach(s => s.style.color = '');
-        });
-    });
-    ratingDiv.addEventListener('mouseleave', function() {
-        const checked = ratingDiv.querySelector('input[type=radio]:checked');
-        if (checked) {
-            let idx = Array.from(ratingDiv.querySelectorAll('input[type=radio]')).indexOf(checked);
-            for (let i = 0; i < stars.length; i++)
-                stars[i].style.color = i <= idx ? '#ffc107' : '';
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('click', function(e) {
+        let btn = e.target.closest('.wishlist-btn');
+        if (!btn) return;
+        e.preventDefault();
+        let heart = btn.querySelector('.wishlist-heart');
+        let productId = btn.dataset.productId;
+        let wishlistId = btn.dataset.wishlistId;
+        // If not filled, add to wishlist
+        if (!heart.classList.contains('filled')) {
+            fetch("{{ route('wishlist.add') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                heart.classList.remove('far');
+                heart.classList.add('fas', 'filled');
+                // Update wishlist count badge in navbar
+                var badge = document.getElementById('wishlistBadge');
+                if (badge) {
+                    badge.textContent = data.count;
+                } else if (data.count > 0) {
+                    var navLink = document.getElementById('wishlistNavLink');
+                    if (navLink) {
+                        var span = document.createElement('span');
+                        span.id = 'wishlistBadge';
+                        span.className = 'wishlist-count badge bg-info text-white position-absolute top-0 start-100 translate-middle rounded-circle d-flex align-items-center justify-content-center';
+                        span.style = 'font-size:0.8rem; min-width:1.5em; min-height:1.5em; line-height:1.5em; padding:0; text-align:center; border:2px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); z-index:10;';
+                        span.textContent = data.count;
+                        navLink.appendChild(span);
+                    }
+                }
+                // Set wishlist id for removal
+                if (data.wishlist_id) {
+                    btn.dataset.wishlistId = data.wishlist_id;
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: data.success,
+                    confirmButtonColor: '#bfa36f'
+                });
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: 'Please try again later',
+                    confirmButtonColor: '#bfa36f'
+                });
+                console.error(error);
+            });
+        } else if (wishlistId) {
+            // Remove from wishlist
+            fetch(`/wishlist/remove/${wishlistId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(async res => {
+                let data;
+                try {
+                    data = await res.json();
+                } catch (e) {
+                    console.error('Non-JSON response from wishlist remove', e);
+                    return;
+                }
+                console.log('Remove wishlist response:', data);
+                heart.classList.remove('fas', 'filled');
+                heart.classList.add('far');
+                // Update wishlist count badge in navbar
+                var badge = document.getElementById('wishlistBadge');
+                if (badge) {
+                    badge.textContent = data.count;
+                    if (data.count == 0) badge.remove();
+                }
+                btn.dataset.wishlistId = '';
+                Swal.fire({
+                    icon: 'success',
+                    title: data.success,
+                    confirmButtonColor: '#bfa36f'
+                });
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: 'Please try again later',
+                    confirmButtonColor: '#bfa36f'
+                });
+                console.error(error);
+            });
         }
     });
 });

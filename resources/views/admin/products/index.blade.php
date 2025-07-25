@@ -38,7 +38,7 @@
                             <td>{{ number_format($product->price, 2) }}</td>
                             <td>{{ $product->stock }}</td>
                             <td>
-                                <a href="{{ route('admin.products.show', $product) }}" class="btn-icon" title="View">
+                                <a href="{{ route('admin.products.show', $product->custom_id) }}" class="btn-icon" title="View">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.products.edit', $product->custom_id) }}" class="btn-icon"

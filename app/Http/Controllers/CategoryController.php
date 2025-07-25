@@ -91,7 +91,17 @@ public function show(Category $category, Request $request)
 
     $products = $query->paginate(9)->withQueryString();
 
-    return view('categories.show', compact('category', 'products','sort'));
+    // Get wishlist product IDs for current user/session
+    $wishlistProductIds = [];
+    if (auth()->check()) {
+        $wishlistProductIds = \App\Models\Wishlist::where('user_id', auth()->id())
+            ->pluck('product_id')->toArray();
+    } else {
+        $wishlistProductIds = \App\Models\Wishlist::where('session_id', session()->getId())
+            ->pluck('product_id')->toArray();
+    }
+
+    return view('categories.show', compact('category', 'products', 'sort', 'wishlistProductIds'));
 }
 
 

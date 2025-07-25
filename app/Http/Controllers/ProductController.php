@@ -80,11 +80,15 @@ class ProductController extends Controller
     public function show($custom_id)
     {
         $product = Product::with('category', 'reviews')->where('custom_id', $custom_id)->firstOrFail();
-        // Only show admin view if logged in as admin guard and has admin or superadmin role
-        if (auth('admin')->check() && (auth('admin')->user()->hasRole('admin') || auth('admin')->user()->hasRole('superadmin'))) {
-            return view('admin.products.show', compact('product'));
+        // Only show admin view if the request is for an admin route
+        if (request()->is('admin/products/*')) {
+            // Extra check: only allow if admin guard is authenticated
+            if (auth('admin')->check() && (auth('admin')->user()->hasRole('admin') || auth('admin')->user()->hasRole('superadmin'))) {
+                return view('admin.products.show', compact('product'));
+            } else {
+                abort(403, 'Unauthorized');
+            }
         }
-
         // Determine if product is in wishlist for current user or guest
         $inWishlist = false;
         if (\Auth::check()) {
@@ -96,7 +100,6 @@ class ProductController extends Controller
                 ->where('product_id', $product->id)
                 ->exists();
         }
-
         return view('products.show', compact('product', 'inWishlist'));
     }
 

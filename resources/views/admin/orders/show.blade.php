@@ -23,6 +23,7 @@
                     <p><strong>Status:</strong> <span
                             class="badge bg-{{ $order->status === 'completed' ? 'success' : 'warning' }}">{{ ucfirst($order->status) }}</span>
                     </p>
+                    <p class="mb-1"><small class="text-muted">Last changed: {{ $order->updated_at->format('M d, Y') }}</small></p>
                     <p><strong>Date:</strong> {{ $order->created_at->format('M d, Y ') }}</p>
                     <p><strong>Total:</strong> ${{ number_format($order->total_amount, 2) }}</p>
                 </div>

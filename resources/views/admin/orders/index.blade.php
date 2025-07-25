@@ -55,6 +55,11 @@
                                         <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
                                             Cancelled</option>
                                     </select>
+                                    <div>
+                                        <small class="text-muted">
+                                            Last changed: {{ $order->updated_at->format('M d, Y') }}
+                                        </small>
+                                    </div>
                                 </form>
                             </td>
                             <td>{{ $order->created_at->format('M d, Y') }}</td>
