@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (wishListBtn) {
         wishListBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            const productId = document.querySelector('.prod_id').value;
+            const productId = document.querySelector('.product_id').value;
 
             fetch("{{ route('wishlist.add') }}", {
                 method: 'POST',
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ prod_id: productId })
+                body: JSON.stringify({ product_id: productId })
             })
             .then(res => res.json())
             .then(data => {
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </button>
       </form>
 <div class="product_data">
-    <input type="hidden" class="prod_id" value="{{ $product->id }}">
+    <input type="hidden" class="product_id" value="{{ $product->id }}">
     <a href="#" id="addToWishList"><i class="fas fa-heart"></i></a>
 </div>
 

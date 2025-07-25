@@ -74,5 +74,8 @@ class Product extends Model
 {
     return $this->where('custom_id', $value)->firstOrFail();
 }
+public function wishlists() {
+    return $this->hasMany(Wishlist::class, 'prod_id');
+}
 
 }

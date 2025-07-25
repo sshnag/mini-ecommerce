@@ -13,9 +13,10 @@ class Wishlist extends Model
     protected $table= 'wishlists';
     protected $fillable=[
         'user_id',
-        'prod_id',
+        'session_id',
+        'product_id',
     ];
     public function product(){
-        return $this->belongsTo(Product::class,'prod_id','id');
+        return $this->belongsTo(Product::class,'product_id','id');
     }
 }

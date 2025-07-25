@@ -25,7 +25,7 @@
     <div>
         <h4>{{ $item->product->name }}</h4>
         <p>${{ number_format($item->product->price, 2) }}</p>
-        <a href="{{ route('products.show', $item->product->id) }}">View</a>
+        <a href="{{ route('products.show', $item->product->custom_id) }}">View</a>
         <form method="POST" action="{{ route('wishlist.remove', $item->id) }}">
             @csrf
             @method('DELETE')

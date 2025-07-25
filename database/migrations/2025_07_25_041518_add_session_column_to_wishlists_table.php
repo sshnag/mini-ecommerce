@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wishlists', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('session_id')->nullable();
-            $table->unsignedBigInteger('prod_id');
-            $table->timestamps();
+        Schema::table('wishlists', function (Blueprint $table) {
+             $table->string('session_id')->nullable();
+
         });
     }
 
@@ -25,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wishlists');
+        Schema::table('wishlists', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('wishlists', function (Blueprint $table) {
-            $table->foreignId('prod_id')->references('id')->on('products')->onDelete('cascade');
+            $table->renameColumn('prod_id', 'product_id');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('wishlists', function (Blueprint $table) {
-            //
+            $table->renameColumn('product_id', 'prod_id');
         });
     }
 };

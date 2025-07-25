@@ -15,9 +15,13 @@ class WishlistController extends Controller
     // View wishlist
    public function index()
 {
-    $userId = Auth::check() ? Auth::id() : session()->getId();
-    $wishlistItems = Wishlist::with('product')->where('user_id', $userId)->get();
-
+    if (Auth::check()) {
+        $userId = Auth::id();
+        $wishlistItems = Wishlist::with('product')->where('user_id', $userId)->get();
+    } else {
+        $sessionId = session()->getId();
+        $wishlistItems = Wishlist::with('product')->where('session_id', $sessionId)->get();
+    }
     return view('wishlist', compact('wishlistItems'));
 }
 
@@ -25,14 +29,26 @@ class WishlistController extends Controller
   public function add(Request $request)
 {
     try {
-        $productId = $request->input('prod_id'); // FIXED
-        $userId = Auth::check() ? Auth::id() : session()->getId();
+        $productId = $request->input('product_id');
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $sessionId = null;
+        } else {
+            $userId = null;
+            $sessionId = session()->getId();
+        }
 
-        Log::info("Adding wishlist", ['user_id' => $userId, 'prod_id' => $productId]);
+        Log::info("Adding wishlist", ['user_id' => $userId, 'session_id' => $sessionId, 'product_id' => $productId]);
 
-        $exists = Wishlist::where('user_id', $userId)
-                          ->where('prod_id', $productId)
-                          ->first();
+        $exists = Wishlist::where('product_id', $productId)
+            ->where(function($query) use ($userId, $sessionId) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                } else {
+                    $query->where('session_id', $sessionId);
+                }
+            })
+            ->first();
 
         if ($exists) {
             return response()->json(['success' => 'Already in wishlist']);
@@ -40,7 +56,8 @@ class WishlistController extends Controller
 
         Wishlist::create([
             'user_id' => $userId,
-            'prod_id' => $productId, // FIXED
+            'session_id' => $sessionId,
+            'product_id' => $productId,
         ]);
 
         return response()->json(['success' => 'Product added to wishlist']);
@@ -53,9 +70,13 @@ class WishlistController extends Controller
     // Remove from wishlist
     public function remove($id)
 {
-    $userId = Auth::check() ? Auth::id() : session()->getId();
-
-    $item = Wishlist::where('id', $id)->where('user_id', $userId)->first();
+    if (Auth::check()) {
+        $userId = Auth::id();
+        $item = Wishlist::where('id', $id)->where('user_id', $userId)->first();
+    } else {
+        $sessionId = session()->getId();
+        $item = Wishlist::where('id', $id)->where('session_id', $sessionId)->first();
+    }
 
     if ($item) {
         $item->delete();
@@ -69,7 +90,7 @@ public function shareWishlistCount(){
         $count= Wishlist::where('user_id',Auth::id())->count();
     }
     else{
-        $count=Wishlist::where('user_id',session()->getId())->count();
+        $count=Wishlist::where('session_id',session()->getId())->count();
     }
     View::share('wishlistCount',$count);
 }
