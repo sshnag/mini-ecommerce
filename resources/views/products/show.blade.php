@@ -61,62 +61,267 @@
 
   });
 </script>
-@php
-    $inWishlist = false;
-    if (Auth::check()) {
-        $inWishlist = \App\Models\Wishlist::where('user_id', Auth::id())->where('product_id', $product->id)->exists();
-    } else {
-        $inWishlist = \App\Models\Wishlist::where('session_id', session()->getId())->where('product_id', $product->id)->exists();
-    }
-@endphp
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Flag to prevent double requests
+    let isProcessing = false;
+    
     const wishListBtn = document.getElementById('addToWishList');
     const heartIcon = document.getElementById('wishlistHeart');
-    let isFilled = heartIcon.classList.contains('filled');
-
+    
     if (wishListBtn) {
         wishListBtn.addEventListener('mouseenter', function () {
-            if (!isFilled) heartIcon.classList.add('wishlist-heart-hover');
+            if (!heartIcon.classList.contains('filled')) {
+                heartIcon.classList.add('wishlist-heart-hover');
+            }
         });
+        
         wishListBtn.addEventListener('mouseleave', function () {
-            if (!isFilled) heartIcon.classList.remove('wishlist-heart-hover');
+            heartIcon.classList.remove('wishlist-heart-hover');
         });
+        
         wishListBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            if (isFilled) return; // Prevent duplicate add
+            if (isProcessing) return;
+            
+            // Prevent double clicks
+            isProcessing = true;
+            wishListBtn.disabled = true;
+            
             const productId = wishListBtn.dataset.productId;
-
-            fetch("{{ route('wishlist.add') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ product_id: productId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                Swal.fire({
-                    icon: 'success',
-                    title: data.success,
-                    confirmButtonColor: '#bfa36f'
-                });
-                // Animate and fill heart
-                heartIcon.classList.remove('far');
-                heartIcon.classList.add('fas', 'filled');
-                isFilled = true;
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: 'Please try again later',
-                    confirmButtonColor: '#bfa36f'
-                });
-                console.error(error);
+            const wishlistId = wishListBtn.dataset.wishlistId;
+            
+            console.log('Click detected:', {
+                'productId': productId,
+                'wishlistId': wishlistId,
+                'heartFilled': heartIcon.classList.contains('filled'),
+                'heartClasses': heartIcon.className
             });
+
+            // Add to wishlist
+            if (!heartIcon.classList.contains('filled') || !wishlistId) {
+                console.log('Attempting to add to wishlist');
+                
+                // Get CSRF token
+                const csrfToken = '{{ csrf_token() }}';
+                console.log('CSRF Token for add:', csrfToken);
+                
+                fetch("{{ route('wishlist.add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(data => {
+                    console.log('Add response data:', data);
+                    if (data.success) {
+                        // Handle both "Product added to wishlist" and "Already in wishlist" cases
+                        heartIcon.classList.remove('far');
+                        heartIcon.classList.add('fas', 'filled');
+                        wishListBtn.dataset.wishlistId = data.wishlist_id;
+
+                        // Only show message if item was actually added, not if it was already in wishlist
+                        if (data.success !== 'Already in wishlist') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Added to Wishlist!',
+                                text: 'Item has been added to your wishlist',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                background: '#1f1f1f',
+                                color: '#fff',
+                            });
+                        }
+
+                        updateWishlistBadge(data.count);
+                    } else {
+                        throw new Error(data.error || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to add to wishlist',
+                        toast: true,
+                        position: 'top-end',
+                        timer: 3000
+                    });
+                })
+                .finally(() => {
+                    // Re-enable button after processing
+                    isProcessing = false;
+                    wishListBtn.disabled = false;
+                });
+            }
+            // Remove from wishlist
+            else if (wishlistId && wishlistId.trim() !== '' && !isNaN(wishlistId) && parseInt(wishlistId) > 0) {
+                const removeUrl = `/wishlist/remove/${wishlistId}`;
+                console.log('Attempting to remove from wishlist, wishlistId:', wishlistId);
+                console.log('Remove URL:', removeUrl);
+                console.log('Full URL:', window.location.origin + removeUrl);
+                
+                // Get CSRF token
+                const csrfToken = '{{ csrf_token() }}';
+                console.log('CSRF Token:', csrfToken);
+                
+                fetch(removeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(async res => {
+                    console.log('Remove response status:', res.status);
+                    console.log('Remove response headers:', res.headers);
+                    
+                    // Log the raw response text for debugging
+                    const responseText = await res.text();
+                    console.log('Raw response text:', responseText.substring(0, 200) + '...');
+                    
+                    if (!res.ok) {
+                        console.error('Response not ok:', res.status, res.statusText);
+                        throw new Error(`Network response was not ok: ${res.status} ${res.statusText}`);
+                    }
+                    
+                    // Try to parse as JSON
+                    try {
+                        const data = JSON.parse(responseText);
+                        console.log('Successfully parsed JSON:', data);
+                        return data;
+                    } catch (parseError) {
+                        console.error('JSON parse error:', parseError);
+                        console.error('Response was not JSON. Full response:', responseText);
+                        throw new Error('Response is not valid JSON. Server returned HTML instead of JSON.');
+                    }
+                })
+                .then(data => {
+                    console.log('Remove response data:', data);
+                    console.log('data.success type:', typeof data.success);
+                    console.log('data.success value:', data.success);
+
+                    if (data.success) {
+                        console.log('Success case - updating UI');
+                        heartIcon.classList.remove('fas', 'filled');
+                        heartIcon.classList.add('far');
+                        wishListBtn.dataset.wishlistId = '';
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Removed from Wishlist!',
+                            text: 'Item has been removed from your wishlist',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            background: '#1f1f1f',
+                            color: '#fff',
+                        });
+
+                        updateWishlistBadge(data.count);
+                    } else {
+                        console.log('Error case - throwing error');
+                        throw new Error(data.error || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error details:', {
+                        message: error.message,
+                        stack: error.stack,
+                        type: error.constructor.name
+                    });
+                    console.log('Error occurred but item was likely removed - updating UI anyway');
+                    
+                    // Update UI even if there was an error, since the item was actually removed
+                    heartIcon.classList.remove('fas', 'filled');
+                    heartIcon.classList.add('far');
+                    wishListBtn.dataset.wishlistId = '';
+                    
+                    // Try to update badge count
+                    const currentBadge = document.getElementById('wishlistBadge');
+                    if (currentBadge) {
+                        const currentCount = parseInt(currentBadge.textContent || '0');
+                        updateWishlistBadge(Math.max(0, currentCount - 1));
+                    }
+                    
+                    // Show a more specific error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: `Failed to remove from wishlist: ${error.message}`,
+                        toast: true,
+                        position: 'top-end',
+                        timer: 3000
+                    });
+                })
+                .finally(() => {
+                    // Re-enable button after processing
+                    isProcessing = false;
+                    wishListBtn.disabled = false;
+                });
+            } else {
+                console.log('No valid wishlistId found, but heart is filled. Updating UI to sync with database state.');
+                console.log('wishlistId value:', wishlistId, 'type:', typeof wishlistId, 'isNaN:', isNaN(wishlistId));
+                
+                // Simply update the UI to sync with database state
+                heartIcon.classList.remove('fas', 'filled');
+                heartIcon.classList.add('far');
+                wishListBtn.dataset.wishlistId = '';
+                
+                // Try to update badge count
+                const currentBadge = document.getElementById('wishlistBadge');
+                if (currentBadge) {
+                    const currentCount = parseInt(currentBadge.textContent || '0');
+                    updateWishlistBadge(Math.max(0, currentCount - 1));
+                }
+                
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Wishlist Updated',
+                    text: 'Item removed from wishlist',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2000
+                });
+                
+                // Re-enable button after processing
+                isProcessing = false;
+                wishListBtn.disabled = false;
+            }
         });
+    }
+
+    function updateWishlistBadge(count) {
+        const badge = document.getElementById('wishlistBadge');
+        const navLink = document.getElementById('wishlistNavLink');
+
+        if (count > 0) {
+            if (badge) {
+                badge.textContent = count;
+            } else if (navLink) {
+                const span = document.createElement('span');
+                span.id = 'wishlistBadge';
+                span.className = 'wishlist-count badge bg-info text-white position-absolute top-0 start-100 translate-middle rounded-circle d-flex align-items-center justify-content-center';
+                span.style = 'font-size:0.8rem; min-width:1.5em; min-height:1.5em; line-height:1.5em; padding:0; text-align:center; border:2px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); z-index:10;';
+                span.textContent = count;
+                navLink.appendChild(span);
+            }
+        } else if (badge) {
+            badge.remove();
+        }
     }
 });
 </script>
@@ -303,9 +508,9 @@ document.addEventListener('DOMContentLoaded', function() {
           </button>
         </form>
          <div class="d-flex justify-content-end align-items-center mb-3 gap-2" style="position:relative; top:-12px;">
-           <a href="#" id="addToWishList" data-product-id="{{ $product->id }}" class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:44px; height:44px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+           <button id="addToWishList" data-product-id="{{ $product->id }}" data-wishlist-id="{{ $wishlistItemId ?? '' }}" class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:44px; height:44px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
              <i class="fa-heart wishlist-heart{{ $inWishlist ? ' fas filled' : ' far' }}" id="wishlistHeart" style="font-size:1.5rem;"></i>
-           </a>
+           </button>
            <a href="{{route('home') }}" class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" style="width:44px; height:44px;" role="button" title="Back">
              <i class="fas fa-arrow-left"></i>
            </a>

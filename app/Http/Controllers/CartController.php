@@ -66,45 +66,93 @@ class CartController extends Controller
         ['quantity' => DB::raw("quantity + {$request->quantity}")]
     );
 
-    if ($request->ajax()) {
-        $count = Cart::where(function($query) use ($userId, $sessionId) {
-            if ($userId) {
-                $query->where('user_id', $userId);
-            } else {
-                $query->where('session_id', $sessionId);
-            }
-        })->count();
+    // Get updated cart count
+    $count = Cart::where(function($query) use ($userId, $sessionId) {
+        if ($userId) {
+            $query->where('user_id', $userId);
+        } else {
+            $query->where('session_id', $sessionId);
+        }
+    })->count();
 
+    if ($request->ajax()) {
         return response()->json([
+            'success' => true,
             'message' => 'Added to Bag!',
             'cartCount' => $count
         ]);
     }
 
-    return redirect()->back()->with('success', 'Product added to cart.');
+    return redirect()->back()->with([
+        'success' => 'Product added to cart.',
+        'cartCount' => $count
+    ]);
 }
 
-    /**
-     *
-     * Remove a cart item.
-     * @param mixed $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($id)
-    {
-        $this->cartService->removeFromCart($id);
-        return redirect()->back()->with('success', 'Item removed from cart.');
+public function destroy($id)
+{
+    $cartItem = Cart::findOrFail($id);
+
+    // Get user/session info before deletion
+    $userId = $cartItem->user_id;
+    $sessionId = $cartItem->session_id;
+
+    $cartItem->delete();
+
+    // Get updated cart count
+    $count = Cart::where(function($query) use ($userId, $sessionId) {
+        if ($userId) {
+            $query->where('user_id', $userId);
+        } else {
+            $query->where('session_id', $sessionId);
+        }
+    })->count();
+
+    if (request()->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Item removed from cart.',
+            'cartCount' => $count
+        ]);
     }
 
-    /**
-     * Clear the entire cart.
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function clear()
-    {
-        $this->cartService->clearCart();
-        return redirect()->back()->with('success', 'Cart cleared.');
+    return redirect()->back()->with([
+        'success' => 'Item removed from cart.',
+        'cartCount' => $count
+    ]);
+}
+
+public function clear()
+{
+    if (Auth::check()) {
+        $userId = Auth::id();
+        $sessionId = null;
+    } else {
+        $userId = null;
+        $sessionId = session()->getId();
     }
+
+    Cart::where(function($query) use ($userId, $sessionId) {
+        if ($userId) {
+            $query->where('user_id', $userId);
+        } else {
+            $query->where('session_id', $sessionId);
+        }
+    })->delete();
+
+    if (request()->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart cleared.',
+            'cartCount' => 0
+        ]);
+    }
+
+    return redirect()->back()->with([
+        'success' => 'Cart cleared.',
+        'cartCount' => 0
+    ]);
+}
     /**
      * Updating the amount of items in cart
      * @param \Illuminate\Http\Request $request

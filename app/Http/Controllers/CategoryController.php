@@ -8,6 +8,8 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+
 use JeroenNoten\LaravelAdminLte\View\Components\Form\Input;
 
 class CategoryController extends Controller
@@ -93,8 +95,8 @@ public function show(Category $category, Request $request)
 
     // Get wishlist product IDs for current user/session
     $wishlistProductIds = [];
-    if (auth()->check()) {
-        $wishlistProductIds = \App\Models\Wishlist::where('user_id', auth()->id())
+    if (Auth::check()) {
+        $wishlistProductIds = \App\Models\Wishlist::where('user_id', Auth::id())
             ->pluck('product_id')->toArray();
     } else {
         $wishlistProductIds = \App\Models\Wishlist::where('session_id', session()->getId())

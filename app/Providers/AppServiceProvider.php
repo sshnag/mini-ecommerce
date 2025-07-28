@@ -21,31 +21,26 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Share cart count with all views
-        View::composer('*', function ($view) {
-            $cartCount = 0;
 
-            if (Auth::check()) {
-                $cartCount = Cart::where('user_id', Auth::id())->sum('quantity');
-            }
-
-            $view->with('cartCount', $cartCount);
-        });
 
         // Use Bootstrap 5 pagination
         Paginator::useBootstrapFive();
 
-        // Share wishlist count with all views
-        View::composer('*', function ($view) {
-            $wishlistCount = 0;
-
+        //Share wishlist and cart counts with all views
+        View::composer('*',function($view){
+            $wishlistCount=0;
+            $cartCount=0;
             if (Auth::check()) {
-                $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
-            } else {
-                $wishlistCount = Wishlist::where('session_id', session()->getId())->count();
+                $wishlistCount=Wishlist::where('user_id',Auth::id())->count();
+                $cartCount=Cart::where('user_id',Auth::id())->count();
             }
-
-            $view->with('wishlistCount', $wishlistCount);
+            else {
+                $sessionId=session()->getId();
+                $wishlistCount=Wishlist::where('session_id',$sessionId)->count();
+                $cartCount=Cart::where('session_id', $sessionId)->count();
+            }
+            $view->with(['wishlistCount'=>$wishlistCount, 'cartCount'=>$cartCount]);
         });
-    }
+
+}
 }

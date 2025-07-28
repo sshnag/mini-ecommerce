@@ -15,7 +15,7 @@
 
     <!-- Custom CSS -->
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('style')
 </head>
 <body class="luxury-theme">

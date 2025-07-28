@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-md-6">
                     <h4>Order Details</h4>
-                    <p><strong>Status:</strong> <span
+                    <p><strong>Status:</strong> <span>
                             class="badge bg-{{ $order->status === 'completed' ? 'success' : 'warning' }}">{{ ucfirst($order->status) }}</span>
                     </p>
                     <p class="mb-1"><small class="text-muted">Last changed: {{ $order->updated_at->format('M d, Y') }}</small></p>

@@ -43,13 +43,17 @@ class LoginController extends Controller
         return redirect()->intended(route('home'));
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/');
-    }
+  public function adminLogout(Request $request){
+    Auth::guard('admin')->logout();
+    $request->session()->forget('admin_logged_in');
+    return redirect('/admin/login');
+
+  }
+  public function userLogout(Request $request){
+    Auth::guard ('web')->logout();
+    $request->session()->forget('user_logged_in');
+    return redirect('/login');
+  }
     protected function authenticated(Request $request, $user)
 {if ($user->hasRole('supplier')) {
         return redirect()->route('supplier.dashboard');

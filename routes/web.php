@@ -39,7 +39,7 @@ Route::post('/contact', action: [ContactController::class, 'store'])->name('cont
        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
-
+Route::get('/wishlist/find/{productId}', [WishlistController::class, 'find'])->name('wishlist.find');
 // Cart routes (guests and users)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
