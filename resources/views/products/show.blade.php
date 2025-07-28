@@ -42,10 +42,10 @@
 
     // Form submission handler
     addToCartForm.addEventListener('submit', function(e) {
-      e.preventDefault();
       const quantity = parseInt(qtyInput.value);
 
       if (quantity > productStock) {
+        e.preventDefault();
         Swal.fire({
           icon: 'error',
           title: 'Stock Limit Exceeded',
@@ -55,12 +55,25 @@
         return;
       }
 
-      // If stock is OK, submit the form
+      // Submit the form normally
       this.submit();
     });
 
   });
 </script>
+@php
+    $inWishlist = false;
+    $wishlistItemId = null;
+    if (Auth::check()) {
+        $wishlistItem = \App\Models\Wishlist::where('user_id', Auth::id())->where('product_id', $product->id)->first();
+        $inWishlist = $wishlistItem ? true : false;
+        $wishlistItemId = $wishlistItem ? $wishlistItem->id : null;
+    } else {
+        $wishlistItem = \App\Models\Wishlist::where('session_id', session()->getId())->where('product_id', $product->id)->first();
+        $inWishlist = $wishlistItem ? true : false;
+        $wishlistItemId = $wishlistItem ? $wishlistItem->id : null;
+    }
+@endphp
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Flag to prevent double requests

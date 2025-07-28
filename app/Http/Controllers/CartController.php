@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -36,6 +37,14 @@ class CartController extends Controller
     $cartItems = $cartService->getUserCart();
     $total = $cartService->getTotal();
     $recommended = Product::inRandomOrder()->take(4)->get();
+
+    // Debug: Log cart items
+    Log::info('Cart index called', [
+        'cart_items_count' => $cartItems->count(),
+        'user_id' => Auth::id(),
+        'session_id' => session()->getId(),
+        'is_authenticated' => Auth::check()
+    ]);
 
     return view('cart.index', compact('cartItems', 'total', 'recommended'));
 }
@@ -66,6 +75,15 @@ class CartController extends Controller
         ['quantity' => DB::raw("quantity + {$request->quantity}")]
     );
 
+    // Debug: Log cart item creation
+    Log::info('Cart item added/updated', [
+        'cart_item_id' => $cartItem->id,
+        'product_id' => $request->product_id,
+        'quantity' => $request->quantity,
+        'user_id' => $userId,
+        'session_id' => $sessionId
+    ]);
+
     // Get updated cart count
     $count = Cart::where(function($query) use ($userId, $sessionId) {
         if ($userId) {
@@ -74,14 +92,6 @@ class CartController extends Controller
             $query->where('session_id', $sessionId);
         }
     })->count();
-
-    if ($request->ajax()) {
-        return response()->json([
-            'success' => true,
-            'message' => 'Added to Bag!',
-            'cartCount' => $count
-        ]);
-    }
 
     return redirect()->back()->with([
         'success' => 'Product added to cart.',

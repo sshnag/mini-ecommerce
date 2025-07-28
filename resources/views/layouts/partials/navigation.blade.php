@@ -133,62 +133,6 @@ window.updateNavCounts = updateNavCounts;
 
 // Handle AJAX cart operations
 document.addEventListener('DOMContentLoaded', function() {
-    // Add to cart via AJAX
-    document.body.addEventListener('click', function(e) {
-        const addToCartBtn = e.target.closest('.add-to-cart-btn');
-        if (addToCartBtn) {
-            e.preventDefault();
-            const form = addToCartBtn.closest('form');
-
-            fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    product_id: form.querySelector('[name="product_id"]').value,
-                    quantity: form.querySelector('[name="quantity"]').value || 1
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update cart count
-                    if (typeof updateNavCounts === 'function') {
-                        updateNavCounts({{ $wishlistCount ?? 0 }}, data.cartCount);
-                    }
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Cart!',
-                        text: data.message,
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        background: '#1f1f1f',
-                        color: '#fff',
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to add to cart',
-                    toast: true,
-                    position: 'top-end',
-                    timer: 3000
-                });
-            });
-        }
-    });
-
     // Wishlist button handling
     document.body.addEventListener('click', function(e) {
         const wishlistBtn = e.target.closest('.wishlist-btn');
@@ -228,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Added to Wishlist!',
+                        text: 'Item has been added to your wishlist',
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
@@ -239,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error(error);
+                console.error('Error:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -256,7 +201,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             })
             .then(res => res.json())
@@ -274,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'success',
                         title: 'Removed from Wishlist!',
+                        text: 'Item has been removed from your wishlist',
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
@@ -285,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error(error);
+                console.error('Error:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',

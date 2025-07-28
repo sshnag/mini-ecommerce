@@ -23,20 +23,17 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// Include auth routes
+require __DIR__.'/auth.php';
+
 Route::get('/products', [ShopController::class, 'index'])->name('products.index');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-//login
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/products/{custom_id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
 Route::post('/contact', action: [ContactController::class, 'store'])->name('contact.store');
-       Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
 Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
 Route::post('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
 Route::get('/wishlist/find/{productId}', [WishlistController::class, 'find'])->name('wishlist.find');
@@ -75,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminLoginController::class, 'login']);
-Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+Route::post('/admin/logout', [AdminLoginController::class, 'adminLogout'])->name('admin.logout');
 
 Route::get('/admin/notifications/{notification}/redirect', function ($notificationId) {
     $notification = DatabaseNotification::findOrFail($notificationId);

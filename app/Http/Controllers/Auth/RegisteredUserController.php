@@ -35,6 +35,9 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // Store the current session ID before registration for cart/wishlist transfer
+        session(['guest_session_id' => session()->getId()]);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -45,6 +48,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('home', absolute: false));
     }
 }

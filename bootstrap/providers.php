@@ -2,6 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-        Yajra\DataTables\DataTablesServiceProvider::class,
-
+    App\Providers\EventServiceProvider::class,
+    Yajra\DataTables\DataTablesServiceProvider::class,
 ];
