@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
 
 
+
         )
         ->withSchedule(function(Schedule $schedule){
             $schedule->job(new DeleteOrders)->cron('0 0 1  */6 *');

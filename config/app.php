@@ -77,7 +77,7 @@ return [
     | set to any locale for which you plan to have translation strings.
     |
     */
-    'provider'=>[App\Providers\AuthServiceProvider::class,'Image' => Intervention\Image\Facades\Image::class],
+    'provider'=>[App\Providers\AuthServiceProvider::class],
 
 
     'locale' => env('APP_LOCALE', 'en'),

@@ -25,7 +25,7 @@
 
                 <div class="notification-list" style="max-height: 400px; overflow-y: auto;">
                     @forelse ($notifications as $notification)
-                        <a href="{{ route('notifications.redirect', $notification->id) }}"
+                        <a href="{{ route('admin.notifications.redirect', $notification->id) }}"
                             class="dropdown-item notification-item d-flex align-items-start p-3 border-bottom">
 
                             <div class="notification-icon me-3">

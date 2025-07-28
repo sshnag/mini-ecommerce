@@ -6,8 +6,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endpush
 
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/stock-validation.js') }}"></script>
+@endpush
+
 @section('content')
-    <div class="container py-5">
+    <div class="container py-5 checkout-review-page">
         <h2>Review Your Order</h2>
 
         <div class="card mb-4">
@@ -44,7 +49,6 @@
             </div>
         </div>
 
-
         <table class="table">
             <thead>
                 <tr>
@@ -57,8 +61,16 @@
             <tbody>
                 @if ($cartItems && $cartItems->count())
                     @foreach ($cartItems as $item)
-                        <tr>
-                            <td>{{ $item->product->name ?? 'Product not found' }}</td>
+                        <tr class="{{ $item->quantity > $item->product->stock ? 'table-warning' : '' }}">
+                            <td>
+                                {{ $item->product->name ?? 'Product not found' }}
+                                @if($item->quantity > $item->product->stock)
+                                    <div class="text-danger small">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        Only {{ $item->product->stock }} available
+                                    </div>
+                                @endif
+                            </td>
                             <td>{{ $item->quantity }}</td>
                             <td>${{ number_format($item->product->price ?? 0, 2) }}</td>
                             <td>${{ number_format($item->quantity * ($item->product->price ?? 0), 2) }}</td>
@@ -70,16 +82,24 @@
                     </tr>
                 @endif
             </tbody>
-
         </table>
 
         <div class="d-flex justify-content-end align-items-center mb-4">
             <h4>Total: <strong>${{ number_format($total, 2) }}</strong></h4>
         </div>
 
-        <form action="{{ route('checkout.place') }}" method="POST">
+        <form id="place-order-form" action="{{ route('checkout.place') }}" method="POST">
             @csrf
-            <button type="submit" class="btn-gold">Place Order</button>
+            <button type="button" id="place-order-btn" class="btn-gold">
+                <i class="fas fa-lock me-2"></i>Place Order
+            </button>
         </form>
+
+        <div class="mt-3">
+            <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Stock availability is checked in real-time. If items become unavailable, you'll be notified.
+            </small>
+        </div>
     </div>
 @endsection

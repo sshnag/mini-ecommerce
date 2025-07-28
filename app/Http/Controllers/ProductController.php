@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Wishlist;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Auth;
 
@@ -91,12 +92,12 @@ class ProductController extends Controller
         }
         // Determine if product is in wishlist for current user or guest
         $inWishlist = false;
-        if (\Auth::check()) {
-            $inWishlist = \App\Models\Wishlist::where('user_id', \Auth::id())
+        if (Auth::check()) {
+            $inWishlist = Wishlist::where('user_id', Auth::id())
                 ->where('product_id', $product->id)
                 ->exists();
         } else {
-            $inWishlist = \App\Models\Wishlist::where('session_id', session()->getId())
+            $inWishlist = Wishlist::where('session_id', session()->getId())
                 ->where('product_id', $product->id)
                 ->exists();
         }

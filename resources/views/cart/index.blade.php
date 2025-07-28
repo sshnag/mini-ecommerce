@@ -50,6 +50,8 @@
     <section class="cart-section py-5">
         <div class="container">
             <h2 class="mb-4">Your Shopping Bag</h2>
+            
+            <x-stock-errors />
 
             @if ($cartItems->isEmpty())
                 <div class="alert alert-info">
